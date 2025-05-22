@@ -30,8 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${d2coding.variable}`}>
-      <body>{children}</body>
+    <html lang="en">
+      <body className={`${d2coding.variable} dark`}>{children}</body>
     </html>
   );
 }

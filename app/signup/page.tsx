@@ -12,25 +12,35 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import LabelInput from '@/components/common/label-input';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 export default function SignupPage() {
   const [state, dispatch] = useActionState(signupAction, null);
   const router = useRouter();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+    <div className="bg-background flex min-h-screen items-center justify-center">
       {state?.success && (
-        <dialog className="modal" open>
-          <div className="modal-box text-neutral-900">
-            <h3 className="text-lg font-bold">가입 성공</h3>
-            <p className="py-4">회원 가입이 완료되었습니다.</p>
-            <div className="modal-action">
-              <button className="btn" onClick={() => router.push('/login')}>
+        <Dialog open>
+          <DialogContent>
+            <DialogDescription className="py-4">
+              <DialogTitle>가입 성공</DialogTitle>
+              회원 가입이 완료되었습니다. 로그인 하여 서비스를 이용하실 수
+              있습니다.
+            </DialogDescription>
+            <DialogFooter>
+              <Button onClick={() => router.push('/login')}>
                 로그인으로 이동
-              </button>
-            </div>
-          </div>
-        </dialog>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
 
       <Card className="w-full max-w-md">
