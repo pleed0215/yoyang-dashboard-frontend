@@ -1,31 +1,7 @@
 'use server';
 
-import { z } from 'zod';
-import { PASSWORD_REGEX } from '@/lib/constants';
-
-const signupSchema = z
-  .object({
-    email: z.string().email('유효한 이메일을 입력하세요.'),
-    password: z
-      .string()
-      .min(8, '패스워드는 최소 8자 이상이어야 합니다.')
-      .max(50, '패스워드는 최대 50자까지 허용됩니다.')
-      .regex(
-        PASSWORD_REGEX,
-        '패스워드는 대문자, 숫자, 특수 문자를 포함해야 합니다.'
-      ),
-    confirmPassword: z.string(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.password !== data.confirmPassword) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['confirmPassword'],
-        message: '비밀번호가 일치하지 않습니다.',
-        fatal: true,
-      });
-    }
-  });
+import { signupSchema } from '@/app/signup/signup-form-schema';
+import backend from '@/lib/backend';
 
 export async function signupAction(prevState: unknown, formData: FormData) {
   const raw = {
@@ -42,6 +18,34 @@ export async function signupAction(prevState: unknown, formData: FormData) {
   }
 
   // server action required.
-
-  return { success: true };
+  try {
+    const response = await backend('/users/signup', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: result.data.email,
+        password: result.data.password,
+      }),
+      method: 'POST',
+    });
+    if (response.ok) {
+      return { success: true };
+    } else {
+      const responseData = await response.json();
+      return {
+        success: false,
+        status: response.status,
+        message: responseData.message,
+        data: Object.fromEntries(formData.entries()),
+      };
+    }
+  } catch (e) {
+    return {
+      success: false,
+      status: 500,
+      message: e as string,
+      data: Object.fromEntries(formData.entries()),
+    };
+  }
 }
