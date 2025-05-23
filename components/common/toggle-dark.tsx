@@ -10,7 +10,7 @@ export default function ToggleDark() {
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
   const isDark = resolvedTheme === 'dark';
   return (
-    <div>
+    <div className="fixed right-4 bottom-4">
       {resolvedTheme === 'light' && theme ? <SunIcon /> : <MoonIcon />}
       <Switch checked={isDark} onCheckedChange={toggleTheme} />
     </div>
