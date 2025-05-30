@@ -1,11 +1,16 @@
 'use server';
 
 import { loginFormSchema } from '@/app/login/login-form-schema';
-import { backend } from '@/lib/backend';
 import { cookies } from 'next/headers';
-import { serverApi } from '@/lib/api-client';
+import { getServerApolloClient } from '@/lib/gql-server-apollo';
+import { LOGIN_MUTATION } from '@/lib/graphql/queries';
+import {
+  LoginMutation,
+  LoginMutationVariables,
+  MutationLoginArgs,
+} from '@/lib/graphql/generated/graphql';
 
-export async function loginAction(prevState: unknown, formData: FormData) {
+export async function loginWithGraphQL(prevState: unknown, formData: FormData) {
   const raw = {
     email: formData.get('email'),
     password: formData.get('password'),
@@ -20,35 +25,37 @@ export async function loginAction(prevState: unknown, formData: FormData) {
       };
     }
 
-    // const response = await backend('/auth/login', {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(result.data),
-    //   method: 'POST',
-    // });
-    const response = await serverApi.post(
-      '/auth/login',
+    // GraphQL 로그인 뮤테이션 실행
+    const client = getServerApolloClient();
+    const { data } = await client.mutate<LoginMutation, LoginMutationVariables>(
       {
-        password: result.data.password,
-        email: result.data.email,
-      },
-      { withCredentials: true }
+        mutation: LOGIN_MUTATION,
+        variables: {
+          email: result.data.email,
+          password: result.data.password,
+        },
+      }
     );
 
-    if (response.status === 201) {
+    if (data?.login) {
       const cookieStore = await cookies();
-      const { access_token, refresh_token } = response.data;
+      if (!data.login.data)
+        return {
+          success: false,
+          message: '로그인에 실패했습니다.',
+          data: Object.fromEntries(formData.entries()),
+        };
+      const { accessToken, refreshToken } = data.login.data;
 
       // 로그인 성공 시 토큰을 쿠키에 저장
-      cookieStore.set('access_token', access_token, {
+      cookieStore.set('access_token', accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
       });
 
-      cookieStore.set('refresh_token', refresh_token, {
+      cookieStore.set('refresh_token', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
@@ -58,8 +65,7 @@ export async function loginAction(prevState: unknown, formData: FormData) {
     } else {
       return {
         success: false,
-        status: response.status,
-        message: response.statusText,
+        message: '로그인에 실패했습니다.',
         data: Object.fromEntries(formData.entries()),
       };
     }

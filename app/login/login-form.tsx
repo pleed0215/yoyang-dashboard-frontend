@@ -19,10 +19,11 @@ import LabelInput from '@/components/common/label-input';
 import { loginFormSchema, LoginFormType } from './login-form-schema';
 import LoadingButton from '@/components/common/loading-button';
 import { useFormStatus } from 'react-dom';
+import { loginWithGraphQL } from '@/app/login/graphql-actions';
 
 export default function LoginForm() {
   const router = useRouter();
-  const [state, action] = useActionState(loginAction, null);
+  const [state, action] = useActionState(loginWithGraphQL, null);
   const { pending } = useFormStatus();
 
   const { register, formState } = useForm<LoginFormType>({
