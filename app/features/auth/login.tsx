@@ -5,47 +5,45 @@ import { LOGIN_MUTATION } from "~/graphql/queries";
 import { LabelInput } from "~/components/common/label-input";
 import { SubmitButton } from "~/components/common/submit-button";
 import { useMutation } from "@apollo/client";
+import { LoginMutation, LoginMutationVariables } from "~/graphql/types";
 
 interface LoginFormData {
-  username: string;
+  email: string;
   password: string;
 }
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
-  const username = formData.get("username") as string;
+  const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  // This is just for server-side validation
-  if (!username || !password) {
+  if (!email || !password) {
     return {
-      error: "Username and password are required",
+      error: "이메일과 비밀번호를 입력해주세요",
     };
   }
 
-  // The actual login will be handled client-side with Apollo Client
   return { ok: true };
 }
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({
-    username: "",
+    email: "",
     password: "",
   });
   const [error, setError] = useState<string | null>(null);
 
-  const [login, { loading }] = useMutation(LOGIN_MUTATION, {
+  const [login, { loading }] = useMutation<LoginMutation, LoginMutationVariables>(LOGIN_MUTATION, {
     onCompleted: (data) => {
       if (data.login.success) {
-        // Redirect to dashboard or home page after successful login
         navigate("/");
       } else {
-        setError(data.login.message || "Login failed");
+        setError(data.login.message || "로그인에 실패했습니다");
       }
     },
     onError: (error) => {
-      setError(error.message || "An error occurred during login");
+      setError(error.message || "로그인 중 오류가 발생했습니다");
     },
   });
 
@@ -58,18 +56,16 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
 
-    const { username, password } = formData;
-    if (!username || !password) {
-      setError("Username and password are required");
+    const { email, password } = formData;
+    if (!email || !password) {
+      setError("이메일과 비밀번호를 입력해주세요");
       return;
     }
 
     await login({
       variables: {
-        input: {
-          username,
-          password,
-        },
+        email,
+        password,
       },
     });
   };
@@ -79,7 +75,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         <div>
           <h1 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Login to your account
+            로그인
           </h1>
         </div>
 
@@ -94,12 +90,12 @@ export default function LoginPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4 rounded-md shadow-sm">
             <LabelInput
-              id="username"
-              name="username"
-              type="text"
-              label="Username"
-              placeholder="Enter your username"
-              value={formData.username}
+              id="email"
+              name="email"
+              type="email"
+              label="이메일"
+              placeholder="이메일을 입력해주세요"
+              value={formData.email}
               onChange={handleChange}
               required
             />
@@ -108,8 +104,8 @@ export default function LoginPage() {
               id="password"
               name="password"
               type="password"
-              label="Password"
-              placeholder="Enter your password"
+              label="비밀번호"
+              placeholder="비밀번호를 입력해주세요"
               value={formData.password}
               onChange={handleChange}
               required
@@ -119,10 +115,10 @@ export default function LoginPage() {
           <div>
             <SubmitButton
               loading={loading}
-              loadingText="Logging in..."
+              loadingText="로그인 중..."
               className="w-full"
             >
-              Sign in
+              로그인
             </SubmitButton>
           </div>
         </form>

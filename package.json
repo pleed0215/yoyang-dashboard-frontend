@@ -6,7 +6,9 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "codegen": "graphql-codegen",
+    "codegen:watch": "graphql-codegen --watch"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
@@ -27,6 +29,14 @@
     "yarn": "^1.22.22"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/client-preset": "^4.1.0",
+    "@graphql-codegen/import-types-preset": "^3.0.1",
+    "@graphql-codegen/introspection": "^4.0.0",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-codegen/typescript-react-apollo": "^4.1.0",
+    "@parcel/watcher": "^2.5.1",
     "@react-router/dev": "^7.5.3",
     "@tailwindcss/vite": "^4.1.8",
     "@types/node": "^20",

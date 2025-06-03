@@ -82,6 +82,55 @@ Make sure to deploy the output of `npm run build`
 
 This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
 
+## GraphQL with Apollo Client
+
+This project uses Apollo Client for GraphQL operations. TypeScript types for GraphQL operations are automatically generated using GraphQL Code Generator.
+
+### GraphQL Code Generation
+
+The project is configured to generate TypeScript types from your GraphQL schema and operations. This provides type safety for your GraphQL queries, mutations, and fragments.
+
+#### Generate Types
+
+To generate types once:
+
+```bash
+yarn codegen
+```
+
+#### Watch Mode
+
+To automatically regenerate types when your GraphQL files change:
+
+```bash
+yarn codegen:watch
+```
+
+### Using GraphQL
+
+1. Define your queries, mutations, and fragments in your component files using the `gql` tag from Apollo Client:
+
+```tsx
+import { gql } from "@apollo/client";
+
+export const MY_QUERY = gql`
+  query MyQuery {
+    someField
+  }
+`;
+```
+
+2. After running the codegen, you can import and use the generated hooks:
+
+```tsx
+import { useMyQueryQuery } from "../graphql/graphql";
+
+function MyComponent() {
+  const { data, loading, error } = useMyQueryQuery();
+  // ...
+}
+```
+
 ---
 
 Built with ❤️ using React Router.
