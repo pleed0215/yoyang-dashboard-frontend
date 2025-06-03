@@ -7,8 +7,7 @@ import {
     ScrollRestoration,
     useLoaderData,
 } from "react-router";
-import * as pkg from "@apollo/client";
-const {ApolloProvider} = pkg;
+import {ApolloProvider} from "@apollo/client";
 import {createServerApolloClient} from "./lib/apollo-client-server";
 import {createClientApolloClient} from "./lib/apollo-client-client";
 
@@ -20,6 +19,7 @@ export function Layout({children}: { children: React.ReactNode }) {
     return (
         <html lang="en">
         <head>
+            <title></title>
             <meta charSet="utf-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1"/>
             <Meta/>
@@ -53,7 +53,6 @@ export default function App() {
 
     // Create a new Apollo Client with the initial state from the server
     const client = createClientApolloClient(apolloState);
-    console.log(ApolloProvider)
 
     return (
         <Layout>

@@ -30,14 +30,20 @@ const createHttpLink = () => new HttpLink({
   credentials: 'include', // Include cookies for authentication if needed
 });
 
+let _serverApolloClient:InstanceType<typeof ApolloClient<NormalizedCacheObject>>|undefined;;
+
 // Function to create a new Apollo Client instance for server-side rendering
 export function createServerApolloClient(initialState = {}) {
   // Create a new Apollo Client for server-side rendering
-  const apolloClient = new ApolloClient({
+  const apolloClient = _serverApolloClient ?? new ApolloClient({
     ssrMode: true, // Always true for server-side
     link: from([errorLink, createHttpLink()]),
     cache: new InMemoryCache().restore(initialState),
   });
 
+  if(!_serverApolloClient) _serverApolloClient = apolloClient;
+
   return apolloClient;
 }
+
+export const serverApolloClient = createServerApolloClient();
