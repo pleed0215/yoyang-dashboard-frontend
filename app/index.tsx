@@ -1,13 +1,18 @@
 import {Route} from "./+types/index"
-import {createServerApolloClient, serverApolloClient} from "~/lib/apollo-client-server";
+import {serverApolloClient} from "~/lib/apollo-client-server";
 import {ME_QUERY} from "~/graphql/queries";
 
-export const loader = async ({}: Route.LoaderArgs) => {
+export const loader = async ({request}: Route.LoaderArgs) => {
     try {
         const data = await serverApolloClient.query({
             query: ME_QUERY,
+            context: {
+                headers: {
+                    cookie: request.headers.get('cookie') || ''
+                }
+            }
         })
-        return data;
+        return {data, apolloState: serverApolloClient.extract()};
     } catch (e) {
         return null;
     }

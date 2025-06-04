@@ -1,7 +1,7 @@
 import {ApolloClient} from "@apollo/client/core"
 import {InMemoryCache} from "@apollo/client/cache"
 import {HttpLink} from "@apollo/client/link/http"
-import {from} from "@apollo/client/link/core"
+import {from, ApolloLink} from "@apollo/client/link/core"
 import {onError} from '@apollo/client/link/error';
 
 // Type import
@@ -25,19 +25,32 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 // Create an HTTP link to the GraphQL server
-const createHttpLink = () => new HttpLink({
+const createHttpLink = (req?: Request) => new HttpLink({
   uri: `${BACKEND_URL}/graphql`,
   credentials: 'include', // Include cookies for authentication if needed
+  headers: {
+    Cookie: req?.headers.get('cookie')||'',
+  },
 });
 
-let _serverApolloClient:InstanceType<typeof ApolloClient<NormalizedCacheObject>>|undefined;;
+let _serverApolloClient:InstanceType<typeof ApolloClient<NormalizedCacheObject>>|undefined;
+const createCookieContext = ()=>new ApolloLink( (operation, forward) => {
+  const context = operation.getContext();
+  const headers = context.headers || {};
+  operation.setContext({
+    headers: {
+      cookie: headers.cookie || '',
+    },
+  });
+  return forward(operation);
+});
 
 // Function to create a new Apollo Client instance for server-side rendering
 export function createServerApolloClient(initialState = {}) {
   // Create a new Apollo Client for server-side rendering
   const apolloClient = _serverApolloClient ?? new ApolloClient({
     ssrMode: true, // Always true for server-side
-    link: from([errorLink, createHttpLink()]),
+    link: from([errorLink, createCookieContext(), createHttpLink()]),
     cache: new InMemoryCache().restore(initialState),
   });
 
