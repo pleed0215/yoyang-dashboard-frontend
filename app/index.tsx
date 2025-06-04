@@ -19,6 +19,5 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 export default function IndexPage({ loaderData }: Route.ComponentProps) {
   const data = loaderData;
-  console.log(data);
   return <div>This is index page</div>;
 }
