@@ -14,7 +14,7 @@ export const loader = async () => {
   return {};
 };
 
-export default function LogoutPage() {
+export default function LogoutPage({}: Route.ComponentProps) {
   const apolloClient = useApolloClient();
   const [logout] = useLogoutMutation({
     onCompleted: async () => {
