@@ -1,7 +1,7 @@
 // Re-export from client and server Apollo Client files
 import { createServerApolloClient } from './apollo-client-server';
 import { createClientApolloClient, clientApolloClient } from './apollo-client-client';
-import { DefaultContext } from '@apollo/client';
+import { DefaultContext, makeVar } from '@apollo/client';
 
 // For backward compatibility
 export const createApolloClient =
@@ -15,5 +15,18 @@ const contextWithToken = (request: Request): DefaultContext => ({
     cookie: request.headers.get('cookie') || '',
   },
 });
+const isLoggedInVar = makeVar<boolean>(
+  (typeof window !== 'undefined' && document.cookie.includes('refresh_token')) || false
+);
+const updateLoginStatus = (isLogin: boolean) => {
+  isLoggedInVar(isLogin);
+};
 
-export { createServerApolloClient, createClientApolloClient, clientApolloClient, contextWithToken };
+export {
+  createServerApolloClient,
+  createClientApolloClient,
+  clientApolloClient,
+  contextWithToken,
+  isLoggedInVar,
+  updateLoginStatus,
+};
