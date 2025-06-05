@@ -11,18 +11,7 @@ import { LogIn, UserPlus } from 'lucide-react';
 export const loader = async ({ request }: Route.LoaderArgs) => {
   try {
     if (request.headers.get('cookie')?.includes('refresh_token')) {
-      const data = await serverApolloClient.query<MeQuery, MeQueryVariables>({
-        query: ME_QUERY,
-        context: {
-          ...contextWithToken(request),
-        },
-      });
-      console.log(data.data?.me);
-      if (data.data?.me) {
-        console.log('redirecting to dashboard');
-        return redirect('/dashboard');
-      }
-      return data;
+      return redirect('/dashboard');
     } else {
       return {};
     }

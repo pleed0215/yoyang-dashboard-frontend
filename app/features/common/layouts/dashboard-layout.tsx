@@ -7,9 +7,8 @@ export default function DashboardLayout() {
     <SidebarProvider>
       <AppSidebar />
       <div className="flex flex-col w-full">
-        <div className="flex flex-col w-full bg-muted-foreground">
+        <div className="flex flex-col w-full bg-background p-2 text-xs">
           <SidebarTrigger />
-          <div>대시보드</div>
         </div>
         <Outlet />
       </div>
