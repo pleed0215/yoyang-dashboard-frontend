@@ -1,4 +1,4 @@
-import { ChevronDown, LogOut, Menu, Settings, User } from 'lucide-react';
+import { ChevronDown, LogOut, Settings, User } from 'lucide-react';
 import { Avatar, AvatarFallback } from '~/components/ui/avatar';
 import {
   DropdownMenu,
@@ -7,14 +7,66 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { useMeQuery } from '~/graphql/operations';
 import { UserRole } from '~/graphql/types';
-import { Sidebar, SidebarContent, SidebarHeader, SidebarTrigger } from '~/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarHeader } from '~/components/ui/sidebar';
+import { roleBasedMenus } from './sidebar-map';
 import { Button } from '~/components/ui/button';
+import { cn } from '~/lib/utils';
+import { useState } from 'react';
+
+interface NavItemProps {
+  title: string;
+  path?: string;
+  icon?: any;
+  children?: Array<any>;
+  isActive?: boolean;
+  onClick?: () => void;
+}
+
+function NavItem({ title, path, icon: Icon, children, isActive, onClick }: NavItemProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (children) {
+      setIsExpanded(!isExpanded);
+    } else if (path) {
+      navigate(path);
+    }
+    onClick?.();
+  };
+
+  return (
+    <div>
+      <Button
+        variant="ghost"
+        className={cn('w-full justify-between', isActive && 'bg-muted')}
+        onClick={handleClick}
+      >
+        <span className="flex items-center">
+          {Icon && <Icon className="mr-2 h-4 w-4" />}
+          {title}
+        </span>
+        {children && (
+          <ChevronDown className={cn('h-4 w-4 transition-transform', isExpanded && 'rotate-180')} />
+        )}
+      </Button>
+      {children && isExpanded && (
+        <div className="ml-4 mt-1 space-y-1">
+          {children.map((child, index) => (
+            <NavItem key={index} {...child} isActive={path === child.path} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function AppSidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { data: userData } = useMeQuery();
   const user = userData?.me?.data;
 
@@ -33,6 +85,18 @@ export function AppSidebar() {
       [UserRole.Super]: '슈퍼관리자',
     };
     return labels[role] || role;
+  };
+
+  const getMenuItems = () => {
+    if (!user?.role) return [];
+
+    if (user.role === UserRole.Staff) {
+      return user.hospitalId
+        ? roleBasedMenus[UserRole.Staff].withHospital
+        : roleBasedMenus[UserRole.Staff].withoutHospital;
+    }
+
+    return roleBasedMenus[user.role] || [];
   };
 
   return (
@@ -86,7 +150,9 @@ export function AppSidebar() {
           </DropdownMenu>
         </SidebarHeader>
         <SidebarContent className="flex-1 space-y-1 p-2">
-          {/* 여기에 나중에 사이드바 메뉴 아이템들이 들어갈 예정입니다 */}
+          {getMenuItems().map((item, index) => (
+            <NavItem key={index} {...item} isActive={location.pathname === item.path} />
+          ))}
         </SidebarContent>
       </Sidebar>
     </>
