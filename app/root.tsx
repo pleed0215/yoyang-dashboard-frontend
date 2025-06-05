@@ -89,9 +89,6 @@ export default function App() {
         }
       } catch (error) {
         updateLoginStatus(false);
-        if (typeof window !== 'undefined') {
-          window.location.href = '/';
-        }
       }
     })();
   }, []);
