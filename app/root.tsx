@@ -3,11 +3,14 @@ import {
   Links,
   Meta,
   Outlet,
+  redirect,
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useLocation,
+  useNavigate,
 } from 'react-router';
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider, useReactiveVar } from '@apollo/client';
 import { createServerApolloClient } from './lib/apollo-client-server';
 import { createClientApolloClient } from './lib/apollo-client-client';
 
@@ -16,6 +19,9 @@ import './app.css';
 import AppearanceSwitch from '~/components/common/appearance-switch';
 import { useEffect } from 'react';
 import { ThemeProvider } from '~/components/common/theme-provider';
+import { isLoggedInVar, updateLoginStatus } from '~/lib/apollo';
+import { ME_QUERY } from '~/graphql/queries';
+import { MeQuery, UserRole } from '~/graphql/types';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -53,11 +59,47 @@ export async function loader() {
 export default function App() {
   const { apolloState } = useLoaderData<{ apolloState: any }>();
   const client = createClientApolloClient(apolloState);
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
+  const { pathname } = useLocation();
+  const navigator = useNavigate();
+
+  useEffect(() => {
+    // 서버에 토큰 유효성을 확인하는 요청을 보냄
+    (async () => {
+      try {
+        const result = await client.query<MeQuery>({
+          query: ME_QUERY, // 사용자 정보를 가져오는 쿼리
+          fetchPolicy: 'network-only', // 캐시를 무시하고 항상 서버에 요청
+        });
+
+        if (result.data?.me && result.data?.me.data) {
+          const { role } = result.data?.me.data;
+          updateLoginStatus(true);
+          if (pathname.startsWith('/super') && role !== UserRole.Super) {
+            window.location.href = '/dashboard';
+          }
+          if (pathname.startsWith('/admin') && role !== UserRole.Admin) {
+            window.location.href = '/dashboard';
+          }
+          if (pathname.startsWith('/staff') && role !== UserRole.Staff) {
+            window.location.href = '/dashboard';
+          }
+        } else {
+          updateLoginStatus(false);
+        }
+      } catch (error) {
+        updateLoginStatus(false);
+        if (typeof window !== 'undefined') {
+          window.location.href = '/';
+        }
+      }
+    })();
+  }, []);
 
   return (
     <ApolloProvider client={client}>
       <ThemeProvider>
-        <main className="relative min-w-screen min-h-screen">
+        <main className="relative min-w-screen min-h-screen font-d2coding">
           <Outlet />
           <AppearanceSwitch />
         </main>
