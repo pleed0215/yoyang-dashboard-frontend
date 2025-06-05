@@ -267,7 +267,7 @@ export type UserType = {
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'GetUserOutput', success: boolean, data?: { __typename?: 'UserType', id: string, username: string, email: string, hospitalId?: number | null, hospitalRequestId?: number | null, role: UserRole, state: CommonState } | null } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'GetUserOutput', success: boolean, message?: string | null, errors?: Array<{ __typename?: 'GraphQLError', message: string }> | null, data?: { __typename?: 'UserType', id: string, username: string, email: string, hospitalId?: number | null, hospitalRequestId?: number | null, role: UserRole, state: CommonState } | null } };
 
 export type GetUserByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -288,3 +288,11 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutOutput', success: boolean, message?: string | null } };
+
+export type SignupMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'GetUserOutput', success: boolean, message?: string | null, errors?: Array<{ __typename?: 'GraphQLError', message: string }> | null, data?: { __typename?: 'UserType', id: string, username: string, email: string } | null } };
