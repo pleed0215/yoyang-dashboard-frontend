@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { redirect, useNavigate } from 'react-router';
 import { useApolloClient } from '@apollo/client';
 import { serverApolloClient } from '~/lib/apollo-client-server';
+import { updateLoginStatus } from '~/lib/apollo';
 
 export const loader = async () => {
   try {
@@ -19,6 +20,7 @@ export default function LogoutPage({}: Route.ComponentProps) {
   const [logout] = useLogoutMutation({
     onCompleted: async () => {
       await apolloClient.clearStore();
+      updateLoginStatus(false);
     },
   });
   const navigator = useNavigate();

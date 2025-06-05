@@ -9,6 +9,7 @@ import { LoginMutation, LoginMutationVariables } from '~/graphql/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { Alert, AlertDescription } from '~/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import { updateLoginStatus } from '~/lib/apollo';
 
 interface LoginFormData {
   email: string;
@@ -40,8 +41,10 @@ export default function LoginPage() {
   const [login, { loading }] = useMutation<LoginMutation, LoginMutationVariables>(LOGIN_MUTATION, {
     onCompleted: data => {
       if (data.login.success) {
+        updateLoginStatus(true);
         navigate('/');
       } else {
+        updateLoginStatus(false);
         setError(data.login.message || '로그인에 실패했습니다');
       }
     },
