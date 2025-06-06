@@ -182,6 +182,7 @@ export type Query = {
   retrieveStaffInfo: GetUserOutput;
   /** 슈퍼 유저 전용. 입력된 role 값으로 사용자들을 찾습니다. */
   superFindUserByRole: Array<UserType>;
+  superOnlyRetrievePendingUsers: RetrievePendingUsersOutput;
 };
 
 
@@ -211,9 +212,24 @@ export type QuerySuperFindUserByRoleArgs = {
   role: Scalars['String']['input'];
 };
 
+
+export type QuerySuperOnlyRetrievePendingUsersArgs = {
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
+};
+
 export type RetrieveJoinRequestOutput = {
   __typename?: 'RetrieveJoinRequestOutput';
   data: Array<HospitalJoinRequestType>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  pageInfo?: Maybe<PageInfo>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type RetrievePendingUsersOutput = {
+  __typename?: 'RetrievePendingUsersOutput';
+  data: Array<UserType>;
   errors?: Maybe<Array<GraphQlError>>;
   message?: Maybe<Scalars['String']['output']>;
   pageInfo?: Maybe<PageInfo>;
@@ -296,3 +312,11 @@ export type SignupMutationVariables = Exact<{
 
 
 export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'GetUserOutput', success: boolean, message?: string | null, errors?: Array<{ __typename?: 'GraphQLError', message: string }> | null, data?: { __typename?: 'UserType', id: string, username: string, email: string } | null } };
+
+export type RetrievePendingUsersQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type RetrievePendingUsersQuery = { __typename?: 'Query', superOnlyRetrievePendingUsers: { __typename?: 'RetrievePendingUsersOutput', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data: Array<{ __typename?: 'UserType', id: string, email: string, username: string }> } };

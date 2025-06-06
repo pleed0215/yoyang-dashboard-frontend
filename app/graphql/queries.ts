@@ -73,3 +73,24 @@ export const SIGNUP_MUTATION = gql`
     }
   }
 `;
+
+export const RETRIEVE_PENDING_USERS_QUERY = gql`
+  query RetrievePendingUsers($page: Int = 1, $pageSize: Int = 10) {
+    superOnlyRetrievePendingUsers(page: $page, pageSize: $pageSize) {
+      success
+      message
+      pageInfo {
+        currentPage
+        hasNextPage
+        hasPreviousPage
+        total
+        totalPages
+      }
+      data {
+        id
+        email
+        username
+      }
+    }
+  }
+`;

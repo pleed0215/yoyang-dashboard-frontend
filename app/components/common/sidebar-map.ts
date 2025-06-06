@@ -28,12 +28,12 @@ export const roleBasedMenus: RoleBasedMenus = {
       children: [
         {
           title: '승인대기 중 유저',
-          path: '/dashboard/users/pending',
+          path: '/super/users/pending',
           icon: UserPlus,
         },
         {
           title: '유저 목록',
-          path: '/dashboard/users',
+          path: '/super/users',
           icon: List,
         },
       ],
@@ -44,12 +44,12 @@ export const roleBasedMenus: RoleBasedMenus = {
       children: [
         {
           title: '승인대기 중인 병원',
-          path: '/dashboard/hospitals/pending',
+          path: '/super/hospitals/pending',
           icon: Clock,
         },
         {
           title: '병원 목록',
-          path: '/dashboard/hospitals',
+          path: '/super/hospitals',
           icon: List,
         },
       ],
@@ -62,12 +62,12 @@ export const roleBasedMenus: RoleBasedMenus = {
       children: [
         {
           title: '가입 대기 중 유저',
-          path: '/dashboard/users/pending',
+          path: '/admin/users/pending',
           icon: UserPlus,
         },
         {
           title: '유저 목록',
-          path: '/dashboard/users',
+          path: '/admin/users',
           icon: List,
         },
       ],
@@ -78,7 +78,7 @@ export const roleBasedMenus: RoleBasedMenus = {
       children: [
         {
           title: '병원 정보',
-          path: '/dashboard/hospital',
+          path: '/admin/hospital',
           icon: Building,
         },
       ],
@@ -92,12 +92,12 @@ export const roleBasedMenus: RoleBasedMenus = {
         children: [
           {
             title: '병원 찾기',
-            path: '/dashboard/hospitals/search',
+            path: '/staff/hospitals/search',
             icon: Search,
           },
           {
             title: '신청 상태',
-            path: '/dashboard/hospitals/application',
+            path: '/staff/hospitals/application',
             icon: Clock,
           },
         ],
@@ -106,7 +106,7 @@ export const roleBasedMenus: RoleBasedMenus = {
     withHospital: [
       {
         title: '병원 정보',
-        path: '/dashboard/hospital',
+        path: '/staff/hospital',
         icon: Building,
       },
     ],
