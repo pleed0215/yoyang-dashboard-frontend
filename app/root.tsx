@@ -3,7 +3,6 @@ import {
   Links,
   Meta,
   Outlet,
-  redirect,
   Scripts,
   ScrollRestoration,
   useLoaderData,
@@ -11,7 +10,7 @@ import {
   useNavigate,
 } from 'react-router';
 import { ApolloProvider, useReactiveVar } from '@apollo/client';
-import { createServerApolloClient } from './lib/apollo-client-server';
+import { createServerApolloClient, serverApolloClient } from './lib/apollo-client-server';
 import { createClientApolloClient } from './lib/apollo-client-client';
 
 import type { Route } from './+types/root';
@@ -45,13 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 // Define the loader to provide initial state for Apollo Client
 export async function loader() {
   // Create a new Apollo Client for server-side rendering
-  const apolloClient = createServerApolloClient();
-
-  // You can perform initial data fetching here if needed
-  // For example: await apolloClient.query({ query: SOME_QUERY });
-
-  // Extract the cache data to rehydrate the client-side Apollo Client
-  const initialState = apolloClient.extract();
+  const initialState = serverApolloClient.cache.extract();
 
   return { apolloState: initialState };
 }
