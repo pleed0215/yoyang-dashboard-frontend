@@ -233,6 +233,7 @@ export const RetrievePendingUsersDocument = gql`
       id
       email
       username
+      state
     }
   }
 }

@@ -319,4 +319,4 @@ export type RetrievePendingUsersQueryVariables = Exact<{
 }>;
 
 
-export type RetrievePendingUsersQuery = { __typename?: 'Query', superOnlyRetrievePendingUsers: { __typename?: 'RetrievePendingUsersOutput', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data: Array<{ __typename?: 'UserType', id: string, email: string, username: string }> } };
+export type RetrievePendingUsersQuery = { __typename?: 'Query', superOnlyRetrievePendingUsers: { __typename?: 'RetrievePendingUsersOutput', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data: Array<{ __typename?: 'UserType', id: string, email: string, username: string, state: CommonState }> } };

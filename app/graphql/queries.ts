@@ -90,6 +90,7 @@ export const RETRIEVE_PENDING_USERS_QUERY = gql`
         id
         email
         username
+        state
       }
     }
   }

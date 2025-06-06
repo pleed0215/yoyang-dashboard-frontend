@@ -21,6 +21,7 @@ import { ThemeProvider } from '~/components/common/theme-provider';
 import { isLoggedInVar, updateLoginStatus } from '~/lib/apollo';
 import { ME_QUERY } from '~/graphql/queries';
 import { MeQuery, UserRole } from '~/graphql/types';
+import { Toaster } from '~/components/ui/sonner';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -91,6 +92,7 @@ export default function App() {
       <ThemeProvider>
         <main className="relative min-w-screen min-h-screen font-d2coding">
           <Outlet />
+          <Toaster />
           <AppearanceSwitch />
         </main>
       </ThemeProvider>
