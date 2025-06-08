@@ -55,7 +55,7 @@ export default function App() {
   const client = createClientApolloClient(apolloState);
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const { pathname } = useLocation();
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 서버에 토큰 유효성을 확인하는 요청을 보냄
@@ -80,9 +80,11 @@ export default function App() {
           }
         } else {
           updateLoginStatus(false);
+          navigate('/');
         }
       } catch (error) {
         updateLoginStatus(false);
+        navigate('/');
       }
     })();
   }, []);
