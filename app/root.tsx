@@ -11,7 +11,7 @@ import {
 } from 'react-router';
 import { ApolloProvider, useReactiveVar } from '@apollo/client';
 import { createServerApolloClient, serverApolloClient } from './lib/apollo-client-server';
-import { createClientApolloClient } from './lib/apollo-client-client';
+import { clientApolloClient, createClientApolloClient } from './lib/apollo-client-client';
 
 import type { Route } from './+types/root';
 import './app.css';
@@ -52,7 +52,7 @@ export async function loader() {
 
 export default function App() {
   const { apolloState } = useLoaderData<{ apolloState: any }>();
-  const client = createClientApolloClient(apolloState);
+  const client = clientApolloClient;
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const { pathname } = useLocation();
   const navigate = useNavigate();

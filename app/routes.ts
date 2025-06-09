@@ -14,6 +14,9 @@ export default [
         route('/pending', 'features/super/pages/users-pending.tsx'),
       ]),
     ]),
-    ...prefix('/staff', [index('features/staff/pages/staff-dashboard-index.tsx')]),
+    ...prefix('/staff', [
+      index('features/staff/pages/staff-dashboard-index.tsx'),
+      route('/hospitals/search', 'features/staff/pages/staff-hospital-find.tsx'),
+    ]),
   ]),
 ] satisfies RouteConfig;

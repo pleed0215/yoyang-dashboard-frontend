@@ -15,6 +15,15 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type BaseHospitalType = {
+  __typename?: 'BaseHospitalType';
+  addr: Scalars['String']['output'];
+  located: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  telno: Scalars['String']['output'];
+  ykiho: Scalars['String']['output'];
+};
+
 export type CommonResponse = {
   __typename?: 'CommonResponse';
   errors?: Maybe<Array<GraphQlError>>;
@@ -120,6 +129,8 @@ export type Mutation = {
   logout: LogoutOutput;
   /** 회원 가입을 진행합니다. */
   signup: GetUserOutput;
+  superOnlyUpdateManyUserStatus: CommonResponse;
+  superOnlyUpdateUserStatus: CommonResponse;
   /** 병원에서 직원을 제외합니다. ADMIN 전용 */
   unlinkStaff: CommonResponse;
   /** 사용자 프로필 정보를 업데이트합니다. 로그인 필수. */
@@ -146,6 +157,16 @@ export type MutationLoginArgs = {
 export type MutationSignupArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+
+export type MutationSuperOnlyUpdateManyUserStatusArgs = {
+  input: UpdateManyUserStatusInput;
+};
+
+
+export type MutationSuperOnlyUpdateUserStatusArgs = {
+  input: UpdateUserStatusInput;
 };
 
 
@@ -176,6 +197,7 @@ export type Query = {
   getUserById: UserType;
   /** 현재 사용자의 프로필 데이터를 가져옵니다. 로그인 토큰 필수. */
   me: GetUserOutput;
+  retrieveHospitalList: RetrieveHospitalListOutput;
   /** ADMIN 유저의 병원 유저 목록을 받아옵니다. 로그인 필수. Pagination 가능. */
   retrieveStaff: RetrieveUserListOutput;
   /** 병원에 소속된 직원 정보를 가져옵니다. */
@@ -183,6 +205,7 @@ export type Query = {
   /** 슈퍼 유저 전용. 입력된 role 값으로 사용자들을 찾습니다. */
   superFindUserByRole: Array<UserType>;
   superOnlyRetrievePendingUsers: RetrievePendingUsersOutput;
+  superOnlyRetrieveUserList: RetrieveUserListOutput;
 };
 
 
@@ -194,6 +217,11 @@ export type QueryAdminOnlyRetrieveJoinRequestListArgs = {
 
 export type QueryGetUserByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryRetrieveHospitalListArgs = {
+  hospitalName: Scalars['String']['input'];
 };
 
 
@@ -218,9 +246,26 @@ export type QuerySuperOnlyRetrievePendingUsersArgs = {
   pageSize?: Scalars['Int']['input'];
 };
 
+
+export type QuerySuperOnlyRetrieveUserListArgs = {
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
+  role?: UserRole;
+  state?: CommonState;
+};
+
+export type RetrieveHospitalListOutput = {
+  __typename?: 'RetrieveHospitalListOutput';
+  data?: Maybe<Array<BaseHospitalType>>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  pageInfo?: Maybe<PageInfo>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type RetrieveJoinRequestOutput = {
   __typename?: 'RetrieveJoinRequestOutput';
-  data: Array<HospitalJoinRequestType>;
+  data?: Maybe<Array<HospitalJoinRequestType>>;
   errors?: Maybe<Array<GraphQlError>>;
   message?: Maybe<Scalars['String']['output']>;
   pageInfo?: Maybe<PageInfo>;
@@ -229,7 +274,7 @@ export type RetrieveJoinRequestOutput = {
 
 export type RetrievePendingUsersOutput = {
   __typename?: 'RetrievePendingUsersOutput';
-  data: Array<UserType>;
+  data?: Maybe<Array<UserType>>;
   errors?: Maybe<Array<GraphQlError>>;
   message?: Maybe<Scalars['String']['output']>;
   pageInfo?: Maybe<PageInfo>;
@@ -238,7 +283,7 @@ export type RetrievePendingUsersOutput = {
 
 export type RetrieveUserListOutput = {
   __typename?: 'RetrieveUserListOutput';
-  data: Array<UserType>;
+  data?: Maybe<Array<UserType>>;
   errors?: Maybe<Array<GraphQlError>>;
   message?: Maybe<Scalars['String']['output']>;
   pageInfo?: Maybe<PageInfo>;
@@ -251,12 +296,22 @@ export type TokenOutput = {
   refreshToken: Scalars['String']['output'];
 };
 
+export type UpdateManyUserStatusInput = {
+  users: Array<UpdateUserStatusInput>;
+};
+
 export type UpdateProfileOutput = {
   __typename?: 'UpdateProfileOutput';
   data?: Maybe<UserType>;
   errors?: Maybe<Array<GraphQlError>>;
   message?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
+};
+
+export type UpdateUserStatusInput = {
+  role?: InputMaybe<UserRole>;
+  state?: InputMaybe<CommonState>;
+  userId: Scalars['Int']['input'];
 };
 
 export enum UserRole {
@@ -279,6 +334,13 @@ export type UserType = {
   updatedAt: Scalars['DateTime']['output'];
   username: Scalars['String']['output'];
 };
+
+export type RetrieveHospitalListQueryVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type RetrieveHospitalListQuery = { __typename?: 'Query', retrieveHospitalList: { __typename?: 'RetrieveHospitalListOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'BaseHospitalType', ykiho: string, name: string, telno: string, located: string, addr: string }> | null } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -319,4 +381,21 @@ export type RetrievePendingUsersQueryVariables = Exact<{
 }>;
 
 
-export type RetrievePendingUsersQuery = { __typename?: 'Query', superOnlyRetrievePendingUsers: { __typename?: 'RetrievePendingUsersOutput', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data: Array<{ __typename?: 'UserType', id: string, email: string, username: string, state: CommonState }> } };
+export type RetrievePendingUsersQuery = { __typename?: 'Query', superOnlyRetrievePendingUsers: { __typename?: 'RetrievePendingUsersOutput', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'UserType', id: string, email: string, username: string, state: CommonState }> | null } };
+
+export type RetrieveUserListQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  role: UserRole;
+  state: CommonState;
+}>;
+
+
+export type RetrieveUserListQuery = { __typename?: 'Query', superOnlyRetrieveUserList: { __typename?: 'RetrieveUserListOutput', success: boolean, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasPreviousPage: boolean, hasNextPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'UserType', id: string, email: string, username: string, state: CommonState, role: UserRole }> | null } };
+
+export type UpdateManyUserStatusMutationVariables = Exact<{
+  input: UpdateManyUserStatusInput;
+}>;
+
+
+export type UpdateManyUserStatusMutation = { __typename?: 'Mutation', superOnlyUpdateManyUserStatus: { __typename?: 'CommonResponse', success: boolean, message?: string | null } };

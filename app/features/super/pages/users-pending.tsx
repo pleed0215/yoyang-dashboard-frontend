@@ -83,15 +83,15 @@ export default function UsersPendingPage({ loaderData }: Route.ComponentProps) {
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="*:text-center">
               <TableHead>ID</TableHead>
               <TableHead>이메일</TableHead>
               <TableHead>사용자명</TableHead>
               <TableHead>상태</TableHead>
-              <TableHead className="text-right">액션</TableHead>
+              <TableHead>액션</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="*:text-center">
             {data?.map(user => (
               <TableRow key={user.id}>
                 <TableCell>{user.id}</TableCell>
@@ -100,8 +100,8 @@ export default function UsersPendingPage({ loaderData }: Route.ComponentProps) {
                 <TableCell>
                   <Badge variant={stateBadgeVariant[user.state]}>{stateLabel[user.state]}</Badge>
                 </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
+                <TableCell>
+                  <div className="flex justify-center gap-2">
                     <Button
                       className="cursor-pointer"
                       variant="default"

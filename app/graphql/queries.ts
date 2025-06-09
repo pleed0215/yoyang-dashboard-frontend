@@ -95,3 +95,39 @@ export const RETRIEVE_PENDING_USERS_QUERY = gql`
     }
   }
 `;
+
+export const RETRIEVE_USER_LIST_QUERY = gql`
+  query RetrieveUserList(
+    $page: Int = 1
+    $pageSize: Int = 10
+    $role: UserRole!
+    $state: CommonState!
+  ) {
+    superOnlyRetrieveUserList(page: $page, pageSize: $pageSize, role: $role, state: $state) {
+      success
+      pageInfo {
+        currentPage
+        hasPreviousPage
+        hasNextPage
+        total
+        totalPages
+      }
+      data {
+        id
+        email
+        username
+        state
+        role
+      }
+    }
+  }
+`;
+
+export const UPDATE_MANY_USER_STATUS_MUTATION = gql`
+  mutation UpdateManyUserStatus($input: UpdateManyUserStatusInput!) {
+    superOnlyUpdateManyUserStatus(input: $input) {
+      success
+      message
+    }
+  }
+`;

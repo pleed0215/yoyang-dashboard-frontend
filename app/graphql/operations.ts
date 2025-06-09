@@ -4,6 +4,54 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 
+export const RetrieveHospitalListDocument = gql`
+    query RetrieveHospitalList($name: String!) {
+  retrieveHospitalList(hospitalName: $name) {
+    success
+    message
+    data {
+      ykiho
+      name
+      telno
+      located
+      addr
+    }
+  }
+}
+    `;
+
+/**
+ * __useRetrieveHospitalListQuery__
+ *
+ * To run a query within a React component, call `useRetrieveHospitalListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRetrieveHospitalListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRetrieveHospitalListQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useRetrieveHospitalListQuery(baseOptions: Apollo.QueryHookOptions<Types.RetrieveHospitalListQuery, Types.RetrieveHospitalListQueryVariables> & ({ variables: Types.RetrieveHospitalListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.RetrieveHospitalListQuery, Types.RetrieveHospitalListQueryVariables>(RetrieveHospitalListDocument, options);
+      }
+export function useRetrieveHospitalListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrieveHospitalListQuery, Types.RetrieveHospitalListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.RetrieveHospitalListQuery, Types.RetrieveHospitalListQueryVariables>(RetrieveHospitalListDocument, options);
+        }
+export function useRetrieveHospitalListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrieveHospitalListQuery, Types.RetrieveHospitalListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.RetrieveHospitalListQuery, Types.RetrieveHospitalListQueryVariables>(RetrieveHospitalListDocument, options);
+        }
+export type RetrieveHospitalListQueryHookResult = ReturnType<typeof useRetrieveHospitalListQuery>;
+export type RetrieveHospitalListLazyQueryHookResult = ReturnType<typeof useRetrieveHospitalListLazyQuery>;
+export type RetrieveHospitalListSuspenseQueryHookResult = ReturnType<typeof useRetrieveHospitalListSuspenseQuery>;
+export type RetrieveHospitalListQueryResult = Apollo.QueryResult<Types.RetrieveHospitalListQuery, Types.RetrieveHospitalListQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -272,3 +320,99 @@ export type RetrievePendingUsersQueryHookResult = ReturnType<typeof useRetrieveP
 export type RetrievePendingUsersLazyQueryHookResult = ReturnType<typeof useRetrievePendingUsersLazyQuery>;
 export type RetrievePendingUsersSuspenseQueryHookResult = ReturnType<typeof useRetrievePendingUsersSuspenseQuery>;
 export type RetrievePendingUsersQueryResult = Apollo.QueryResult<Types.RetrievePendingUsersQuery, Types.RetrievePendingUsersQueryVariables>;
+export const RetrieveUserListDocument = gql`
+    query RetrieveUserList($page: Int = 1, $pageSize: Int = 10, $role: UserRole!, $state: CommonState!) {
+  superOnlyRetrieveUserList(
+    page: $page
+    pageSize: $pageSize
+    role: $role
+    state: $state
+  ) {
+    success
+    pageInfo {
+      currentPage
+      hasPreviousPage
+      hasNextPage
+      total
+      totalPages
+    }
+    data {
+      id
+      email
+      username
+      state
+      role
+    }
+  }
+}
+    `;
+
+/**
+ * __useRetrieveUserListQuery__
+ *
+ * To run a query within a React component, call `useRetrieveUserListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRetrieveUserListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRetrieveUserListQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      pageSize: // value for 'pageSize'
+ *      role: // value for 'role'
+ *      state: // value for 'state'
+ *   },
+ * });
+ */
+export function useRetrieveUserListQuery(baseOptions: Apollo.QueryHookOptions<Types.RetrieveUserListQuery, Types.RetrieveUserListQueryVariables> & ({ variables: Types.RetrieveUserListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.RetrieveUserListQuery, Types.RetrieveUserListQueryVariables>(RetrieveUserListDocument, options);
+      }
+export function useRetrieveUserListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrieveUserListQuery, Types.RetrieveUserListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.RetrieveUserListQuery, Types.RetrieveUserListQueryVariables>(RetrieveUserListDocument, options);
+        }
+export function useRetrieveUserListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrieveUserListQuery, Types.RetrieveUserListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.RetrieveUserListQuery, Types.RetrieveUserListQueryVariables>(RetrieveUserListDocument, options);
+        }
+export type RetrieveUserListQueryHookResult = ReturnType<typeof useRetrieveUserListQuery>;
+export type RetrieveUserListLazyQueryHookResult = ReturnType<typeof useRetrieveUserListLazyQuery>;
+export type RetrieveUserListSuspenseQueryHookResult = ReturnType<typeof useRetrieveUserListSuspenseQuery>;
+export type RetrieveUserListQueryResult = Apollo.QueryResult<Types.RetrieveUserListQuery, Types.RetrieveUserListQueryVariables>;
+export const UpdateManyUserStatusDocument = gql`
+    mutation UpdateManyUserStatus($input: UpdateManyUserStatusInput!) {
+  superOnlyUpdateManyUserStatus(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateManyUserStatusMutationFn = Apollo.MutationFunction<Types.UpdateManyUserStatusMutation, Types.UpdateManyUserStatusMutationVariables>;
+
+/**
+ * __useUpdateManyUserStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateManyUserStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateManyUserStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateManyUserStatusMutation, { data, loading, error }] = useUpdateManyUserStatusMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateManyUserStatusMutation(baseOptions?: Apollo.MutationHookOptions<Types.UpdateManyUserStatusMutation, Types.UpdateManyUserStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UpdateManyUserStatusMutation, Types.UpdateManyUserStatusMutationVariables>(UpdateManyUserStatusDocument, options);
+      }
+export type UpdateManyUserStatusMutationHookResult = ReturnType<typeof useUpdateManyUserStatusMutation>;
+export type UpdateManyUserStatusMutationResult = Apollo.MutationResult<Types.UpdateManyUserStatusMutation>;
+export type UpdateManyUserStatusMutationOptions = Apollo.BaseMutationOptions<Types.UpdateManyUserStatusMutation, Types.UpdateManyUserStatusMutationVariables>;
