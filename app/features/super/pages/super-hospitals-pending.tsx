@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { useLoaderData } from 'react-router';
-import { useQuery, useMutation } from '@apollo/client';
 import {
   RETRIEVE_CREATE_HOSPITAL_REQUEST_QUERY,
-  GET_HOSPITAL_INFO_QUERY,
-  ACCEPT_CREATE_HOSPITAL_REQUEST_MUTATION,
-  DENY_CREATE_HOSPITAL_REQUEST_MUTATION,
 } from '~/graphql/queries';
 import {
   Table,
@@ -61,12 +57,14 @@ export default function SuperHospitalsPendingPage() {
   // 승인/거절 mutation
   const [accept, { loading: acceptLoading }] = useAcceptCreateHospitalRequestMutation({
     onCompleted: (res) => {
+        console.log(res);
       if (res.acceptCreateHospitalRequest.success) {
         toast.success('승인되었습니다.');
         setOpen(false);
-        window.location.reload();
+        setTimeout(() => window.location.reload(), 500);
       } else {
         toast.error(res.acceptCreateHospitalRequest.message || '승인 실패');
+        setOpen(false);
       }
     },
   });
@@ -75,9 +73,10 @@ export default function SuperHospitalsPendingPage() {
       if (res.denyCreateHospitalRequest.success) {
         toast.success('거절되었습니다.');
         setOpen(false);
-        window.location.reload();
+        setTimeout(() => window.location.reload(), 500);
       } else {
         toast.error(res.denyCreateHospitalRequest.message || '거절 실패');
+        setOpen(false);
       }
     },
   });
@@ -173,7 +172,7 @@ export default function SuperHospitalsPendingPage() {
             <SubmitButton
               loading={acceptLoading}
               onClick={() =>
-                accept({ variables: { requestId: selected?.requestId ?? 0 } })
+                accept({ variables: { requestId: Number(selected?.requestId) } })
               }
               disabled={acceptLoading || denyLoading}
             >
@@ -182,7 +181,7 @@ export default function SuperHospitalsPendingPage() {
             <Button
               variant="destructive"
               onClick={() =>
-                deny({ variables: { requestId: selected?.requestId ?? 0 } })
+                deny({ variables: { requestId: Number(selected?.requestId) } })
               }
               disabled={acceptLoading || denyLoading}
             >
