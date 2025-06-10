@@ -9,7 +9,7 @@ import {
 } from '~/components/ui/table';
 import { Badge } from '~/components/ui/badge';
 import { serverApolloClient } from '~/lib/apollo-client-server';
-import { Route } from './+types/users-pending';
+import { Route } from './+types/super-users-pending';
 import { RETRIEVE_PENDING_USERS_QUERY } from '~/graphql/queries';
 import { RetrievePendingUsersQuery, CommonState } from '~/graphql/types';
 import { useApolloClient } from '@apollo/client';

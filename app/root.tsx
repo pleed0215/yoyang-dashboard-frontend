@@ -27,6 +27,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+      <link rel="preload" as="font" type="font/woff2" href="/fonts/d2coding.woff2" crossOrigin="anonymous" />
+      <link rel="preload" as="font" type="font/woff2" href="/fonts/d2coding-bold.woff2" crossOrigin="anonymous" />
         <title></title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -99,8 +101,7 @@ export default function App() {
         </main>
       </ThemeProvider>
     </ApolloProvider>
-  );
-}
+  );}
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = 'Oops!';

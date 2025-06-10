@@ -10,8 +10,12 @@ export default [
     ...prefix('/super', [
       index('features/super/pages/super-index.tsx'),
       ...prefix('/users', [
-        index('features/super/pages/users-index.tsx'),
-        route('/pending', 'features/super/pages/users-pending.tsx'),
+        index('features/super/pages/super-users-index.tsx'),
+        route('/pending', 'features/super/pages/super-users-pending.tsx'),
+      ]),
+      ...prefix('/hospitals', [
+        index('features/super/pages/super-hospitals-index.tsx'),
+        route('/pending', 'features/super/pages/super-hospitals-pending.tsx'),
       ]),
     ]),
     ...prefix('/staff', [

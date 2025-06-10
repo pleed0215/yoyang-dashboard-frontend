@@ -131,3 +131,87 @@ export const UPDATE_MANY_USER_STATUS_MUTATION = gql`
     }
   }
 `;
+
+export const RETRIEVE_CREATE_HOSPITAL_REQUEST_QUERY = gql`
+  query RetrieveCreateHospitalRequest($page: Int = 1, $pageSize: Int = 10) {
+    retrieveCreateHospitalRequest(page: $page, pageSize: $pageSize) {
+      success
+      message
+      pageInfo {
+        currentPage
+        hasNextPage
+        hasPreviousPage
+        total
+        totalPages
+      }
+      data {
+        id
+        userId
+        ykiho
+        state
+      }
+    }
+  }
+`;
+
+export const ACCEPT_CREATE_HOSPITAL_REQUEST_MUTATION = gql`
+  mutation AcceptCreateHospitalRequest($requestId: Int!) {
+    acceptCreateHospitalRequest(requestId: $requestId) {
+      success
+      message
+    }
+  }
+`;
+
+export const DENY_CREATE_HOSPITAL_REQUEST_MUTATION = gql`
+  mutation DenyCreateHospitalRequest($requestId: Int!) {
+    denyCreateHospitalRequest(requestId: $requestId) {
+      success
+      message
+    }
+  }
+`;
+
+export const CREATE_HOSPITAL_REQUEST_MUTATION = gql`
+  mutation RequestCreateHospital($ykiho: String!) {
+    requestCreateHospital(ykiho: $ykiho) {
+      success
+      message
+      data {
+        id
+        ykiho
+        state
+      }
+    }
+  }
+`;
+
+export const GET_REQUEST_HOSPITAL_QUERY = gql`
+  query GetRequestHospital($ykiho: String!) {
+    getRegisterRequest(ykiho: $ykiho) {
+      success
+      message
+      data {
+        id
+        ykiho
+        state
+      }
+    }
+  }
+`;
+
+export const GET_HOSPITAL_INFO_QUERY = gql`
+  query GetHospitalInfo($ykiho: String!) {
+    getHospitalInfoByYkiho(ykiho: $ykiho) {
+      success
+      message
+      data {
+        ykiho
+        name
+        addr
+        telno
+        located
+      }
+    }
+  }
+`;

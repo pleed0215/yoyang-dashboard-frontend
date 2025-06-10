@@ -1,5 +1,5 @@
-import { gql, useApolloClient } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { gql, useApolloClient } from '@apollo/client';
+import { useEffect, useState } from 'react';
 import { useLoaderData, useParams } from 'react-router';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Button } from '~/components/ui/button';
@@ -9,57 +9,10 @@ import { toast } from 'sonner';
 import { serverApolloClient } from '~/lib/apollo-client-server';
 import { contextWithToken } from '~/lib/apollo';
 import { SubmitButton } from '~/components/common/submit-button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from '~/components/ui/table';
+import { Table, TableBody, TableCell, TableRow } from '~/components/ui/table';
 import { stateLabel } from '~/lib/enum-mapping';
+import { GET_REQUEST_HOSPITAL_QUERY, GET_HOSPITAL_INFO_QUERY, CREATE_HOSPITAL_REQUEST_MUTATION } from '~/graphql/queries';
 
-const CREATE_HOSPITAL_REQUEST_MUTATION = gql`
-  mutation RequestCreateHospital($ykiho: String!) {
-    requestCreateHospital(ykiho: $ykiho) {
-      success
-      message
-      data {
-        id
-        ykiho
-        state
-      }
-    }
-  }
-`;
-
-const GET_REQUEST_HOSPITAL_QUERY = gql`
-  query GetRequestHospital($ykiho: String!) {
-    getRegisterRequest(ykiho: $ykiho) {
-      success
-      message
-      data {
-        id
-        ykiho
-        state
-      }
-    }
-  }
-`;
-
-const GET_HOSPITAL_INFO_QUERY = gql`
-  query GetHospitalInfo($ykiho: String!) {
-    getHospitalInfoByYkiho(ykiho: $ykiho) {
-      success
-      message
-      data {
-        ykiho
-        name
-        addr
-        telno
-        located
-      }
-    }
-  }
-`;
 
 export const loader = async ({ request, params }: any) => {
   const ykiho = params?.ykiho;
@@ -132,7 +85,9 @@ export default function StaffHospitalRequestPage() {
     <div className="flex min-h-screen items-center justify-center bg-neutral-50 dark:bg-neutral-950">
       <Card className="w-full max-w-md mx-auto">
         <CardHeader>
-          <CardTitle className="text-2xl font-semibold tracking-tight text-center">병원 등록 신청</CardTitle>
+          <CardTitle className="text-2xl font-semibold tracking-tight text-center">
+            병원 등록 신청
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {loaderData.mode === 'error' && loaderData.message && (
@@ -161,30 +116,49 @@ export default function StaffHospitalRequestPage() {
               <Table className="border border-border" style={{ width: 'auto' }}>
                 <TableBody>
                   <TableRow>
-                    <TableCell className="font-bold bg-muted border border-border w-24">병원명</TableCell>
-                    <TableCell className="border border-border pl-4">{loaderData.hospital.name}</TableCell>
+                    <TableCell className="font-bold bg-muted border border-border w-24">
+                      병원명
+                    </TableCell>
+                    <TableCell className="border border-border pl-4">
+                      {loaderData.hospital.name}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-bold bg-muted border border-border w-24">주소</TableCell>
-                    <TableCell className="border border-border pl-4 break-words whitespace-pre-line">{loaderData.hospital.addr}</TableCell>
+                    <TableCell className="font-bold bg-muted border border-border w-24">
+                      주소
+                    </TableCell>
+                    <TableCell className="border border-border pl-4 break-words whitespace-pre-line">
+                      {loaderData.hospital.addr}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-bold bg-muted border border-border w-24">전화번호</TableCell>
-                    <TableCell className="border border-border pl-4">{loaderData.hospital.telno}</TableCell>
+                    <TableCell className="font-bold bg-muted border border-border w-24">
+                      전화번호
+                    </TableCell>
+                    <TableCell className="border border-border pl-4">
+                      {loaderData.hospital.telno}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-bold bg-muted border border-border w-24">지역</TableCell>
-                    <TableCell className="border border-border pl-4">{loaderData.hospital.located || '-'}</TableCell>
+                    <TableCell className="font-bold bg-muted border border-border w-24">
+                      지역
+                    </TableCell>
+                    <TableCell className="border border-border pl-4">
+                      {loaderData.hospital.located || '-'}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
-              <SubmitButton onClick={handleRegisterRequest} loading={loading} className="w-full">등록 신청</SubmitButton>
+              <SubmitButton onClick={handleRegisterRequest} loading={loading} className="w-full">
+                등록 신청
+              </SubmitButton>
             </div>
           )}
-          <Button variant="secondary" onClick={() => window.history.back()} className="w-full mt-2">돌아가기</Button>
+          <Button variant="secondary" onClick={() => window.history.back()} className="w-full mt-2">
+            돌아가기
+          </Button>
         </CardContent>
       </Card>
     </div>
   );
 }
-

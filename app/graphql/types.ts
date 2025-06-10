@@ -136,8 +136,10 @@ export type LogoutOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptCreateHospitalRequest: CommonResponse;
   /** 요청된 병원 가입신청을 허가힙니다. ADMIN 유저 전용. */
   acceptJoinRequest: CommonResponse;
+  denyCreateHospitalRequest: CommonResponse;
   /** 요청된 가입신청을 거절합니다. ADMIN 전용 */
   denyJoinRequest: CommonResponse;
   /** 이메일과 비밀번호로 로그인합니다. */
@@ -156,8 +158,18 @@ export type Mutation = {
 };
 
 
+export type MutationAcceptCreateHospitalRequestArgs = {
+  requestId: Scalars['Int']['input'];
+};
+
+
 export type MutationAcceptJoinRequestArgs = {
   requestId: Scalars['Float']['input'];
+};
+
+
+export type MutationDenyCreateHospitalRequestArgs = {
+  requestId: Scalars['Int']['input'];
 };
 
 
@@ -222,6 +234,7 @@ export type Query = {
   getUserById: UserType;
   /** 현재 사용자의 프로필 데이터를 가져옵니다. 로그인 토큰 필수. */
   me: GetUserOutput;
+  retrieveCreateHospitalRequest: RetrieveCreateHospitalListOutput;
   retrieveHospitalList: RetrieveHospitalListOutput;
   /** ADMIN 유저의 병원 유저 목록을 받아옵니다. 로그인 필수. Pagination 가능. */
   retrieveStaff: RetrieveUserListOutput;
@@ -252,6 +265,12 @@ export type QueryGetRegisterRequestArgs = {
 
 export type QueryGetUserByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryRetrieveCreateHospitalRequestArgs = {
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
 };
 
 
@@ -294,6 +313,15 @@ export type RequestCreateHospitalOutput = {
   data?: Maybe<HospitalRegisterRequestType>;
   errors?: Maybe<Array<GraphQlError>>;
   message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type RetrieveCreateHospitalListOutput = {
+  __typename?: 'RetrieveCreateHospitalListOutput';
+  data?: Maybe<Array<HospitalRegisterRequestType>>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  pageInfo?: Maybe<PageInfo>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -385,27 +413,6 @@ export type RetrieveHospitalListQueryVariables = Exact<{
 
 export type RetrieveHospitalListQuery = { __typename?: 'Query', retrieveHospitalList: { __typename?: 'RetrieveHospitalListOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'BaseHospitalType', ykiho: string, name: string, telno: string, located: string, addr: string, registered: boolean }> | null } };
 
-export type RequestCreateHospitalMutationVariables = Exact<{
-  ykiho: Scalars['String']['input'];
-}>;
-
-
-export type RequestCreateHospitalMutation = { __typename?: 'Mutation', requestCreateHospital: { __typename?: 'RequestCreateHospitalOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalRegisterRequestType', id: string, ykiho: string, state: CommonState } | null } };
-
-export type GetRequestHospitalQueryVariables = Exact<{
-  ykiho: Scalars['String']['input'];
-}>;
-
-
-export type GetRequestHospitalQuery = { __typename?: 'Query', getRegisterRequest: { __typename?: 'RequestCreateHospitalOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalRegisterRequestType', id: string, ykiho: string, state: CommonState } | null } };
-
-export type GetHospitalInfoQueryVariables = Exact<{
-  ykiho: Scalars['String']['input'];
-}>;
-
-
-export type GetHospitalInfoQuery = { __typename?: 'Query', getHospitalInfoByYkiho: { __typename?: 'BaseHospitalInfoOutput', success: boolean, message?: string | null, data?: { __typename?: 'BaseHospitalType', ykiho: string, name: string, addr: string, telno: string, located: string } | null } };
-
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -463,3 +470,46 @@ export type UpdateManyUserStatusMutationVariables = Exact<{
 
 
 export type UpdateManyUserStatusMutation = { __typename?: 'Mutation', superOnlyUpdateManyUserStatus: { __typename?: 'CommonResponse', success: boolean, message?: string | null } };
+
+export type RetrieveCreateHospitalRequestQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type RetrieveCreateHospitalRequestQuery = { __typename?: 'Query', retrieveCreateHospitalRequest: { __typename?: 'RetrieveCreateHospitalListOutput', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'HospitalRegisterRequestType', id: string, userId: number, ykiho: string, state: CommonState }> | null } };
+
+export type AcceptCreateHospitalRequestMutationVariables = Exact<{
+  requestId: Scalars['Int']['input'];
+}>;
+
+
+export type AcceptCreateHospitalRequestMutation = { __typename?: 'Mutation', acceptCreateHospitalRequest: { __typename?: 'CommonResponse', success: boolean, message?: string | null } };
+
+export type DenyCreateHospitalRequestMutationVariables = Exact<{
+  requestId: Scalars['Int']['input'];
+}>;
+
+
+export type DenyCreateHospitalRequestMutation = { __typename?: 'Mutation', denyCreateHospitalRequest: { __typename?: 'CommonResponse', success: boolean, message?: string | null } };
+
+export type RequestCreateHospitalMutationVariables = Exact<{
+  ykiho: Scalars['String']['input'];
+}>;
+
+
+export type RequestCreateHospitalMutation = { __typename?: 'Mutation', requestCreateHospital: { __typename?: 'RequestCreateHospitalOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalRegisterRequestType', id: string, ykiho: string, state: CommonState } | null } };
+
+export type GetRequestHospitalQueryVariables = Exact<{
+  ykiho: Scalars['String']['input'];
+}>;
+
+
+export type GetRequestHospitalQuery = { __typename?: 'Query', getRegisterRequest: { __typename?: 'RequestCreateHospitalOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalRegisterRequestType', id: string, ykiho: string, state: CommonState } | null } };
+
+export type GetHospitalInfoQueryVariables = Exact<{
+  ykiho: Scalars['String']['input'];
+}>;
+
+
+export type GetHospitalInfoQuery = { __typename?: 'Query', getHospitalInfoByYkiho: { __typename?: 'BaseHospitalInfoOutput', success: boolean, message?: string | null, data?: { __typename?: 'BaseHospitalType', ykiho: string, name: string, addr: string, telno: string, located: string } | null } };
