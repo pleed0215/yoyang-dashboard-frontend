@@ -15,6 +15,7 @@ export const RetrieveHospitalListDocument = gql`
       telno
       located
       addr
+      registered
     }
   }
 }

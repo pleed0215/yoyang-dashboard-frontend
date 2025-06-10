@@ -20,6 +20,7 @@ export type BaseHospitalType = {
   addr: Scalars['String']['output'];
   located: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  registered: Scalars['Boolean']['output'];
   telno: Scalars['String']['output'];
   ykiho: Scalars['String']['output'];
 };
@@ -340,7 +341,7 @@ export type RetrieveHospitalListQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveHospitalListQuery = { __typename?: 'Query', retrieveHospitalList: { __typename?: 'RetrieveHospitalListOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'BaseHospitalType', ykiho: string, name: string, telno: string, located: string, addr: string }> | null } };
+export type RetrieveHospitalListQuery = { __typename?: 'Query', retrieveHospitalList: { __typename?: 'RetrieveHospitalListOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'BaseHospitalType', ykiho: string, name: string, telno: string, located: string, addr: string, registered: boolean }> | null } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 

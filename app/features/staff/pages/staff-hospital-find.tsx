@@ -44,6 +44,7 @@ const RETRIEVE_HOSPITAL_LIST_QUERY = gql`
         telno
         located
         addr
+        registered
       }
     }
   }
@@ -126,7 +127,8 @@ export default function StaffHospitalFindPage({ loaderData }: any) {
                 <TableHead>병원명</TableHead>
                 <TableHead>지역</TableHead>
                 <TableHead>전화번호</TableHead>
-                <TableHead>가입</TableHead>
+                <TableHead>등록 여부</TableHead>
+                <TableHead>액션</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -136,17 +138,18 @@ export default function StaffHospitalFindPage({ loaderData }: any) {
                     <TableCell>{hospital.name}</TableCell>
                     <TableCell>{hospital.located}</TableCell>
                     <TableCell>{hospital.telno}</TableCell>
+                    <TableCell>{hospital.registered ? '등록됨' : '미등록'}</TableCell>
                     <TableCell>
                       <Dialog open={dialogOpen === hospital.ykiho} onOpenChange={open => setDialogOpen(open ? hospital.ykiho : null)}>
                         <DialogTrigger asChild>
-                          <Button variant="outline">가입신청</Button>
+                          <Button variant="outline">{hospital.registered ? '가입신청' : '등록신청'}</Button>
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>병원 가입 신청</DialogTitle>
+                            <DialogTitle>병원 {hospital.registered ? '가입' : '등록'} 신청</DialogTitle>
                           </DialogHeader>
                           <DialogDescription>
-                            정말로 <b>{hospital.name}</b> 병원에 가입 신청하시겠습니까?
+                            정말로 <b>{hospital.name}</b> 병원에 {hospital.registered ? '가입' : '등록'} 신청하시겠습니까?
                           </DialogDescription>
                           <DialogFooter>
                             <DialogClose asChild>
@@ -161,7 +164,7 @@ export default function StaffHospitalFindPage({ loaderData }: any) {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center">검색 결과가 없습니다.</TableCell>
+                  <TableCell colSpan={5} className="text-center">검색 결과가 없습니다.</TableCell>
                 </TableRow>
               )}
             </TableBody>
