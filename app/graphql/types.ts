@@ -15,6 +15,14 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type BaseHospitalInfoOutput = {
+  __typename?: 'BaseHospitalInfoOutput';
+  data?: Maybe<BaseHospitalType>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type BaseHospitalType = {
   __typename?: 'BaseHospitalType';
   addr: Scalars['String']['output'];
@@ -92,6 +100,14 @@ export type HospitalJoinRequestType = {
   userId: Scalars['Int']['output'];
 };
 
+export type HospitalRegisterRequestType = {
+  __typename?: 'HospitalRegisterRequestType';
+  id: Scalars['ID']['output'];
+  state: CommonState;
+  userId: Scalars['Float']['output'];
+  ykiho: Scalars['String']['output'];
+};
+
 export type HospitalType = {
   __typename?: 'HospitalType';
   createdAt: Scalars['DateTime']['output'];
@@ -128,6 +144,7 @@ export type Mutation = {
   login: LoginOutput;
   /** 현재 로그인된 사용자를 로그아웃합니다. */
   logout: LogoutOutput;
+  requestCreateHospital: RequestCreateHospitalOutput;
   /** 회원 가입을 진행합니다. */
   signup: GetUserOutput;
   superOnlyUpdateManyUserStatus: CommonResponse;
@@ -152,6 +169,11 @@ export type MutationDenyJoinRequestArgs = {
 export type MutationLoginArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+
+export type MutationRequestCreateHospitalArgs = {
+  ykiho: Scalars['String']['input'];
 };
 
 
@@ -194,6 +216,8 @@ export type Query = {
   __typename?: 'Query';
   /** ADMIN 유저 전용. 병원에 가입 신청 목록을 가져옵니다. Pagination 가능. */
   adminOnlyRetrieveJoinRequestList: RetrieveJoinRequestOutput;
+  getHospitalInfoByYkiho: BaseHospitalInfoOutput;
+  getRegisterRequest: RequestCreateHospitalOutput;
   /** 테스트용 */
   getUserById: UserType;
   /** 현재 사용자의 프로필 데이터를 가져옵니다. 로그인 토큰 필수. */
@@ -213,6 +237,16 @@ export type Query = {
 export type QueryAdminOnlyRetrieveJoinRequestListArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
+};
+
+
+export type QueryGetHospitalInfoByYkihoArgs = {
+  ykiho: Scalars['String']['input'];
+};
+
+
+export type QueryGetRegisterRequestArgs = {
+  ykiho: Scalars['String']['input'];
 };
 
 
@@ -253,6 +287,14 @@ export type QuerySuperOnlyRetrieveUserListArgs = {
   pageSize?: Scalars['Int']['input'];
   role?: UserRole;
   state?: CommonState;
+};
+
+export type RequestCreateHospitalOutput = {
+  __typename?: 'RequestCreateHospitalOutput';
+  data?: Maybe<HospitalRegisterRequestType>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type RetrieveHospitalListOutput = {
@@ -342,6 +384,27 @@ export type RetrieveHospitalListQueryVariables = Exact<{
 
 
 export type RetrieveHospitalListQuery = { __typename?: 'Query', retrieveHospitalList: { __typename?: 'RetrieveHospitalListOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'BaseHospitalType', ykiho: string, name: string, telno: string, located: string, addr: string, registered: boolean }> | null } };
+
+export type RequestCreateHospitalMutationVariables = Exact<{
+  ykiho: Scalars['String']['input'];
+}>;
+
+
+export type RequestCreateHospitalMutation = { __typename?: 'Mutation', requestCreateHospital: { __typename?: 'RequestCreateHospitalOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalRegisterRequestType', id: string, ykiho: string, state: CommonState } | null } };
+
+export type GetRequestHospitalQueryVariables = Exact<{
+  ykiho: Scalars['String']['input'];
+}>;
+
+
+export type GetRequestHospitalQuery = { __typename?: 'Query', getRegisterRequest: { __typename?: 'RequestCreateHospitalOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalRegisterRequestType', id: string, ykiho: string, state: CommonState } | null } };
+
+export type GetHospitalInfoQueryVariables = Exact<{
+  ykiho: Scalars['String']['input'];
+}>;
+
+
+export type GetHospitalInfoQuery = { __typename?: 'Query', getHospitalInfoByYkiho: { __typename?: 'BaseHospitalInfoOutput', success: boolean, message?: string | null, data?: { __typename?: 'BaseHospitalType', ykiho: string, name: string, addr: string, telno: string, located: string } | null } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 

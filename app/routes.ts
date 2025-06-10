@@ -17,6 +17,7 @@ export default [
     ...prefix('/staff', [
       index('features/staff/pages/staff-dashboard-index.tsx'),
       route('/hospitals/search', 'features/staff/pages/staff-hospital-find.tsx'),
+      route('/hospitals/request/:ykiho', 'features/staff/pages/staff-hospital-request.tsx'),
     ]),
   ]),
 ] satisfies RouteConfig;

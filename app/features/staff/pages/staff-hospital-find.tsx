@@ -76,6 +76,7 @@ export default function StaffHospitalFindPage({ loaderData }: any) {
   const { data, apolloState } = loaderData ?? {};
   const apolloClient = useApolloClient();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState<string | null>(null);
 
   useEffect(() => {
@@ -140,25 +141,47 @@ export default function StaffHospitalFindPage({ loaderData }: any) {
                     <TableCell>{hospital.telno}</TableCell>
                     <TableCell>{hospital.registered ? '등록됨' : '미등록'}</TableCell>
                     <TableCell>
-                      <Dialog open={dialogOpen === hospital.ykiho} onOpenChange={open => setDialogOpen(open ? hospital.ykiho : null)}>
-                        <DialogTrigger asChild>
-                          <Button variant="outline">{hospital.registered ? '가입신청' : '등록신청'}</Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>병원 {hospital.registered ? '가입' : '등록'} 신청</DialogTitle>
-                          </DialogHeader>
-                          <DialogDescription>
-                            정말로 <b>{hospital.name}</b> 병원에 {hospital.registered ? '가입' : '등록'} 신청하시겠습니까?
-                          </DialogDescription>
-                          <DialogFooter>
-                            <DialogClose asChild>
-                              <Button variant="secondary">아니오</Button>
-                            </DialogClose>
-                            <Button variant="destructive">예</Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
+                      {hospital.registered ? (
+                        <Dialog open={dialogOpen === hospital.ykiho} onOpenChange={open => setDialogOpen(open ? hospital.ykiho : null)}>
+                          <DialogTrigger asChild>
+                            <Button variant="outline">가입신청</Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>병원 가입 신청</DialogTitle>
+                            </DialogHeader>
+                            <DialogDescription>
+                              정말로 <b>{hospital.name}</b>에 가입 신청하시겠습니까?
+                            </DialogDescription>
+                            <DialogFooter>
+                              <DialogClose asChild>
+                                <Button variant="secondary">아니오</Button>
+                              </DialogClose>
+                              <Button variant="destructive" onClick={() => { setDialogOpen(null); navigate(`/staff/hospitals/request/${hospital.ykiho}`); }}>예</Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      ) : (
+                        <Dialog open={dialogOpen === hospital.ykiho} onOpenChange={open => setDialogOpen(open ? hospital.ykiho : null)}>
+                          <DialogTrigger asChild>
+                            <Button variant="outline">등록신청</Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>병원 등록 신청</DialogTitle>
+                            </DialogHeader>
+                            <DialogDescription>
+                              정말로 <b>{hospital.name}</b>을(를) 등록 신청하시겠습니까?
+                            </DialogDescription>
+                            <DialogFooter>
+                              <DialogClose asChild>
+                                <Button variant="secondary">아니오</Button>
+                              </DialogClose>
+                              <Button variant="destructive" onClick={() => { setDialogOpen(null); navigate(`/staff/hospitals/request/${hospital.ykiho}`); }}>예</Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
