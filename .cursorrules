@@ -1,0 +1,3 @@
+graphql 추천은 schema.json을 참고하고 해주세요.
+stateBadgeVariant, stateLabel 등은 ~/lib/enum-mapping.ts에 있습니다. 참고하세요.
+pagination 구현시 ~/components/common/page-info.tsx를 참고하세요.
