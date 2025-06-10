@@ -1118,7 +1118,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "Float",
+                    "name": "Int",
                     "ofType": null
                   }
                 },
@@ -1184,7 +1184,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "Float",
+                    "name": "Int",
                     "ofType": null
                   }
                 },
@@ -1601,7 +1601,7 @@
         "isOneOf": null,
         "fields": [
           {
-            "name": "adminOnlyRetrieveJoinRequestList",
+            "name": "adminOnlyRetrieveJoinRequest",
             "description": "ADMIN 유저 전용. 병원에 가입 신청 목록을 가져옵니다. Pagination 가능.",
             "args": [
               {

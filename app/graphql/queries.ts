@@ -215,3 +215,46 @@ export const GET_HOSPITAL_INFO_QUERY = gql`
     }
   }
 `;
+
+export const RETRIEVE_JOIN_REQUEST_QUERY = gql`
+  query RetrieveJoinRequest($page: Int = 1, $pageSize: Int = 10) {
+    adminOnlyRetrieveJoinRequest(page: $page, pageSize: $pageSize) {
+      success
+      message
+      pageInfo {
+        currentPage
+        hasNextPage
+        hasPreviousPage
+        total
+        totalPages
+      }
+      data {
+        id
+        user {
+          id
+          username
+          email
+        }
+      }
+    }
+  }
+`;
+
+
+export const ACCEPT_JOIN_REQUEST_MUTATION = gql`
+  mutation AcceptJoinRequest($requestId: Int!) {
+    acceptJoinRequest(requestId: $requestId) {
+      success
+      message
+    }
+  }
+`;
+
+export const DENY_JOIN_REQUEST_MUTATION = gql`
+  mutation DenyJoinRequest($requestId: Int!) {
+    denyJoinRequest(requestId: $requestId) {
+      success
+      message
+    }
+  }
+`;

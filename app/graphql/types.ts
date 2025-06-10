@@ -164,7 +164,7 @@ export type MutationAcceptCreateHospitalRequestArgs = {
 
 
 export type MutationAcceptJoinRequestArgs = {
-  requestId: Scalars['Float']['input'];
+  requestId: Scalars['Int']['input'];
 };
 
 
@@ -174,7 +174,7 @@ export type MutationDenyCreateHospitalRequestArgs = {
 
 
 export type MutationDenyJoinRequestArgs = {
-  requestId: Scalars['Float']['input'];
+  requestId: Scalars['Int']['input'];
 };
 
 
@@ -227,7 +227,7 @@ export type PageInfo = {
 export type Query = {
   __typename?: 'Query';
   /** ADMIN 유저 전용. 병원에 가입 신청 목록을 가져옵니다. Pagination 가능. */
-  adminOnlyRetrieveJoinRequestList: RetrieveJoinRequestOutput;
+  adminOnlyRetrieveJoinRequest: RetrieveJoinRequestOutput;
   getHospitalInfoByYkiho: BaseHospitalInfoOutput;
   getRegisterRequest: RequestCreateHospitalOutput;
   /** 테스트용 */
@@ -247,7 +247,7 @@ export type Query = {
 };
 
 
-export type QueryAdminOnlyRetrieveJoinRequestListArgs = {
+export type QueryAdminOnlyRetrieveJoinRequestArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
 };
@@ -513,3 +513,25 @@ export type GetHospitalInfoQueryVariables = Exact<{
 
 
 export type GetHospitalInfoQuery = { __typename?: 'Query', getHospitalInfoByYkiho: { __typename?: 'BaseHospitalInfoOutput', success: boolean, message?: string | null, data?: { __typename?: 'BaseHospitalType', ykiho: string, name: string, addr: string, telno: string, located: string } | null } };
+
+export type RetrieveJoinRequestQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type RetrieveJoinRequestQuery = { __typename?: 'Query', adminOnlyRetrieveJoinRequest: { __typename?: 'RetrieveJoinRequestOutput', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'HospitalJoinRequestType', id: string, user: { __typename?: 'UserType', id: string, username: string, email: string } }> | null } };
+
+export type AcceptJoinRequestMutationVariables = Exact<{
+  requestId: Scalars['Int']['input'];
+}>;
+
+
+export type AcceptJoinRequestMutation = { __typename?: 'Mutation', acceptJoinRequest: { __typename?: 'CommonResponse', success: boolean, message?: string | null } };
+
+export type DenyJoinRequestMutationVariables = Exact<{
+  requestId: Scalars['Int']['input'];
+}>;
+
+
+export type DenyJoinRequestMutation = { __typename?: 'Mutation', denyJoinRequest: { __typename?: 'CommonResponse', success: boolean, message?: string | null } };

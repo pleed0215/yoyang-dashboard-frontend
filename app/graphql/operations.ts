@@ -673,3 +673,128 @@ export type GetHospitalInfoQueryHookResult = ReturnType<typeof useGetHospitalInf
 export type GetHospitalInfoLazyQueryHookResult = ReturnType<typeof useGetHospitalInfoLazyQuery>;
 export type GetHospitalInfoSuspenseQueryHookResult = ReturnType<typeof useGetHospitalInfoSuspenseQuery>;
 export type GetHospitalInfoQueryResult = Apollo.QueryResult<Types.GetHospitalInfoQuery, Types.GetHospitalInfoQueryVariables>;
+export const RetrieveJoinRequestDocument = gql`
+    query RetrieveJoinRequest($page: Int = 1, $pageSize: Int = 10) {
+  adminOnlyRetrieveJoinRequest(page: $page, pageSize: $pageSize) {
+    success
+    message
+    pageInfo {
+      currentPage
+      hasNextPage
+      hasPreviousPage
+      total
+      totalPages
+    }
+    data {
+      id
+      user {
+        id
+        username
+        email
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useRetrieveJoinRequestQuery__
+ *
+ * To run a query within a React component, call `useRetrieveJoinRequestQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRetrieveJoinRequestQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRetrieveJoinRequestQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      pageSize: // value for 'pageSize'
+ *   },
+ * });
+ */
+export function useRetrieveJoinRequestQuery(baseOptions?: Apollo.QueryHookOptions<Types.RetrieveJoinRequestQuery, Types.RetrieveJoinRequestQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.RetrieveJoinRequestQuery, Types.RetrieveJoinRequestQueryVariables>(RetrieveJoinRequestDocument, options);
+      }
+export function useRetrieveJoinRequestLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrieveJoinRequestQuery, Types.RetrieveJoinRequestQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.RetrieveJoinRequestQuery, Types.RetrieveJoinRequestQueryVariables>(RetrieveJoinRequestDocument, options);
+        }
+export function useRetrieveJoinRequestSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrieveJoinRequestQuery, Types.RetrieveJoinRequestQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.RetrieveJoinRequestQuery, Types.RetrieveJoinRequestQueryVariables>(RetrieveJoinRequestDocument, options);
+        }
+export type RetrieveJoinRequestQueryHookResult = ReturnType<typeof useRetrieveJoinRequestQuery>;
+export type RetrieveJoinRequestLazyQueryHookResult = ReturnType<typeof useRetrieveJoinRequestLazyQuery>;
+export type RetrieveJoinRequestSuspenseQueryHookResult = ReturnType<typeof useRetrieveJoinRequestSuspenseQuery>;
+export type RetrieveJoinRequestQueryResult = Apollo.QueryResult<Types.RetrieveJoinRequestQuery, Types.RetrieveJoinRequestQueryVariables>;
+export const AcceptJoinRequestDocument = gql`
+    mutation AcceptJoinRequest($requestId: Int!) {
+  acceptJoinRequest(requestId: $requestId) {
+    success
+    message
+  }
+}
+    `;
+export type AcceptJoinRequestMutationFn = Apollo.MutationFunction<Types.AcceptJoinRequestMutation, Types.AcceptJoinRequestMutationVariables>;
+
+/**
+ * __useAcceptJoinRequestMutation__
+ *
+ * To run a mutation, you first call `useAcceptJoinRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptJoinRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptJoinRequestMutation, { data, loading, error }] = useAcceptJoinRequestMutation({
+ *   variables: {
+ *      requestId: // value for 'requestId'
+ *   },
+ * });
+ */
+export function useAcceptJoinRequestMutation(baseOptions?: Apollo.MutationHookOptions<Types.AcceptJoinRequestMutation, Types.AcceptJoinRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.AcceptJoinRequestMutation, Types.AcceptJoinRequestMutationVariables>(AcceptJoinRequestDocument, options);
+      }
+export type AcceptJoinRequestMutationHookResult = ReturnType<typeof useAcceptJoinRequestMutation>;
+export type AcceptJoinRequestMutationResult = Apollo.MutationResult<Types.AcceptJoinRequestMutation>;
+export type AcceptJoinRequestMutationOptions = Apollo.BaseMutationOptions<Types.AcceptJoinRequestMutation, Types.AcceptJoinRequestMutationVariables>;
+export const DenyJoinRequestDocument = gql`
+    mutation DenyJoinRequest($requestId: Int!) {
+  denyJoinRequest(requestId: $requestId) {
+    success
+    message
+  }
+}
+    `;
+export type DenyJoinRequestMutationFn = Apollo.MutationFunction<Types.DenyJoinRequestMutation, Types.DenyJoinRequestMutationVariables>;
+
+/**
+ * __useDenyJoinRequestMutation__
+ *
+ * To run a mutation, you first call `useDenyJoinRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDenyJoinRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [denyJoinRequestMutation, { data, loading, error }] = useDenyJoinRequestMutation({
+ *   variables: {
+ *      requestId: // value for 'requestId'
+ *   },
+ * });
+ */
+export function useDenyJoinRequestMutation(baseOptions?: Apollo.MutationHookOptions<Types.DenyJoinRequestMutation, Types.DenyJoinRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.DenyJoinRequestMutation, Types.DenyJoinRequestMutationVariables>(DenyJoinRequestDocument, options);
+      }
+export type DenyJoinRequestMutationHookResult = ReturnType<typeof useDenyJoinRequestMutation>;
+export type DenyJoinRequestMutationResult = Apollo.MutationResult<Types.DenyJoinRequestMutation>;
+export type DenyJoinRequestMutationOptions = Apollo.BaseMutationOptions<Types.DenyJoinRequestMutation, Types.DenyJoinRequestMutationVariables>;

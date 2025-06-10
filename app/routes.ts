@@ -23,5 +23,16 @@ export default [
       route('/hospitals/search', 'features/staff/pages/staff-hospital-find.tsx'),
       route('/hospitals/request/:ykiho', 'features/staff/pages/staff-hospital-request.tsx'),
     ]),
+    ...prefix('/admin', [
+      index('features/admin/pages/admin-dashboard-index.tsx'),
+      ...prefix('/users', [
+        index('features/admin/pages/admin-users-index.tsx'),
+        route('/pending', 'features/admin/pages/admin-users-pending.tsx'),
+      ]),
+      ...prefix('/hospitals', [
+        index('features/admin/pages/admin-hospital-index.tsx'),
+
+      ]),
+    ]),
   ]),
 ] satisfies RouteConfig;
