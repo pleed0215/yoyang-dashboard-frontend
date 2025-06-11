@@ -5,7 +5,7 @@ export const stateBadgeVariant: Record<
   'default' | 'warning' | 'secondary' | 'destructive'
 > = {
   [CommonState.Active]: 'default',
-  [CommonState.Pending]: 'warning',
+  [CommonState.Pending]: 'secondary',
   [CommonState.Denied]: 'destructive',
   [CommonState.Inactive]: 'secondary',
   [CommonState.Accepted]: 'default',

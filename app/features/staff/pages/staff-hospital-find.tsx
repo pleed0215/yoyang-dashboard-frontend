@@ -157,7 +157,7 @@ export default function StaffHospitalFindPage({ loaderData }: any) {
                               <DialogClose asChild>
                                 <Button variant="secondary">아니오</Button>
                               </DialogClose>
-                              <Button variant="destructive" onClick={() => { setDialogOpen(null); navigate(`/staff/hospitals/request/${hospital.ykiho}`); }}>예</Button>
+                              <Button variant="destructive" onClick={() => { setDialogOpen(null); navigate(`/staff/hospitals/join-request/${hospital.ykiho}`); }}>예</Button>
                             </DialogFooter>
                           </DialogContent>
                         </Dialog>

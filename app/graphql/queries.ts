@@ -258,3 +258,57 @@ export const DENY_JOIN_REQUEST_MUTATION = gql`
     }
   }
 `;
+
+export const GET_HOSPITAL_BY_YKIHO_QUERY = gql`
+  query GetHospitalByYkiho($ykiho: String!) {
+    getHospitalByYkiho(ykiho: $ykiho) {
+      success
+      message
+      data {
+        id
+        name
+        located
+      }
+    }
+  }
+`;
+
+export const REQUEST_JOIN_HOSPITAL_MUTATION = gql`
+  mutation RequestJoinHospital($hospitalId: Int!) {
+    requestJoinHospital(hospitalId: $hospitalId) {
+      success
+      message
+      data {
+        id
+        state
+      }
+    }
+  }
+`;
+
+export const GET_JOIN_REQUEST_BY_CURRENT_USER_QUERY = gql`
+  query GetJoinRequestByCurrentUser {
+    getJoinRequestByCurrentUser {
+      success
+      message
+      data {
+        id
+        state
+        hospital {
+          name
+          located
+          state
+        }
+      }
+    }
+  }
+`;
+
+export const DELETE_JOIN_REQUEST_FOR_CURRENT_USER_MUTATION = gql`
+    mutation DeleteJoinRequestForCurrentUser {
+      deleteJoinRequestForCurrentUser {
+        success
+        message
+      }
+    }
+`;

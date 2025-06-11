@@ -97,7 +97,7 @@ export const roleBasedMenus: RoleBasedMenus = {
           },
           {
             title: '신청 상태',
-            path: '/staff/hospitals/application',
+            path: '/staff/hospitals/pending',
             icon: Clock,
           },
         ],

@@ -72,6 +72,14 @@ export type ErrorDetail = {
   value?: Maybe<Scalars['String']['output']>;
 };
 
+export type GetHospitalInfoByYkihoOutput = {
+  __typename?: 'GetHospitalInfoByYkihoOutput';
+  data?: Maybe<HospitalType>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type GetUserOutput = {
   __typename?: 'GetUserOutput';
   data?: Maybe<UserType>;
@@ -119,6 +127,14 @@ export type HospitalType = {
   ykiho: Scalars['String']['output'];
 };
 
+export type JoinHospitalRequestOutput = {
+  __typename?: 'JoinHospitalRequestOutput';
+  data?: Maybe<HospitalJoinRequestType>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type LoginOutput = {
   __typename?: 'LoginOutput';
   data?: Maybe<TokenOutput>;
@@ -139,6 +155,7 @@ export type Mutation = {
   acceptCreateHospitalRequest: CommonResponse;
   /** 요청된 병원 가입신청을 허가힙니다. ADMIN 유저 전용. */
   acceptJoinRequest: CommonResponse;
+  deleteJoinRequestForCurrentUser: CommonResponse;
   denyCreateHospitalRequest: CommonResponse;
   /** 요청된 가입신청을 거절합니다. ADMIN 전용 */
   denyJoinRequest: CommonResponse;
@@ -147,6 +164,7 @@ export type Mutation = {
   /** 현재 로그인된 사용자를 로그아웃합니다. */
   logout: LogoutOutput;
   requestCreateHospital: RequestCreateHospitalOutput;
+  requestJoinHospital: JoinHospitalRequestOutput;
   /** 회원 가입을 진행합니다. */
   signup: GetUserOutput;
   superOnlyUpdateManyUserStatus: CommonResponse;
@@ -189,6 +207,11 @@ export type MutationRequestCreateHospitalArgs = {
 };
 
 
+export type MutationRequestJoinHospitalArgs = {
+  hospitalId: Scalars['Int']['input'];
+};
+
+
 export type MutationSignupArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -228,7 +251,9 @@ export type Query = {
   __typename?: 'Query';
   /** ADMIN 유저 전용. 병원에 가입 신청 목록을 가져옵니다. Pagination 가능. */
   adminOnlyRetrieveJoinRequest: RetrieveJoinRequestOutput;
+  getHospitalByYkiho: GetHospitalInfoByYkihoOutput;
   getHospitalInfoByYkiho: BaseHospitalInfoOutput;
+  getJoinRequestByCurrentUser: JoinHospitalRequestOutput;
   getRegisterRequest: RequestCreateHospitalOutput;
   /** 테스트용 */
   getUserById: UserType;
@@ -250,6 +275,11 @@ export type Query = {
 export type QueryAdminOnlyRetrieveJoinRequestArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
+};
+
+
+export type QueryGetHospitalByYkihoArgs = {
+  ykiho: Scalars['String']['input'];
 };
 
 
@@ -535,3 +565,27 @@ export type DenyJoinRequestMutationVariables = Exact<{
 
 
 export type DenyJoinRequestMutation = { __typename?: 'Mutation', denyJoinRequest: { __typename?: 'CommonResponse', success: boolean, message?: string | null } };
+
+export type GetHospitalByYkihoQueryVariables = Exact<{
+  ykiho: Scalars['String']['input'];
+}>;
+
+
+export type GetHospitalByYkihoQuery = { __typename?: 'Query', getHospitalByYkiho: { __typename?: 'GetHospitalInfoByYkihoOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalType', id: string, name: string, located?: string | null } | null } };
+
+export type RequestJoinHospitalMutationVariables = Exact<{
+  hospitalId: Scalars['Int']['input'];
+}>;
+
+
+export type RequestJoinHospitalMutation = { __typename?: 'Mutation', requestJoinHospital: { __typename?: 'JoinHospitalRequestOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalJoinRequestType', id: string, state: CommonState } | null } };
+
+export type GetJoinRequestByCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetJoinRequestByCurrentUserQuery = { __typename?: 'Query', getJoinRequestByCurrentUser: { __typename?: 'JoinHospitalRequestOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalJoinRequestType', id: string, state: CommonState, hospital: { __typename?: 'HospitalType', name: string, located?: string | null, state: CommonState } } | null } };
+
+export type DeleteJoinRequestForCurrentUserMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeleteJoinRequestForCurrentUserMutation = { __typename?: 'Mutation', deleteJoinRequestForCurrentUser: { __typename?: 'CommonResponse', success: boolean, message?: string | null } };

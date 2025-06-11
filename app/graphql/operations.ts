@@ -798,3 +798,169 @@ export function useDenyJoinRequestMutation(baseOptions?: Apollo.MutationHookOpti
 export type DenyJoinRequestMutationHookResult = ReturnType<typeof useDenyJoinRequestMutation>;
 export type DenyJoinRequestMutationResult = Apollo.MutationResult<Types.DenyJoinRequestMutation>;
 export type DenyJoinRequestMutationOptions = Apollo.BaseMutationOptions<Types.DenyJoinRequestMutation, Types.DenyJoinRequestMutationVariables>;
+export const GetHospitalByYkihoDocument = gql`
+    query GetHospitalByYkiho($ykiho: String!) {
+  getHospitalByYkiho(ykiho: $ykiho) {
+    success
+    message
+    data {
+      id
+      name
+      located
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetHospitalByYkihoQuery__
+ *
+ * To run a query within a React component, call `useGetHospitalByYkihoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHospitalByYkihoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetHospitalByYkihoQuery({
+ *   variables: {
+ *      ykiho: // value for 'ykiho'
+ *   },
+ * });
+ */
+export function useGetHospitalByYkihoQuery(baseOptions: Apollo.QueryHookOptions<Types.GetHospitalByYkihoQuery, Types.GetHospitalByYkihoQueryVariables> & ({ variables: Types.GetHospitalByYkihoQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetHospitalByYkihoQuery, Types.GetHospitalByYkihoQueryVariables>(GetHospitalByYkihoDocument, options);
+      }
+export function useGetHospitalByYkihoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetHospitalByYkihoQuery, Types.GetHospitalByYkihoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetHospitalByYkihoQuery, Types.GetHospitalByYkihoQueryVariables>(GetHospitalByYkihoDocument, options);
+        }
+export function useGetHospitalByYkihoSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetHospitalByYkihoQuery, Types.GetHospitalByYkihoQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetHospitalByYkihoQuery, Types.GetHospitalByYkihoQueryVariables>(GetHospitalByYkihoDocument, options);
+        }
+export type GetHospitalByYkihoQueryHookResult = ReturnType<typeof useGetHospitalByYkihoQuery>;
+export type GetHospitalByYkihoLazyQueryHookResult = ReturnType<typeof useGetHospitalByYkihoLazyQuery>;
+export type GetHospitalByYkihoSuspenseQueryHookResult = ReturnType<typeof useGetHospitalByYkihoSuspenseQuery>;
+export type GetHospitalByYkihoQueryResult = Apollo.QueryResult<Types.GetHospitalByYkihoQuery, Types.GetHospitalByYkihoQueryVariables>;
+export const RequestJoinHospitalDocument = gql`
+    mutation RequestJoinHospital($hospitalId: Int!) {
+  requestJoinHospital(hospitalId: $hospitalId) {
+    success
+    message
+    data {
+      id
+      state
+    }
+  }
+}
+    `;
+export type RequestJoinHospitalMutationFn = Apollo.MutationFunction<Types.RequestJoinHospitalMutation, Types.RequestJoinHospitalMutationVariables>;
+
+/**
+ * __useRequestJoinHospitalMutation__
+ *
+ * To run a mutation, you first call `useRequestJoinHospitalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRequestJoinHospitalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [requestJoinHospitalMutation, { data, loading, error }] = useRequestJoinHospitalMutation({
+ *   variables: {
+ *      hospitalId: // value for 'hospitalId'
+ *   },
+ * });
+ */
+export function useRequestJoinHospitalMutation(baseOptions?: Apollo.MutationHookOptions<Types.RequestJoinHospitalMutation, Types.RequestJoinHospitalMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.RequestJoinHospitalMutation, Types.RequestJoinHospitalMutationVariables>(RequestJoinHospitalDocument, options);
+      }
+export type RequestJoinHospitalMutationHookResult = ReturnType<typeof useRequestJoinHospitalMutation>;
+export type RequestJoinHospitalMutationResult = Apollo.MutationResult<Types.RequestJoinHospitalMutation>;
+export type RequestJoinHospitalMutationOptions = Apollo.BaseMutationOptions<Types.RequestJoinHospitalMutation, Types.RequestJoinHospitalMutationVariables>;
+export const GetJoinRequestByCurrentUserDocument = gql`
+    query GetJoinRequestByCurrentUser {
+  getJoinRequestByCurrentUser {
+    success
+    message
+    data {
+      id
+      state
+      hospital {
+        name
+        located
+        state
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetJoinRequestByCurrentUserQuery__
+ *
+ * To run a query within a React component, call `useGetJoinRequestByCurrentUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetJoinRequestByCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetJoinRequestByCurrentUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetJoinRequestByCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<Types.GetJoinRequestByCurrentUserQuery, Types.GetJoinRequestByCurrentUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetJoinRequestByCurrentUserQuery, Types.GetJoinRequestByCurrentUserQueryVariables>(GetJoinRequestByCurrentUserDocument, options);
+      }
+export function useGetJoinRequestByCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetJoinRequestByCurrentUserQuery, Types.GetJoinRequestByCurrentUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetJoinRequestByCurrentUserQuery, Types.GetJoinRequestByCurrentUserQueryVariables>(GetJoinRequestByCurrentUserDocument, options);
+        }
+export function useGetJoinRequestByCurrentUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetJoinRequestByCurrentUserQuery, Types.GetJoinRequestByCurrentUserQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetJoinRequestByCurrentUserQuery, Types.GetJoinRequestByCurrentUserQueryVariables>(GetJoinRequestByCurrentUserDocument, options);
+        }
+export type GetJoinRequestByCurrentUserQueryHookResult = ReturnType<typeof useGetJoinRequestByCurrentUserQuery>;
+export type GetJoinRequestByCurrentUserLazyQueryHookResult = ReturnType<typeof useGetJoinRequestByCurrentUserLazyQuery>;
+export type GetJoinRequestByCurrentUserSuspenseQueryHookResult = ReturnType<typeof useGetJoinRequestByCurrentUserSuspenseQuery>;
+export type GetJoinRequestByCurrentUserQueryResult = Apollo.QueryResult<Types.GetJoinRequestByCurrentUserQuery, Types.GetJoinRequestByCurrentUserQueryVariables>;
+export const DeleteJoinRequestForCurrentUserDocument = gql`
+    mutation DeleteJoinRequestForCurrentUser {
+  deleteJoinRequestForCurrentUser {
+    success
+    message
+  }
+}
+    `;
+export type DeleteJoinRequestForCurrentUserMutationFn = Apollo.MutationFunction<Types.DeleteJoinRequestForCurrentUserMutation, Types.DeleteJoinRequestForCurrentUserMutationVariables>;
+
+/**
+ * __useDeleteJoinRequestForCurrentUserMutation__
+ *
+ * To run a mutation, you first call `useDeleteJoinRequestForCurrentUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteJoinRequestForCurrentUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteJoinRequestForCurrentUserMutation, { data, loading, error }] = useDeleteJoinRequestForCurrentUserMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeleteJoinRequestForCurrentUserMutation(baseOptions?: Apollo.MutationHookOptions<Types.DeleteJoinRequestForCurrentUserMutation, Types.DeleteJoinRequestForCurrentUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.DeleteJoinRequestForCurrentUserMutation, Types.DeleteJoinRequestForCurrentUserMutationVariables>(DeleteJoinRequestForCurrentUserDocument, options);
+      }
+export type DeleteJoinRequestForCurrentUserMutationHookResult = ReturnType<typeof useDeleteJoinRequestForCurrentUserMutation>;
+export type DeleteJoinRequestForCurrentUserMutationResult = Apollo.MutationResult<Types.DeleteJoinRequestForCurrentUserMutation>;
+export type DeleteJoinRequestForCurrentUserMutationOptions = Apollo.BaseMutationOptions<Types.DeleteJoinRequestForCurrentUserMutation, Types.DeleteJoinRequestForCurrentUserMutationVariables>;

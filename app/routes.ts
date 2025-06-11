@@ -22,6 +22,8 @@ export default [
       index('features/staff/pages/staff-dashboard-index.tsx'),
       route('/hospitals/search', 'features/staff/pages/staff-hospital-find.tsx'),
       route('/hospitals/request/:ykiho', 'features/staff/pages/staff-hospital-request.tsx'),
+      route('/hospitals/join-request/:ykiho', 'features/staff/pages/staff-hospital-join-request.tsx'),
+      route('/hospitals/pending', 'features/staff/pages/staff-hospital-join-request-pending.tsx'),
     ]),
     ...prefix('/admin', [
       index('features/admin/pages/admin-dashboard-index.tsx'),
