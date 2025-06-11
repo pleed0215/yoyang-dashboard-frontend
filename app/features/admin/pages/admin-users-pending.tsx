@@ -1,3 +1,4 @@
+import { Route } from './+types/admin-users-pending';
 import { Button } from '~/components/ui/button';
 import {
   Table,
@@ -13,30 +14,39 @@ import { RETRIEVE_JOIN_REQUEST_QUERY, ACCEPT_JOIN_REQUEST_MUTATION, DENY_JOIN_RE
 import { useApolloClient, useMutation } from '@apollo/client';
 import { contextWithToken } from '~/lib/apollo';
 import { toast } from 'sonner';
-import { useNavigate, useLoaderData, useSearchParams } from 'react-router';
-import { stateBadgeVariant, stateLabel } from '~/lib/enum-mapping';
-import { CommonState } from '~/graphql/types';
+import { useLoaderData, useSearchParams } from 'react-router';
+import { stateLabel } from '~/lib/enum-mapping';
+import { CommonState, RetrieveJoinRequestQuery, RetrieveJoinRequestQueryVariables } from '~/graphql/types';
 import PageInfo from '~/components/common/page-info';
 
 export const loader = async ({ request }: any) => {
-  const url = new URL(request.url);
-  const page = url.searchParams.get('page') || '1';
-  const pageSize = url.searchParams.get('pageSize') || '10';
-  const { data } = await serverApolloClient.query({
-    query: RETRIEVE_JOIN_REQUEST_QUERY,
-    variables: { page: parseInt(page), pageSize: parseInt(pageSize) },
-    context: { ...contextWithToken(request) },
-    fetchPolicy: 'no-cache',
-  });
-  return {
-    data: data?.adminOnlyRetrieveJoinRequest?.data || [],
-    pageInfo: data?.adminOnlyRetrieveJoinRequest?.pageInfo,
-    apolloState: serverApolloClient.extract(),
-  };
+  try {
+    const url = new URL(request.url);
+    const page = url.searchParams.get('page') || '1';
+    const pageSize = url.searchParams.get('pageSize') || '10';
+    const { data } = await serverApolloClient.query<RetrieveJoinRequestQuery, RetrieveJoinRequestQueryVariables>({
+      query: RETRIEVE_JOIN_REQUEST_QUERY,
+      variables: { page: parseInt(page), pageSize: parseInt(pageSize) },
+      context: { ...contextWithToken(request) },
+      fetchPolicy: 'no-cache',
+    });
+    return {
+      data: data?.adminOnlyRetrieveJoinRequest?.data || [],
+      pageInfo: data?.adminOnlyRetrieveJoinRequest?.pageInfo,
+      apolloState: serverApolloClient.extract(),
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      data: [],
+      pageInfo: null,
+      apolloState: serverApolloClient.extract(),
+    };
+  }
 };
 
-export default function AdminUsersPendingPage() {
-  const { data, pageInfo, apolloState } = useLoaderData() as any;
+export default function AdminUsersPendingPage({loaderData}:Route.ComponentProps) {
+  const { data, pageInfo, apolloState } = loaderData;
   const apolloClient = useApolloClient();
   const [searchParams, setSearchParams] = useSearchParams();
   apolloClient.cache.restore(apolloState ?? {});
@@ -85,16 +95,18 @@ export default function AdminUsersPendingPage() {
               <TableHead>ID</TableHead>
               <TableHead>이메일</TableHead>
               <TableHead>사용자명</TableHead>
+              <TableHead>신청 메세지</TableHead>
               <TableHead>상태</TableHead>
               <TableHead>액션</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="*:text-center">
-            {data?.map((req: any) => (
+            { !!data && data.map((req) => (
               <TableRow key={req.id}>
-                <TableCell>{req.user.id}</TableCell>
-                <TableCell>{req.user.email}</TableCell>
-                <TableCell>{req.user.username}</TableCell>
+                <TableCell>{req.user?.id}</TableCell>
+                <TableCell>{req.user?.email}</TableCell>
+                <TableCell>{req.user?.username}</TableCell>
+                <TableCell className="max-w-xs break-words whitespace-pre-line">{req.message || '-'}</TableCell>
                 <TableCell>
                   <Badge variant="outline">{stateLabel[CommonState.Pending]}</Badge>
                 </TableCell>
@@ -104,7 +116,7 @@ export default function AdminUsersPendingPage() {
                       className="cursor-pointer"
                       variant="default"
                       size="sm"
-                      onClick={() => handleApprove(req.id)}
+                      onClick={() => handleApprove(Number(req.id))}
                       disabled={acceptLoading}
                     >
                       승인
@@ -113,7 +125,7 @@ export default function AdminUsersPendingPage() {
                       className="cursor-pointer"
                       variant="destructive"
                       size="sm"
-                      onClick={() => handleReject(req.id)}
+                      onClick={() => handleReject(Number(req.id))}
                       disabled={denyLoading}
                     >
                       거절

@@ -102,6 +102,7 @@ export type HospitalJoinRequestType = {
   hospital: HospitalType;
   hospitalId: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
+  message: Scalars['String']['output'];
   state: CommonState;
   /** 병원 가입 신청을 한 사용자 정보를 가져옵니다. */
   user: UserType;
@@ -209,6 +210,7 @@ export type MutationRequestCreateHospitalArgs = {
 
 export type MutationRequestJoinHospitalArgs = {
   hospitalId: Scalars['Int']['input'];
+  message?: Scalars['String']['input'];
 };
 
 
@@ -550,7 +552,7 @@ export type RetrieveJoinRequestQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveJoinRequestQuery = { __typename?: 'Query', adminOnlyRetrieveJoinRequest: { __typename?: 'RetrieveJoinRequestOutput', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'HospitalJoinRequestType', id: string, user: { __typename?: 'UserType', id: string, username: string, email: string } }> | null } };
+export type RetrieveJoinRequestQuery = { __typename?: 'Query', adminOnlyRetrieveJoinRequest: { __typename?: 'RetrieveJoinRequestOutput', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'HospitalJoinRequestType', id: string, message: string, user: { __typename?: 'UserType', id: string, username: string, email: string } }> | null } };
 
 export type AcceptJoinRequestMutationVariables = Exact<{
   requestId: Scalars['Int']['input'];
@@ -575,6 +577,7 @@ export type GetHospitalByYkihoQuery = { __typename?: 'Query', getHospitalByYkiho
 
 export type RequestJoinHospitalMutationVariables = Exact<{
   hospitalId: Scalars['Int']['input'];
+  message: Scalars['String']['input'];
 }>;
 
 

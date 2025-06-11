@@ -230,6 +230,7 @@ export const RETRIEVE_JOIN_REQUEST_QUERY = gql`
       }
       data {
         id
+        message
         user {
           id
           username
@@ -274,8 +275,8 @@ export const GET_HOSPITAL_BY_YKIHO_QUERY = gql`
 `;
 
 export const REQUEST_JOIN_HOSPITAL_MUTATION = gql`
-  mutation RequestJoinHospital($hospitalId: Int!) {
-    requestJoinHospital(hospitalId: $hospitalId) {
+  mutation RequestJoinHospital($hospitalId: Int!, $message: String!) {
+    requestJoinHospital(hospitalId: $hospitalId, message: $message) {
       success
       message
       data {

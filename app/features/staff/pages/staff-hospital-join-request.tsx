@@ -21,6 +21,9 @@ import {
   DialogFooter,
   DialogDescription,
 } from '~/components/ui/dialog';
+import { useRequestJoinHospitalMutation } from '~/graphql/operations';
+import { useLoaderData } from 'react-router';
+import { useRef } from 'react';
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const ykiho = params?.ykiho;
@@ -40,11 +43,11 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 };
 
 export default function StaffHospitalJoinRequestPage({ loaderData }: Route.ComponentProps) {
-  const apolloClient = useApolloClient();
-  const [loading, setLoading] = useState(false);
+  const [requestJoinHospital, { loading }] = useRequestJoinHospitalMutation();
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
+  const [message, setMessage] = useState('');
 
   if (loaderData.error) {
     return (
@@ -77,11 +80,9 @@ export default function StaffHospitalJoinRequestPage({ loaderData }: Route.Compo
 
   const handleJoinRequest = async () => {
     if (!hospital?.id) return;
-    setLoading(true);
     try {
-      const { data } = await apolloClient.mutate({
-        mutation: REQUEST_JOIN_HOSPITAL_MUTATION,
-        variables: { hospitalId: Number(hospital.id) },
+      const { data } = await requestJoinHospital({
+        variables: { hospitalId: Number(hospital.id), message },
       });
       if (data?.requestJoinHospital?.success) {
         setDialogMessage(data.requestJoinHospital.message || '가입신청이 완료되었습니다.');
@@ -89,8 +90,9 @@ export default function StaffHospitalJoinRequestPage({ loaderData }: Route.Compo
         setDialogMessage(data?.requestJoinHospital?.message || '가입신청에 실패했습니다.');
       }
       setDialogOpen(true);
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      setDialogMessage('가입신청에 실패했습니다.');
+      setDialogOpen(true);
     }
   };
 
@@ -124,6 +126,20 @@ export default function StaffHospitalJoinRequestPage({ loaderData }: Route.Compo
                   </TableRow>
                 </TableBody>
               </Table>
+              <div className="w-full mt-4">
+                <label htmlFor="join-message" className="block mb-1 font-medium">
+                  신청 메세지
+                </label>
+                <textarea
+                  id="join-message"
+                  className="w-full border rounded-md p-2 min-h-[80px] resize-y focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="가입 승인 요청 메세지를 입력하세요."
+                  value={message}
+                  onChange={e => setMessage(e.target.value)}
+                  maxLength={200}
+                  disabled={loading}
+                />
+              </div>
               <SubmitButton onClick={handleJoinRequest} loading={loading} className="w-full">
                 가입 신청
               </SubmitButton>

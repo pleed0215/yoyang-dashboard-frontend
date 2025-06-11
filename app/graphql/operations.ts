@@ -687,6 +687,7 @@ export const RetrieveJoinRequestDocument = gql`
     }
     data {
       id
+      message
       user {
         id
         username
@@ -845,8 +846,8 @@ export type GetHospitalByYkihoLazyQueryHookResult = ReturnType<typeof useGetHosp
 export type GetHospitalByYkihoSuspenseQueryHookResult = ReturnType<typeof useGetHospitalByYkihoSuspenseQuery>;
 export type GetHospitalByYkihoQueryResult = Apollo.QueryResult<Types.GetHospitalByYkihoQuery, Types.GetHospitalByYkihoQueryVariables>;
 export const RequestJoinHospitalDocument = gql`
-    mutation RequestJoinHospital($hospitalId: Int!) {
-  requestJoinHospital(hospitalId: $hospitalId) {
+    mutation RequestJoinHospital($hospitalId: Int!, $message: String!) {
+  requestJoinHospital(hospitalId: $hospitalId, message: $message) {
     success
     message
     data {
@@ -872,6 +873,7 @@ export type RequestJoinHospitalMutationFn = Apollo.MutationFunction<Types.Reques
  * const [requestJoinHospitalMutation, { data, loading, error }] = useRequestJoinHospitalMutation({
  *   variables: {
  *      hospitalId: // value for 'hospitalId'
+ *      message: // value for 'message'
  *   },
  * });
  */
