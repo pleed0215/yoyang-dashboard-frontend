@@ -54,14 +54,12 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       variables.role = role;
     }
 
-    console.log(variables);
     const { data } = await serverApolloClient.query<RetrieveHospitalUsersQuery, RetrieveHospitalUsersQueryVariables>({
       query: RETRIEVE_HOSPITAL_USER_QUERY,
       context: { ...contextWithToken(request) },
       fetchPolicy: 'no-cache',
       variables,
     });
-    console.log(data);
 
     return {
       data: data.retrieveHospitalUsersForAdmin.data,
@@ -312,6 +310,7 @@ export default function AdminUsersIndexPage({ loaderData }: Route.ComponentProps
                     <Checkbox
                       checked={selectedUsers.includes(user.id)}
                       onCheckedChange={checked => handleSelectUser(checked, user.id)}
+                      disabled={String(user.id) === String(myId)}
                     />
                   </TableCell>
                   <TableCell>{user.id}</TableCell>
@@ -331,7 +330,7 @@ export default function AdminUsersIndexPage({ loaderData }: Route.ComponentProps
                       variant="destructive"
                       size="sm"
                       onClick={() => { setUnlinkTarget(user.id); setUnlinkDialogOpen(true); }}
-                      disabled={unlinkOneLoading}
+                      disabled={unlinkOneLoading || String(user.id) === String(myId)}
                     >
                       연결 해제
                     </Button>

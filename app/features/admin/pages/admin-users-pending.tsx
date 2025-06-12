@@ -101,39 +101,45 @@ export default function AdminUsersPendingPage({loaderData}:Route.ComponentProps)
             </TableRow>
           </TableHeader>
           <TableBody className="*:text-center">
-            { !!data && data.map((req) => (
-              <TableRow key={req.id}>
-                <TableCell>{req.user?.id}</TableCell>
-                <TableCell>{req.user?.email}</TableCell>
-                <TableCell>{req.user?.username}</TableCell>
-                <TableCell className="max-w-xs break-words whitespace-pre-line">{req.message || '-'}</TableCell>
-                <TableCell>
-                  <Badge variant="outline">{stateLabel[CommonState.Pending]}</Badge>
-                </TableCell>
-                <TableCell>
-                  <div className="flex justify-center gap-2">
-                    <Button
-                      className="cursor-pointer"
-                      variant="default"
-                      size="sm"
-                      onClick={() => handleApprove(Number(req.id))}
-                      disabled={acceptLoading}
-                    >
-                      승인
-                    </Button>
-                    <Button
-                      className="cursor-pointer"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleReject(Number(req.id))}
-                      disabled={denyLoading}
-                    >
-                      거절
-                    </Button>
-                  </div>
-                </TableCell>
+            {!!data && data.length > 0 ? (
+              data.map((req) => (
+                <TableRow key={req.id}>
+                  <TableCell>{req.user?.id}</TableCell>
+                  <TableCell>{req.user?.email}</TableCell>
+                  <TableCell>{req.user?.username}</TableCell>
+                  <TableCell className="max-w-xs break-words whitespace-pre-line">{req.message || '-'}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{stateLabel[CommonState.Pending]}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex justify-center gap-2">
+                      <Button
+                        className="cursor-pointer"
+                        variant="default"
+                        size="sm"
+                        onClick={() => handleApprove(Number(req.id))}
+                        disabled={acceptLoading}
+                      >
+                        승인
+                      </Button>
+                      <Button
+                        className="cursor-pointer"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleReject(Number(req.id))}
+                        disabled={denyLoading}
+                      >
+                        거절
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6}>가입 대기 중인 유저가 없습니다.</TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>
