@@ -313,3 +313,53 @@ export const DELETE_JOIN_REQUEST_FOR_CURRENT_USER_MUTATION = gql`
       }
     }
 `;
+
+export const RETRIEVE_HOSPITAL_USER_QUERY=gql`
+  query RetrieveHospitalUsers($page: Int = 1, $pageSize: Int = 10, $role: UserRole) {
+    retrieveHospitalUsersForAdmin(page: $page, pageSize: $pageSize, role: $role) {
+      success
+      message
+      pageInfo {
+        currentPage
+        hasNextPage
+        hasPreviousPage
+        total
+        totalPages
+      }
+      data {
+        id
+        username
+        email
+        role
+        state
+      }
+    }
+  }
+`;
+
+export const UPDATE_MANY_USER_STATUS_FOR_ADMIN_MUTATION=gql`
+  mutation UpdateManyUserStatusForAdmin($input: UpdateManyUserStatusInput!) {
+    updateManyUserStatusForAdmin(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const UNLINK_MANY_USER_FROM_HOSPITAL_FOR_ADMIN_MUTATION=gql`
+  mutation UnlinkManyUserFromHospitalForAdmin($input: ManyUserIdInput!) {
+    unlinkManyUserForAdmin(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const UNLINK_USER_FROM_HOSPITAL_FOR_ADMIN_MUTATION=gql`
+  mutation UnlinkUserFromHospitalForAdmin($input: UserIdInput!) {
+    unlinkUserForAdmin(input: $input) {
+      success
+      message
+    }
+  }
+`;

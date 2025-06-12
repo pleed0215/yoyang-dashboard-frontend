@@ -966,3 +966,162 @@ export function useDeleteJoinRequestForCurrentUserMutation(baseOptions?: Apollo.
 export type DeleteJoinRequestForCurrentUserMutationHookResult = ReturnType<typeof useDeleteJoinRequestForCurrentUserMutation>;
 export type DeleteJoinRequestForCurrentUserMutationResult = Apollo.MutationResult<Types.DeleteJoinRequestForCurrentUserMutation>;
 export type DeleteJoinRequestForCurrentUserMutationOptions = Apollo.BaseMutationOptions<Types.DeleteJoinRequestForCurrentUserMutation, Types.DeleteJoinRequestForCurrentUserMutationVariables>;
+export const RetrieveHospitalUsersDocument = gql`
+    query RetrieveHospitalUsers($page: Int = 1, $pageSize: Int = 10, $role: UserRole) {
+  retrieveHospitalUsersForAdmin(page: $page, pageSize: $pageSize, role: $role) {
+    success
+    message
+    pageInfo {
+      currentPage
+      hasNextPage
+      hasPreviousPage
+      total
+      totalPages
+    }
+    data {
+      id
+      username
+      email
+      role
+      state
+    }
+  }
+}
+    `;
+
+/**
+ * __useRetrieveHospitalUsersQuery__
+ *
+ * To run a query within a React component, call `useRetrieveHospitalUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRetrieveHospitalUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRetrieveHospitalUsersQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      pageSize: // value for 'pageSize'
+ *      role: // value for 'role'
+ *   },
+ * });
+ */
+export function useRetrieveHospitalUsersQuery(baseOptions?: Apollo.QueryHookOptions<Types.RetrieveHospitalUsersQuery, Types.RetrieveHospitalUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.RetrieveHospitalUsersQuery, Types.RetrieveHospitalUsersQueryVariables>(RetrieveHospitalUsersDocument, options);
+      }
+export function useRetrieveHospitalUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrieveHospitalUsersQuery, Types.RetrieveHospitalUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.RetrieveHospitalUsersQuery, Types.RetrieveHospitalUsersQueryVariables>(RetrieveHospitalUsersDocument, options);
+        }
+export function useRetrieveHospitalUsersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrieveHospitalUsersQuery, Types.RetrieveHospitalUsersQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.RetrieveHospitalUsersQuery, Types.RetrieveHospitalUsersQueryVariables>(RetrieveHospitalUsersDocument, options);
+        }
+export type RetrieveHospitalUsersQueryHookResult = ReturnType<typeof useRetrieveHospitalUsersQuery>;
+export type RetrieveHospitalUsersLazyQueryHookResult = ReturnType<typeof useRetrieveHospitalUsersLazyQuery>;
+export type RetrieveHospitalUsersSuspenseQueryHookResult = ReturnType<typeof useRetrieveHospitalUsersSuspenseQuery>;
+export type RetrieveHospitalUsersQueryResult = Apollo.QueryResult<Types.RetrieveHospitalUsersQuery, Types.RetrieveHospitalUsersQueryVariables>;
+export const UpdateManyUserStatusForAdminDocument = gql`
+    mutation UpdateManyUserStatusForAdmin($input: UpdateManyUserStatusInput!) {
+  updateManyUserStatusForAdmin(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateManyUserStatusForAdminMutationFn = Apollo.MutationFunction<Types.UpdateManyUserStatusForAdminMutation, Types.UpdateManyUserStatusForAdminMutationVariables>;
+
+/**
+ * __useUpdateManyUserStatusForAdminMutation__
+ *
+ * To run a mutation, you first call `useUpdateManyUserStatusForAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateManyUserStatusForAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateManyUserStatusForAdminMutation, { data, loading, error }] = useUpdateManyUserStatusForAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateManyUserStatusForAdminMutation(baseOptions?: Apollo.MutationHookOptions<Types.UpdateManyUserStatusForAdminMutation, Types.UpdateManyUserStatusForAdminMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UpdateManyUserStatusForAdminMutation, Types.UpdateManyUserStatusForAdminMutationVariables>(UpdateManyUserStatusForAdminDocument, options);
+      }
+export type UpdateManyUserStatusForAdminMutationHookResult = ReturnType<typeof useUpdateManyUserStatusForAdminMutation>;
+export type UpdateManyUserStatusForAdminMutationResult = Apollo.MutationResult<Types.UpdateManyUserStatusForAdminMutation>;
+export type UpdateManyUserStatusForAdminMutationOptions = Apollo.BaseMutationOptions<Types.UpdateManyUserStatusForAdminMutation, Types.UpdateManyUserStatusForAdminMutationVariables>;
+export const UnlinkManyUserFromHospitalForAdminDocument = gql`
+    mutation UnlinkManyUserFromHospitalForAdmin($input: ManyUserIdInput!) {
+  unlinkManyUserForAdmin(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UnlinkManyUserFromHospitalForAdminMutationFn = Apollo.MutationFunction<Types.UnlinkManyUserFromHospitalForAdminMutation, Types.UnlinkManyUserFromHospitalForAdminMutationVariables>;
+
+/**
+ * __useUnlinkManyUserFromHospitalForAdminMutation__
+ *
+ * To run a mutation, you first call `useUnlinkManyUserFromHospitalForAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnlinkManyUserFromHospitalForAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unlinkManyUserFromHospitalForAdminMutation, { data, loading, error }] = useUnlinkManyUserFromHospitalForAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUnlinkManyUserFromHospitalForAdminMutation(baseOptions?: Apollo.MutationHookOptions<Types.UnlinkManyUserFromHospitalForAdminMutation, Types.UnlinkManyUserFromHospitalForAdminMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UnlinkManyUserFromHospitalForAdminMutation, Types.UnlinkManyUserFromHospitalForAdminMutationVariables>(UnlinkManyUserFromHospitalForAdminDocument, options);
+      }
+export type UnlinkManyUserFromHospitalForAdminMutationHookResult = ReturnType<typeof useUnlinkManyUserFromHospitalForAdminMutation>;
+export type UnlinkManyUserFromHospitalForAdminMutationResult = Apollo.MutationResult<Types.UnlinkManyUserFromHospitalForAdminMutation>;
+export type UnlinkManyUserFromHospitalForAdminMutationOptions = Apollo.BaseMutationOptions<Types.UnlinkManyUserFromHospitalForAdminMutation, Types.UnlinkManyUserFromHospitalForAdminMutationVariables>;
+export const UnlinkUserFromHospitalForAdminDocument = gql`
+    mutation UnlinkUserFromHospitalForAdmin($input: UserIdInput!) {
+  unlinkUserForAdmin(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UnlinkUserFromHospitalForAdminMutationFn = Apollo.MutationFunction<Types.UnlinkUserFromHospitalForAdminMutation, Types.UnlinkUserFromHospitalForAdminMutationVariables>;
+
+/**
+ * __useUnlinkUserFromHospitalForAdminMutation__
+ *
+ * To run a mutation, you first call `useUnlinkUserFromHospitalForAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnlinkUserFromHospitalForAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unlinkUserFromHospitalForAdminMutation, { data, loading, error }] = useUnlinkUserFromHospitalForAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUnlinkUserFromHospitalForAdminMutation(baseOptions?: Apollo.MutationHookOptions<Types.UnlinkUserFromHospitalForAdminMutation, Types.UnlinkUserFromHospitalForAdminMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UnlinkUserFromHospitalForAdminMutation, Types.UnlinkUserFromHospitalForAdminMutationVariables>(UnlinkUserFromHospitalForAdminDocument, options);
+      }
+export type UnlinkUserFromHospitalForAdminMutationHookResult = ReturnType<typeof useUnlinkUserFromHospitalForAdminMutation>;
+export type UnlinkUserFromHospitalForAdminMutationResult = Apollo.MutationResult<Types.UnlinkUserFromHospitalForAdminMutation>;
+export type UnlinkUserFromHospitalForAdminMutationOptions = Apollo.BaseMutationOptions<Types.UnlinkUserFromHospitalForAdminMutation, Types.UnlinkUserFromHospitalForAdminMutationVariables>;
