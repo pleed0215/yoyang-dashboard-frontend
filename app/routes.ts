@@ -1,5 +1,15 @@
 import { type RouteConfig, index, route, layout, prefix } from '@react-router/dev/routes';
 
+const  commonHospitalRoutes = [
+  ...prefix('hospitals', [
+    index('features/common/pages/hospital-index.tsx'),
+    route('/duties', 'features/common/pages/hospital-duties.tsx'),
+    route('/positions', 'features/common/pages/hospital-positions.tsx'),
+    route('/wards', 'features/common/pages/hospital-wards.tsx'),
+    route('/rooms', 'features/common/pages/hospital-rooms.tsx'),
+  ]),
+]
+
 export default [
   index('./index.tsx'),
   route('/login', 'features/auth/login.tsx'),
@@ -24,6 +34,7 @@ export default [
       route('/hospitals/request/:ykiho', 'features/staff/pages/staff-hospital-request.tsx'),
       route('/hospitals/join-request/:ykiho', 'features/staff/pages/staff-hospital-join-request.tsx'),
       route('/hospitals/pending', 'features/staff/pages/staff-hospital-join-request-pending.tsx'),
+      ...commonHospitalRoutes,
     ]),
     ...prefix('/admin', [
       index('features/admin/pages/admin-dashboard-index.tsx'),
@@ -31,10 +42,7 @@ export default [
         index('features/admin/pages/admin-users-index.tsx'),
         route('/pending', 'features/admin/pages/admin-users-pending.tsx'),
       ]),
-      ...prefix('/hospitals', [
-        index('features/admin/pages/admin-hospital-index.tsx'),
-
-      ]),
+      ...commonHospitalRoutes,
     ]),
   ]),
 ] satisfies RouteConfig;
