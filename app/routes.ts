@@ -1,14 +1,5 @@
 import { type RouteConfig, index, route, layout, prefix } from '@react-router/dev/routes';
 
-const  commonHospitalRoutes = [
-  ...prefix('hospitals', [
-    index('features/common/pages/hospital-index.tsx'),
-    route('/duties', 'features/common/pages/hospital-duties.tsx'),
-    route('/positions', 'features/common/pages/hospital-positions.tsx'),
-    route('/wards', 'features/common/pages/hospital-wards.tsx'),
-    route('/rooms', 'features/common/pages/hospital-rooms.tsx'),
-  ]),
-]
 
 export default [
   index('./index.tsx'),
@@ -30,11 +21,17 @@ export default [
     ]),
     ...prefix('/staff', [
       index('features/staff/pages/staff-dashboard-index.tsx'),
-      route('/hospitals/search', 'features/staff/pages/staff-hospital-find.tsx'),
-      route('/hospitals/request/:ykiho', 'features/staff/pages/staff-hospital-request.tsx'),
-      route('/hospitals/join-request/:ykiho', 'features/staff/pages/staff-hospital-join-request.tsx'),
-      route('/hospitals/pending', 'features/staff/pages/staff-hospital-join-request-pending.tsx'),
-      ...commonHospitalRoutes,
+      ...prefix('hospitals', [
+        index('features/staff/pages/hospitals/staff-hospital-index.tsx'),
+        route('/duties', 'features/staff/pages/hospitals/staff-hospital-duties.tsx'),
+        route('/positions', 'features/staff/pages/hospitals/staff-hospital-positions.tsx'),
+        route('/wards', 'features/staff/pages/hospitals/staff-hospital-wards.tsx'), 
+        route('/rooms', 'features/staff/pages/hospitals/staff-hospital-rooms.tsx'),
+        route('/search', 'features/staff/pages/staff-hospital-find.tsx'),
+        route('/request/:ykiho', 'features/staff/pages/staff-hospital-request.tsx'),
+        route('/join-request/:ykiho', 'features/staff/pages/staff-hospital-join-request.tsx'),
+        route('/pending', 'features/staff/pages/staff-hospital-join-request-pending.tsx'),
+      ]),
     ]),
     ...prefix('/admin', [
       index('features/admin/pages/admin-dashboard-index.tsx'),
@@ -42,7 +39,13 @@ export default [
         index('features/admin/pages/admin-users-index.tsx'),
         route('/pending', 'features/admin/pages/admin-users-pending.tsx'),
       ]),
-      ...commonHospitalRoutes,
+      ...prefix('hospitals', [
+        index('features/admin/pages/hospitals/admin-hospital-index.tsx'),
+        route('/duties', 'features/admin/pages/hospitals/admin-hospital-duties.tsx'),
+        route('/positions', 'features/admin/pages/hospitals/admin-hospital-positions.tsx'),
+        route('/wards', 'features/admin/pages/hospitals/admin-hospital-wards.tsx'),
+        route('/rooms', 'features/admin/pages/hospitals/admin-hospital-rooms.tsx'),
+      ]),
     ]),
   ]),
 ] satisfies RouteConfig;

@@ -1,5 +1,5 @@
 import { UserRole } from '~/graphql/types';
-import { Users, Building2, UserPlus, List, Search, Clock, Building } from 'lucide-react';
+import { Users, Building2, UserPlus, List, Search, Clock, Building, Info, UserCheck, Bed, DoorOpen, Briefcase } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 
 interface MenuItem {
@@ -73,15 +73,36 @@ export const roleBasedMenus: RoleBasedMenus = {
       ],
     },
     {
-      title: '병원 관리',
-      icon: Building2,
-      children: [
-        {
-          title: '병원 정보',
-          path: '/admin/hospital',
-          icon: Building,
-        },
-      ],
+      title: '병원 관련',
+        path: '/admin/hospitals',
+        icon: Building2,
+        children: [
+          {
+            title: '병원 종합 정보',
+            path: '/admin/hospitals',
+            icon: Info,
+          },
+          {
+            title: '직책 관리',
+            path: '/admin/hospitals/positions',
+            icon: UserCheck,
+          },
+          {
+            title: '직무 관리',
+            path: '/admin/hospitals/duties',
+            icon: Briefcase,
+          },
+          {
+            title: '병동 관리',
+            path: '/admin/hospitals/wards',
+            icon: Bed,
+          },
+          {
+            title: '병실 관리',
+            path: '/admin/hospitals/rooms',
+            icon: DoorOpen,
+          },
+        ],
     },
   ],
   [UserRole.Staff]: {
@@ -105,9 +126,36 @@ export const roleBasedMenus: RoleBasedMenus = {
     ],
     withHospital: [
       {
-        title: '병원 정보',
+        title: '병원 관련',
         path: '/staff/hospital',
-        icon: Building,
+        icon: Building2,
+        children: [
+          {
+            title: '병원 종합 정보',
+            path: '/staff/hospitals',
+            icon: Info,
+          },
+          {
+            title: '직책 관리',
+            path: '/staff/hospitals/positions',
+            icon: UserCheck,
+          },
+          {
+            title: '직무 관리',
+            path: '/staff/hospitals/duties',
+            icon: Briefcase,
+          },
+          {
+            title: '병동 관리',
+            path: '/staff/hospitals/wards',
+            icon: Bed,
+          },
+          {
+            title: '병실 관리',
+            path: '/staff/hospitals/rooms',
+            icon: DoorOpen,
+          },
+        ],
       },
     ],
   },
