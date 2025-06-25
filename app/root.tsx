@@ -81,6 +81,9 @@ export default function App() {
           if (pathname.startsWith('/staff') && role !== UserRole.Staff) {
             window.location.href = '/dashboard';
           }
+          if (pathname.startsWith('/hospitals') && ![UserRole.Admin, UserRole.Staff].includes(role)) {
+            window.location.href = '/dashboard';
+          }
         } else {
           updateLoginStatus(false);
           navigate('/');

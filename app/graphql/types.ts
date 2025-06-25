@@ -124,6 +124,26 @@ export type DeleteHospitalWardOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+/** 직원 상태 (ACTIVE, INACTIVE) */
+export enum EmployeeState {
+  Active = 'ACTIVE',
+  Inactive = 'INACTIVE'
+}
+
+export type EmployeeType = {
+  __typename?: 'EmployeeType';
+  committeeId?: Maybe<Scalars['Int']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  dutyId?: Maybe<Scalars['Int']['output']>;
+  hospitalId: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  positionId?: Maybe<Scalars['Int']['output']>;
+  state: EmployeeState;
+  updatedAt: Scalars['DateTime']['output'];
+  wardId?: Maybe<Scalars['Int']['output']>;
+};
+
 /** Application error codes */
 export enum ErrorCode {
   AlreadyLoggedIn = 'ALREADY_LOGGED_IN',
@@ -176,6 +196,8 @@ export type HospitalCommitteeType = {
   hospitalId: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  /** 이 위원회에 속한 직원 목록 */
+  staff?: Maybe<Array<EmployeeType>>;
 };
 
 export type HospitalDutyType = {
@@ -183,6 +205,8 @@ export type HospitalDutyType = {
   hospitalId: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  /** 이 직무에 속한 직원 목록 */
+  staff?: Maybe<Array<EmployeeType>>;
 };
 
 export type HospitalJoinRequestType = {
@@ -198,11 +222,22 @@ export type HospitalJoinRequestType = {
   userId: Scalars['Int']['output'];
 };
 
+export type HospitalPartType = {
+  __typename?: 'HospitalPartType';
+  hospitalId: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  /** 이 파트에 속한 직원 목록 */
+  staff?: Maybe<Array<EmployeeType>>;
+};
+
 export type HospitalPositionType = {
   __typename?: 'HospitalPositionType';
   hospitalId: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  /** 이 직책에 속한 직원 목록 */
+  staff?: Maybe<Array<EmployeeType>>;
 };
 
 export type HospitalRegisterRequestType = {
@@ -219,6 +254,10 @@ export type HospitalRoomType = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   size?: Maybe<Scalars['Float']['output']>;
+  /** 이 병실에 속한 직원 목록 */
+  staff?: Maybe<Array<EmployeeType>>;
+  /** 이 병실이 속한 병동 */
+  ward: HospitalWardType;
   wardId: Scalars['Float']['output'];
 };
 
@@ -283,6 +322,8 @@ export type Mutation = {
   createHospitalDefaultData: CommonResponse;
   /** 병원 직무를 생성합니다. */
   createHospitalDuty: CreateHospitalDutyOutput;
+  /** 병원 파트를 생성합니다. */
+  createHospitalPart: CreateHospitalPositionOutput;
   /** 병원 직책을 생성합니다. */
   createHospitalPosition: CreateHospitalPositionOutput;
   /** 병원 병실을 생성합니다. */
@@ -295,6 +336,8 @@ export type Mutation = {
   createMyHospitalDefaultData: CommonResponse;
   /** 나의 병원 직무를 생성합니다. (로그인 기반) */
   createMyHospitalDuty: CreateHospitalDutyOutput;
+  /** 나의 병원 파트를 생성합니다. (로그인 기반) */
+  createMyHospitalPart: CreateHospitalPositionOutput;
   /** 나의 병원 직책을 생성합니다. (로그인 기반) */
   createMyHospitalPosition: CreateHospitalPositionOutput;
   /** 나의 병원 병실을 생성합니다. (로그인 기반) */
@@ -305,6 +348,8 @@ export type Mutation = {
   deleteHospitalCommittee: DeleteHospitalCommitteeOutput;
   /** 병원 직무를 삭제합니다. */
   deleteHospitalDuty: DeleteHospitalDutyOutput;
+  /** 병원 파트를 삭제합니다. */
+  deleteHospitalPart: DeleteHospitalPositionOutput;
   /** 병원 직책을 삭제합니다. */
   deleteHospitalPosition: DeleteHospitalPositionOutput;
   /** 병원 병실을 삭제합니다. */
@@ -333,6 +378,8 @@ export type Mutation = {
   updateHospitalCommittee: UpdateHospitalCommitteeOutput;
   /** 병원 직무를 수정합니다. */
   updateHospitalDuty: UpdateHospitalDutyOutput;
+  /** 병원 파트를 수정합니다. */
+  updateHospitalPart: UpdateHospitalPositionOutput;
   /** 병원 직책을 수정합니다. */
   updateHospitalPosition: UpdateHospitalPositionOutput;
   /** 병원 병실을 수정합니다. */
@@ -373,6 +420,12 @@ export type MutationCreateHospitalDutyArgs = {
 };
 
 
+export type MutationCreateHospitalPartArgs = {
+  hospitalId: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+};
+
+
 export type MutationCreateHospitalPositionArgs = {
   hospitalId: Scalars['Int']['input'];
   name: Scalars['String']['input'];
@@ -403,6 +456,11 @@ export type MutationCreateMyHospitalDutyArgs = {
 };
 
 
+export type MutationCreateMyHospitalPartArgs = {
+  name: Scalars['String']['input'];
+};
+
+
 export type MutationCreateMyHospitalPositionArgs = {
   name: Scalars['String']['input'];
 };
@@ -427,6 +485,11 @@ export type MutationDeleteHospitalCommitteeArgs = {
 
 export type MutationDeleteHospitalDutyArgs = {
   dutyId: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteHospitalPartArgs = {
+  partId: Scalars['Int']['input'];
 };
 
 
@@ -515,6 +578,12 @@ export type MutationUpdateHospitalDutyArgs = {
 };
 
 
+export type MutationUpdateHospitalPartArgs = {
+  name: Scalars['String']['input'];
+  partId: Scalars['Int']['input'];
+};
+
+
 export type MutationUpdateHospitalPositionArgs = {
   name: Scalars['String']['input'];
   positionId: Scalars['Int']['input'];
@@ -577,6 +646,8 @@ export type Query = {
   /** 병원 직무 목록을 조회합니다. */
   retrieveHospitalDuties: RetrieveHospitalDutiesOutput;
   retrieveHospitalList: RetrieveHospitalListOutput;
+  /** 병원 파트 목록을 조회합니다. */
+  retrieveHospitalParts: RetrieveHospitalPositionsOutput;
   /** 병원 직책 목록을 조회합니다. */
   retrieveHospitalPositions: RetrieveHospitalPositionsOutput;
   /** 병원 병실 목록을 조회합니다. */
@@ -588,6 +659,8 @@ export type Query = {
   retrieveMyHospitalCommittees: RetrieveHospitalCommitteesOutput;
   /** 나의 병원 직무 목록을 조회합니다. (로그인 기반) */
   retrieveMyHospitalDuties: RetrieveHospitalDutiesOutput;
+  /** 나의 병원 파트 목록을 조회합니다. (로그인 기반) */
+  retrieveMyHospitalParts: RetrieveHospitalPositionsOutput;
   /** 나의 병원 직책 목록을 조회합니다. (로그인 기반) */
   retrieveMyHospitalPositions: RetrieveHospitalPositionsOutput;
   /** 나의 병원 병실 목록을 조회합니다. (로그인 기반) */
@@ -649,6 +722,11 @@ export type QueryRetrieveHospitalDutiesArgs = {
 
 export type QueryRetrieveHospitalListArgs = {
   hospitalName: Scalars['String']['input'];
+};
+
+
+export type QueryRetrieveHospitalPartsArgs = {
+  hospitalId: Scalars['Int']['input'];
 };
 
 
@@ -900,6 +978,33 @@ export type RetrieveMyHospitalDutiesQueryVariables = Exact<{ [key: string]: neve
 
 
 export type RetrieveMyHospitalDutiesQuery = { __typename?: 'Query', retrieveMyHospitalDuties: { __typename?: 'RetrieveHospitalDutiesOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'HospitalDutyType', name: string }> | null } };
+
+export type RetrieveMyHospitalPartsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RetrieveMyHospitalPartsQuery = { __typename?: 'Query', retrieveMyHospitalParts: { __typename?: 'RetrieveHospitalPositionsOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'HospitalPositionType', id: string, name: string }> | null } };
+
+export type CreateMyHospitalPartMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type CreateMyHospitalPartMutation = { __typename?: 'Mutation', createMyHospitalPart: { __typename?: 'CreateHospitalPositionOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalPositionType', id: string, name: string } | null } };
+
+export type UpdateHospitalPartMutationVariables = Exact<{
+  partId: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+}>;
+
+
+export type UpdateHospitalPartMutation = { __typename?: 'Mutation', updateHospitalPart: { __typename?: 'UpdateHospitalPositionOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalPositionType', id: string, name: string } | null } };
+
+export type DeleteHospitalPartMutationVariables = Exact<{
+  partId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteHospitalPartMutation = { __typename?: 'Mutation', deleteHospitalPart: { __typename?: 'DeleteHospitalPositionOutput', success: boolean, message?: string | null } };
 
 export type RetrieveMyHospitalPositionsQueryVariables = Exact<{ [key: string]: never; }>;
 

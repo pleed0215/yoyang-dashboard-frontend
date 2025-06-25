@@ -74,35 +74,40 @@ export const roleBasedMenus: RoleBasedMenus = {
     },
     {
       title: '병원 관련',
-        path: '/admin/hospitals',
-        icon: Building2,
-        children: [
-          {
-            title: '병원 종합 정보',
-            path: '/admin/hospitals',
-            icon: Info,
-          },
-          {
-            title: '직책 관리',
-            path: '/admin/hospitals/positions',
-            icon: UserCheck,
-          },
-          {
-            title: '직무 관리',
-            path: '/admin/hospitals/duties',
-            icon: Briefcase,
-          },
-          {
-            title: '병동 관리',
-            path: '/admin/hospitals/wards',
-            icon: Bed,
-          },
-          {
-            title: '병실 관리',
-            path: '/admin/hospitals/rooms',
-            icon: DoorOpen,
-          },
-        ],
+      path: '/hospitals',
+      icon: Building2,
+      children: [
+        {
+          title: '병원 종합 정보',
+          path: '/hospitals',
+          icon: Info,
+        },
+        {
+          title: '부서 관리',
+          path: '/hospitals/parts',
+          icon: Building,
+        },
+        {
+          title: '직책 관리',
+          path: '/hospitals/positions',
+          icon: UserCheck,
+        },
+        {
+          title: '직무 관리',
+          path: '/hospitals/duties',
+          icon: Briefcase,
+        },
+        {
+          title: '병동 관리',
+          path: '/hospitals/wards',
+          icon: Bed,
+        },
+        {
+          title: '병실 관리',
+          path: '/hospitals/rooms',
+          icon: DoorOpen,
+        },
+      ],
     },
   ],
   [UserRole.Staff]: {
@@ -127,32 +132,37 @@ export const roleBasedMenus: RoleBasedMenus = {
     withHospital: [
       {
         title: '병원 관련',
-        path: '/staff/hospital',
+        path: '/hospitals',
         icon: Building2,
         children: [
           {
             title: '병원 종합 정보',
-            path: '/staff/hospitals',
+            path: '/hospitals',
             icon: Info,
           },
           {
+            title: '부서 관리',
+            path: '/hospitals/parts',
+            icon: Building,
+          },
+          {
             title: '직책 관리',
-            path: '/staff/hospitals/positions',
+            path: '/hospitals/positions',
             icon: UserCheck,
           },
           {
             title: '직무 관리',
-            path: '/staff/hospitals/duties',
+            path: '/hospitals/duties',
             icon: Briefcase,
           },
           {
             title: '병동 관리',
-            path: '/staff/hospitals/wards',
+            path: '/hospitals/wards',
             icon: Bed,
           },
           {
             title: '병실 관리',
-            path: '/staff/hospitals/rooms',
+            path: '/hospitals/rooms',
             icon: DoorOpen,
           },
         ],

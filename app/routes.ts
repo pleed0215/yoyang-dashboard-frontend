@@ -1,6 +1,5 @@
 import { type RouteConfig, index, route, layout, prefix } from '@react-router/dev/routes';
 
-
 export default [
   index('./index.tsx'),
   route('/login', 'features/auth/login.tsx'),
@@ -19,14 +18,18 @@ export default [
         route('/pending', 'features/super/pages/super-hospitals-pending.tsx'),
       ]),
     ]),
+    ...prefix('/hospitals', [
+      index('features/common/pages/hospitals/hospital-index.tsx'),
+      route('/duties', 'features/common/pages/hospitals/hospital-duties.tsx'),
+      route('/positions', 'features/common/pages/hospitals/hospital-positions.tsx'),
+      route('/wards', 'features/common/pages/hospitals/hospital-wards.tsx'),
+      route('/rooms', 'features/common/pages/hospitals/hospital-rooms.tsx'),
+      route('/parts', 'features/common/pages/hospitals/hospital-parts.tsx'),
+      route('/comittees', 'features/common/pages/hospitals/hospital-comittees.tsx'),
+    ]),
     ...prefix('/staff', [
       index('features/staff/pages/staff-dashboard-index.tsx'),
-      ...prefix('hospitals', [
-        index('features/staff/pages/hospitals/staff-hospital-index.tsx'),
-        route('/duties', 'features/staff/pages/hospitals/staff-hospital-duties.tsx'),
-        route('/positions', 'features/staff/pages/hospitals/staff-hospital-positions.tsx'),
-        route('/wards', 'features/staff/pages/hospitals/staff-hospital-wards.tsx'), 
-        route('/rooms', 'features/staff/pages/hospitals/staff-hospital-rooms.tsx'),
+      ...prefix('/hospitals', [
         route('/search', 'features/staff/pages/staff-hospital-find.tsx'),
         route('/request/:ykiho', 'features/staff/pages/staff-hospital-request.tsx'),
         route('/join-request/:ykiho', 'features/staff/pages/staff-hospital-join-request.tsx'),
@@ -38,13 +41,6 @@ export default [
       ...prefix('/users', [
         index('features/admin/pages/admin-users-index.tsx'),
         route('/pending', 'features/admin/pages/admin-users-pending.tsx'),
-      ]),
-      ...prefix('hospitals', [
-        index('features/admin/pages/hospitals/admin-hospital-index.tsx'),
-        route('/duties', 'features/admin/pages/hospitals/admin-hospital-duties.tsx'),
-        route('/positions', 'features/admin/pages/hospitals/admin-hospital-positions.tsx'),
-        route('/wards', 'features/admin/pages/hospitals/admin-hospital-wards.tsx'),
-        route('/rooms', 'features/admin/pages/hospitals/admin-hospital-rooms.tsx'),
       ]),
     ]),
   ]),
