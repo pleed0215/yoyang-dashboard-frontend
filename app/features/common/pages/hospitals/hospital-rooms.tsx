@@ -1,4 +1,4 @@
-import { Route } from "./+types/staff-hospital-rooms";
+import { Route } from "./+types/hospital-rooms";
 import { useEffect, useState } from "react";
 import { gql, useApolloClient, useQuery } from "@apollo/client";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
@@ -7,6 +7,8 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { LabelInput } from "~/components/common/label-input";
 
 const RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY = gql`
   query RetrieveMyHospitalWardsAndRooms {
@@ -66,9 +68,9 @@ const DELETE_HOSPITAL_ROOM_MUTATION = gql`
 // loader는 빈 객체만 반환
 export const loader = async () => ({ });
 
-export default function HospitalRoomsPage() {
+export default function HospitalRoomsPage({}:Route.ComponentProps) {
   const apolloClient = useApolloClient();
-  const { data, loading: queryLoading, refetch } = useQuery(RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY, { fetchPolicy: "network-only" });
+  const { data, loading: queryLoading, refetch } = useQuery(RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY, );
   const wards = data?.retrieveMyHospitalWards?.data ?? [];
   // 병동 id/name 기준으로 상태 관리
   const wardOptions = wards.map((w: any) => ({ id: w.id ?? w.name, name: w.name, rooms: w.rooms ?? [] }));
@@ -82,31 +84,37 @@ export default function HospitalRoomsPage() {
   const filteredRooms = selectedWard?.rooms ?? [];
 
   // 추가/수정 상태 관리
-  const [newRoomName, setNewRoomName] = useState("");
-  const [newRoomSize, setNewRoomSize] = useState("6");
   const [editRoomId, setEditRoomId] = useState<number|null>(null);
   const [editRoomName, setEditRoomName] = useState("");
   const [editRoomSize, setEditRoomSize] = useState("");
   const [mutationLoading, setMutationLoading] = useState(false);
 
-  // 병실 추가
-  const handleAddRoom = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newRoomName.trim()) return;
+  // react-hook-form 세팅
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { name: "", size: "6" },
+  });
+
+  // 병실 추가 (react-hook-form용)
+  const onAddRoom = async (values: { name: string; size: string }) => {
+    if (!values.name.trim()) return;
     setMutationLoading(true);
     try {
       const { data } = await apolloClient.mutate({
         mutation: CREATE_HOSPITAL_ROOM_MUTATION,
         variables: {
           wardId: Number(selectedWardId),
-          name: newRoomName.trim(),
-          size: newRoomSize ? Number(newRoomSize) : undefined,
+          name: values.name.trim(),
+          size: values.size ? Number(values.size) : undefined,
         },
       });
       if (data?.createMyHospitalRoom?.success) {
         toast.success("병실이 추가되었습니다.");
-        setNewRoomName("");
-        setNewRoomSize("6");
+        reset();
         refetch();
       } else {
         toast.error(data?.createMyHospitalRoom?.message || "추가 실패");
@@ -186,24 +194,30 @@ export default function HospitalRoomsPage() {
             </select>
           </div>
           {/* 병실 추가 폼 */}
-          <form onSubmit={handleAddRoom} className="flex gap-2 mb-4 justify-center">
-            <Input
-              value={newRoomName}
-              onChange={e => setNewRoomName(e.target.value)}
-              placeholder="새 병실명 입력"
+          <form onSubmit={handleSubmit(onAddRoom)} className="flex gap-2 mb-4 justify-center items-end">
+            <LabelInput
+              label="병실명"
+              {...register("name", { required: "병실명을 입력하세요." })}
+              errors={errors.name?.message}
               className="w-40"
               disabled={mutationLoading}
             />
-            <input
+            <LabelInput
+              label="인원수"
               type="number"
-              value={newRoomSize}
-              onChange={e => setNewRoomSize(e.target.value.replace(/[^0-9]/g, ""))}
               min={1}
-              className="w-24 border rounded px-2 py-1"
+              {...register("size", {
+                required: "인원수를 입력하세요.",
+                pattern: {
+                  value: /^\d+$/,
+                  message: "숫자만 입력하세요.",
+                },
+              })}
+              errors={errors.size?.message}
+              className="w-24"
               disabled={mutationLoading}
-              step={1}
             />
-            <Button type="submit" disabled={mutationLoading || !newRoomName.trim()} className="cursor-pointer">추가</Button>
+            <Button type="submit" disabled={mutationLoading} className="cursor-pointer">추가</Button>
           </form>
           {queryLoading ? (
             <div className="text-center text-muted-foreground py-8">로딩 중...</div>

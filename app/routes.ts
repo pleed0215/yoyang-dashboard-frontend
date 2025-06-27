@@ -27,6 +27,10 @@ export default [
       route('/parts', 'features/common/pages/hospitals/hospital-parts.tsx'),
       route('/comittees', 'features/common/pages/hospitals/hospital-comittees.tsx'),
     ]),
+    ...prefix('/employees', [
+      index('features/common/pages/employees/employee-index.tsx'),
+      route('/add', 'features/common/pages/employees/employee-add.tsx'),
+    ]),
     ...prefix('/staff', [
       index('features/staff/pages/staff-dashboard-index.tsx'),
       ...prefix('/hospitals', [

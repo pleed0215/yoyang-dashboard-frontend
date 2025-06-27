@@ -20,6 +20,33 @@ type RoleBasedMenus = {
   [UserRole.Staff]: StaffMenus;
 };
 
+// 공통 병원 관련 메뉴
+export const commonMenus = {
+  hospital: {
+    title: '병원 관련',
+    path: '/hospitals',
+    icon: Building2,
+    children: [
+      { title: '병원 종합 정보', path: '/hospitals', icon: Info },
+      { title: '부서 관리', path: '/hospitals/parts', icon: Building },
+      { title: '직책 관리', path: '/hospitals/positions', icon: UserCheck },
+      { title: '직무 관리', path: '/hospitals/duties', icon: Briefcase },
+      { title: '병동 관리', path: '/hospitals/wards', icon: Bed },
+      { title: '병실 관리', path: '/hospitals/rooms', icon: DoorOpen },
+    ],
+  },
+
+  employee: {
+    title: '직원 관련',
+    path: '/employees',
+    icon: Users,
+    children: [
+      { title: '직원 목록', path: '/employees', icon: List },
+      { title: '직원 추가', path: '/employees/add', icon: UserPlus },
+    ],
+  }
+};
+
 export const roleBasedMenus: RoleBasedMenus = {
   [UserRole.Super]: [
     {
@@ -72,43 +99,9 @@ export const roleBasedMenus: RoleBasedMenus = {
         },
       ],
     },
-    {
-      title: '병원 관련',
-      path: '/hospitals',
-      icon: Building2,
-      children: [
-        {
-          title: '병원 종합 정보',
-          path: '/hospitals',
-          icon: Info,
-        },
-        {
-          title: '부서 관리',
-          path: '/hospitals/parts',
-          icon: Building,
-        },
-        {
-          title: '직책 관리',
-          path: '/hospitals/positions',
-          icon: UserCheck,
-        },
-        {
-          title: '직무 관리',
-          path: '/hospitals/duties',
-          icon: Briefcase,
-        },
-        {
-          title: '병동 관리',
-          path: '/hospitals/wards',
-          icon: Bed,
-        },
-        {
-          title: '병실 관리',
-          path: '/hospitals/rooms',
-          icon: DoorOpen,
-        },
-      ],
-    },
+    // 병원 관련 메뉴를 공통 메뉴로 대체
+    commonMenus.hospital,
+    commonMenus.employee,
   ],
   [UserRole.Staff]: {
     withoutHospital: [
@@ -130,43 +123,9 @@ export const roleBasedMenus: RoleBasedMenus = {
       },
     ],
     withHospital: [
-      {
-        title: '병원 관련',
-        path: '/hospitals',
-        icon: Building2,
-        children: [
-          {
-            title: '병원 종합 정보',
-            path: '/hospitals',
-            icon: Info,
-          },
-          {
-            title: '부서 관리',
-            path: '/hospitals/parts',
-            icon: Building,
-          },
-          {
-            title: '직책 관리',
-            path: '/hospitals/positions',
-            icon: UserCheck,
-          },
-          {
-            title: '직무 관리',
-            path: '/hospitals/duties',
-            icon: Briefcase,
-          },
-          {
-            title: '병동 관리',
-            path: '/hospitals/wards',
-            icon: Bed,
-          },
-          {
-            title: '병실 관리',
-            path: '/hospitals/rooms',
-            icon: DoorOpen,
-          },
-        ],
-      },
+      // 병원 관련 메뉴를 공통 메뉴로 대체
+      commonMenus.hospital,
+      commonMenus.employee,
     ],
   },
 };
