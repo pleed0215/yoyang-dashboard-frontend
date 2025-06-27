@@ -241,7 +241,6 @@ export const RETRIEVE_JOIN_REQUEST_QUERY = gql`
   }
 `;
 
-
 export const ACCEPT_JOIN_REQUEST_MUTATION = gql`
   mutation AcceptJoinRequest($requestId: Int!) {
     acceptJoinRequest(requestId: $requestId) {
@@ -358,6 +357,102 @@ export const UNLINK_MANY_USER_FROM_HOSPITAL_FOR_ADMIN_MUTATION=gql`
 export const UNLINK_USER_FROM_HOSPITAL_FOR_ADMIN_MUTATION=gql`
   mutation UnlinkUserFromHospitalForAdmin($input: UserIdInput!) {
     unlinkUserForAdmin(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const RETRIEVE_MY_HOSPITAL_DUTIES_QUERY = gql`
+  query RetrieveMyHospitalDuties {
+    retrieveMyHospitalDuties {
+      success
+      message
+      data {
+        name
+      }
+    }
+  }
+`;
+
+export const RETRIEVE_MY_HOSPITAL_POSITIONS_QUERY = gql`
+  query RetrieveMyHospitalPositions {
+    retrieveMyHospitalPositions {
+      success
+      message
+      data {
+        name
+      }
+    }
+  }
+`;
+
+export const RETRIEVE_MY_HOSPITAL_PARTS_QUERY = gql`
+  query RetrieveMyHospitalParts {
+    retrieveMyHospitalParts {
+      success
+      message
+      data {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const RETRIEVE_MY_HOSPITAL_WARDS_QUERY = gql`
+  query RetrieveMyHospitalWards {
+    retrieveMyHospitalWards {
+      success
+      message
+      data {
+        name
+      }
+    }
+  }
+`;
+
+export const RETRIEVE_MY_HOSPITAL_COMMITTEES_QUERY = gql`
+  query RetrieveMyHospitalCommittees {
+    retrieveMyHospitalCommittees {
+      success
+      message
+      data {
+        name
+      }
+    }
+  }
+`;
+
+export const CREATE_HOSPITAL_PART_MUTATION = gql`
+  mutation CreateMyHospitalPart($name: String!) {
+    createMyHospitalPart(name: $name) {
+      success
+      message
+      data {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const UPDATE_HOSPITAL_PART_MUTATION = gql`
+  mutation UpdateHospitalPart($partId: Int!, $name: String!) {
+    updateHospitalPart(partId: $partId, name: $name) {
+      success
+      message
+      data {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const DELETE_HOSPITAL_PART_MUTATION = gql`
+  mutation DeleteHospitalPart($partId: Int!) {
+    deleteHospitalPart(partId: $partId) {
       success
       message
     }

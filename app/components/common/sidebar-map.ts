@@ -33,6 +33,7 @@ export const commonMenus = {
       { title: '직무 관리', path: '/hospitals/duties', icon: Briefcase },
       { title: '병동 관리', path: '/hospitals/wards', icon: Bed },
       { title: '병실 관리', path: '/hospitals/rooms', icon: DoorOpen },
+      { title: '위원회 관리', path: '/hospitals/comittees', icon: Users },
     ],
   },
 

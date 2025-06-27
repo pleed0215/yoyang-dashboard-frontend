@@ -1,5 +1,5 @@
-import { Route } from "./+types/staff-hospital-wards";
-import { gql, useApolloClient } from "@apollo/client";
+import { Route } from "./+types/hospital-wards";
+import { useApolloClient } from "@apollo/client";
 import { useLoaderData } from "react-router";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "~/components/ui/table";
@@ -8,18 +8,7 @@ import { serverApolloClient } from "~/lib/apollo-client-server";
 import { RetrieveMyHospitalWardsQuery } from "~/graphql/types";
 import { contextWithToken } from "~/lib/apollo";
 import { useEffect } from "react";
-
-const RETRIEVE_MY_HOSPITAL_WARDS_QUERY = gql`
-  query RetrieveMyHospitalWards {
-    retrieveMyHospitalWards {
-      success
-      message
-      data {
-        name
-      }
-    }
-  }
-`;
+import { RETRIEVE_MY_HOSPITAL_WARDS_QUERY } from "~/graphql/queries";
 
 export const loader = async ({request}:Route.LoaderArgs) => {
   try {

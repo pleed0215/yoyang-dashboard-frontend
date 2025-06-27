@@ -1,59 +1,18 @@
 import { useState } from "react";
-import { gql, useApolloClient, useQuery } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client";
+import { 
+  RETRIEVE_MY_HOSPITAL_PARTS_QUERY,
+  CREATE_HOSPITAL_PART_MUTATION,
+  UPDATE_HOSPITAL_PART_MUTATION,
+  DELETE_HOSPITAL_PART_MUTATION
+} from "~/graphql/queries";
+import { gql } from "@apollo/client";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "~/components/ui/table";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { toast } from "sonner";
-
-const RETRIEVE_MY_HOSPITAL_PARTS_QUERY = gql`
-  query RetrieveMyHospitalParts {
-    retrieveMyHospitalParts {
-      success
-      message
-      data {
-        id
-        name
-      }
-    }
-  }
-`;
-
-const CREATE_HOSPITAL_PART_MUTATION = gql`
-  mutation CreateMyHospitalPart($name: String!) {
-    createMyHospitalPart(name: $name) {
-      success
-      message
-      data {
-        id
-        name
-      }
-    }
-  }
-`;
-
-const UPDATE_HOSPITAL_PART_MUTATION = gql`
-  mutation UpdateHospitalPart($partId: Int!, $name: String!) {
-    updateHospitalPart(partId: $partId, name: $name) {
-      success
-      message
-      data {
-        id
-        name
-      }
-    }
-  }
-`;
-
-const DELETE_HOSPITAL_PART_MUTATION = gql`
-  mutation DeleteHospitalPart($partId: Int!) {
-    deleteHospitalPart(partId: $partId) {
-      success
-      message
-    }
-  }
-`;
 
 export const loader = async () => ({ });
 

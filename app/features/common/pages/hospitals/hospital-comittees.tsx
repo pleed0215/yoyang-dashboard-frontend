@@ -1,4 +1,4 @@
-import { Route } from "./+types/staff-hospital-comittees";
+import { Route } from "./+types/hospital-comittees";
 import { gql, useApolloClient } from "@apollo/client";
 import { useLoaderData } from "react-router";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
