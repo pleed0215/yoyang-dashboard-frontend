@@ -1,8 +1,8 @@
-import { CommonState, UserRole } from '~/graphql/types';
+import { CommonState, UserRole, EmployeeState } from '~/graphql/types';
 
 export const stateBadgeVariant: Record<
   CommonState,
-  'default' | 'warning' | 'secondary' | 'destructive'
+  'default' | 'secondary' | 'destructive' | 'outline'
 > = {
   [CommonState.Active]: 'default',
   [CommonState.Pending]: 'secondary',
@@ -19,6 +19,19 @@ export const stateLabel: Record<CommonState, string> = {
   [CommonState.Inactive]: '비활성',
   [CommonState.Accepted]: '승인됨',
   [CommonState.PendingDeletion]: '삭제대기중',
+};
+
+export const employeeStateBadgeVariant: Record<
+  EmployeeState,
+  'default' | 'secondary' | 'destructive'
+> = {
+  [EmployeeState.Active]: 'default',
+  [EmployeeState.Inactive]: 'secondary',
+};
+
+export const employeeStateLabel: Record<EmployeeState, string> = {
+  [EmployeeState.Active]: '재직중',
+  [EmployeeState.Inactive]: '퇴사',
 };
 
 export const roleLabel: Record<UserRole, string> = {

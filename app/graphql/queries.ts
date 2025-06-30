@@ -369,6 +369,7 @@ export const RETRIEVE_MY_HOSPITAL_DUTIES_QUERY = gql`
       success
       message
       data {
+        id
         name
       }
     }
@@ -381,6 +382,7 @@ export const RETRIEVE_MY_HOSPITAL_POSITIONS_QUERY = gql`
       success
       message
       data {
+        id
         name
       }
     }

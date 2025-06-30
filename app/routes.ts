@@ -30,6 +30,7 @@ export default [
     ...prefix('/employees', [
       index('features/common/pages/employees/employee-index.tsx'),
       route('/add', 'features/common/pages/employees/employee-add.tsx'),
+      route('/:employeeId', 'features/common/pages/employees/employee-detail.tsx'),
     ]),
     ...prefix('/staff', [
       index('features/staff/pages/staff-dashboard-index.tsx'),
