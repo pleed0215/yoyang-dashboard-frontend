@@ -1141,7 +1141,7 @@ export type CreateEmployeeMutation = { __typename?: 'Mutation', createEmployee: 
 export type RetrieveMyHospitalEmployeesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RetrieveMyHospitalEmployeesQuery = { __typename?: 'Query', retrieveMyHospitalEmployees: { __typename?: 'EmployeesOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'EmployeeType', id: string, name: string, state: EmployeeState, enterDate?: any | null, leaveDate?: any | null, cellPhone?: string | null, birthDate?: any | null, position?: { __typename?: 'HospitalPositionType', name: string } | null, duty?: { __typename?: 'HospitalDutyType', name: string } | null }> | null } };
+export type RetrieveMyHospitalEmployeesQuery = { __typename?: 'Query', retrieveMyHospitalEmployees: { __typename?: 'EmployeesOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'EmployeeType', id: string, name: string, state: EmployeeState, enterDate?: any | null, leaveDate?: any | null, cellPhone?: string | null, birthDate?: any | null, position?: { __typename?: 'HospitalPositionType', id: string, name: string } | null, duty?: { __typename?: 'HospitalDutyType', id: string, name: string } | null }> | null } };
 
 export type UpdateEmployeeMutationVariables = Exact<{
   employeeId: Scalars['Int']['input'];

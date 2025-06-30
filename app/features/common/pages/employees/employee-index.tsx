@@ -34,9 +34,11 @@ const RETRIEVE_MY_HOSPITAL_EMPLOYEES_QUERY = gql`
         birthDate
         state
         position {
+          id
           name
         }
         duty {
+          id
           name
         }
       }
@@ -85,8 +87,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 interface EmployeeEditState {
   [key: string]: {
-    position: string;
-    duty: string;
+    positionId: string | null;
+    dutyId: string | null;
     state: string;
     hasChanges: boolean;
   };
@@ -133,7 +135,7 @@ export default function EmployeeIndexPage({ loaderData }: Route.ComponentProps) 
       ...prev,
       [employeeId]: {
         ...prev[employeeId],
-        position,
+        positionId: currentPositions.find(p => p.name === position)?.id || null,
         hasChanges: true,
       }
     }));
@@ -144,7 +146,7 @@ export default function EmployeeIndexPage({ loaderData }: Route.ComponentProps) 
       ...prev,
       [employeeId]: {
         ...prev[employeeId],
-        duty,
+        dutyId: currentDuties.find(d => d.name === duty)?.id || null,
         hasChanges: true,
       }
     }));
@@ -172,11 +174,11 @@ export default function EmployeeIndexPage({ loaderData }: Route.ComponentProps) 
       const input: any = {};
       
       // 변경된 필드만 input에 추가
-      if (changes.position && changes.position !== employee.position?.name) {
-        input.position = changes.position;
+      if (changes.positionId && changes.positionId !== employee.position?.id) {
+        input.positionId = parseInt(changes.positionId);
       }
-      if (changes.duty && changes.duty !== employee.duty?.name) {
-        input.duty = changes.duty;
+      if (changes.dutyId && changes.dutyId !== employee.duty?.id) {
+        input.dutyId = parseInt(changes.dutyId);
       }
       if (changes.state && changes.state !== employee.state) {
         input.state = changes.state;
@@ -192,7 +194,9 @@ export default function EmployeeIndexPage({ loaderData }: Route.ComponentProps) 
         variables: {
           employeeId: parseInt(employeeId),
           input
-        }
+        },
+        // 성공 시 직원 목록을 다시 가져옴
+        refetchQueries: ['RetrieveMyHospitalEmployees']
       });
 
       if (result.data?.updateEmployee?.success) {
@@ -318,7 +322,7 @@ export default function EmployeeIndexPage({ loaderData }: Route.ComponentProps) 
                       </TableCell>
                       <TableCell className="text-center w-36">
                         <Select
-                          value={editState[employee.id]?.position || employee.position?.name || ''}
+                          value={editState[employee.id]?.positionId ? currentPositions.find(p => p.id === editState[employee.id]?.positionId)?.name : employee.position?.name || ''}
                           onValueChange={(value) => handlePositionChange(employee.id, value)}
                         >
                           <SelectTrigger className="w-36">
@@ -335,7 +339,7 @@ export default function EmployeeIndexPage({ loaderData }: Route.ComponentProps) 
                       </TableCell>
                       <TableCell className="text-center w-36">
                         <Select
-                          value={editState[employee.id]?.duty || employee.duty?.name || ''}
+                          value={editState[employee.id]?.dutyId ? currentDuties.find(d => d.id === editState[employee.id]?.dutyId)?.name : employee.duty?.name || ''}
                           onValueChange={(value) => handleDutyChange(employee.id, value)}
                         >
                           <SelectTrigger className="w-36">

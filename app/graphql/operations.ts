@@ -56,9 +56,11 @@ export const RetrieveMyHospitalEmployeesDocument = gql`
       birthDate
       state
       position {
+        id
         name
       }
       duty {
+        id
         name
       }
     }
