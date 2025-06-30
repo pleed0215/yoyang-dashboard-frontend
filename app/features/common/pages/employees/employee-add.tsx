@@ -20,6 +20,10 @@ import { RetrieveMyHospitalDutiesQuery, RetrieveMyHospitalPositionsQuery } from 
 import { contextWithToken } from "~/lib/apollo";
 import { RETRIEVE_MY_HOSPITAL_DUTIES_QUERY, RETRIEVE_MY_HOSPITAL_POSITIONS_QUERY } from "~/graphql/queries";
 import { gql } from "@apollo/client";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { DateTime } from 'luxon';
 
 const CREATE_EMPLOYEE_MUTATION = gql`
   mutation CreateEmployee($input: EmployeeCreateInput!) {
@@ -32,6 +36,59 @@ const CREATE_EMPLOYEE_MUTATION = gql`
     }
   }
 `;
+
+// Zod 스키마 정의
+const employeeSchema = z.object({
+  name: z.string().min(1, '이름을 입력해주세요'),
+  positionId: z.string().min(1, '직책을 선택해주세요'),
+  dutyId: z.string().min(1, '직위를 선택해주세요'),
+  state: z.nativeEnum(EmployeeState),
+  enterDate: z.string().optional(),
+  leaveDate: z.string().optional(),
+  cellPhone: z.string().optional(),
+  birthDate: z.string().optional(),
+}).refine((data) => {
+  // 입사일과 퇴사일 검증
+  if (data.enterDate && data.leaveDate) {
+    const enterDate = DateTime.fromISO(data.enterDate);
+    const leaveDate = DateTime.fromISO(data.leaveDate);
+    return enterDate.isValid && leaveDate.isValid && enterDate <= leaveDate;
+  }
+  return true;
+}, {
+  message: '퇴사일은 입사일 이후여야 합니다',
+  path: ['leaveDate'],
+}).refine((data) => {
+  // 날짜 유효성 검증
+  if (data.enterDate) {
+    const date = DateTime.fromISO(data.enterDate);
+    return date.isValid;
+  }
+  return true;
+}, {
+  message: '유효한 입사일을 입력해주세요',
+  path: ['enterDate'],
+}).refine((data) => {
+  if (data.leaveDate) {
+    const date = DateTime.fromISO(data.leaveDate);
+    return date.isValid;
+  }
+  return true;
+}, {
+  message: '유효한 퇴사일을 입력해주세요',
+  path: ['leaveDate'],
+}).refine((data) => {
+  if (data.birthDate) {
+    const date = DateTime.fromISO(data.birthDate);
+    return date.isValid;
+  }
+  return true;
+}, {
+  message: '유효한 생년월일을 입력해주세요',
+  path: ['birthDate'],
+});
+
+type EmployeeFormData = z.infer<typeof employeeSchema>;
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   try {
@@ -63,34 +120,12 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   }
 };
 
-interface EmployeeFormData {
-  name: string;
-  positionId: string;
-  dutyId: string;
-  state: EmployeeState;
-  enterDate: string;
-  leaveDate: string;
-  cellPhone: string;
-  birthDate: string;
-}
-
 export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
   const { positions, duties } = loaderData;
   
   const { data: userData } = useMeQuery();
   const [createEmployee, { loading }] = useMutation(CREATE_EMPLOYEE_MUTATION);
-  
-  const [formData, setFormData] = useState<EmployeeFormData>({
-    name: '',
-    positionId: '',
-    dutyId: '',
-    state: EmployeeState.Active,
-    enterDate: '',
-    leaveDate: '',
-    cellPhone: '',
-    birthDate: '',
-  });
   
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [selectedDates, setSelectedDates] = useState<{
@@ -99,12 +134,25 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
     birthDate?: Date;
   }>({});
 
-  const handleInputChange = (field: keyof EmployeeFormData, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<EmployeeFormData>({
+    resolver: zodResolver(employeeSchema),
+    defaultValues: {
+      name: '',
+      positionId: '',
+      dutyId: '',
+      state: EmployeeState.Active,
+      enterDate: '',
+      leaveDate: '',
+      cellPhone: '',
+      birthDate: '',
+    },
+  });
 
   const handleDateSelect = (field: 'enterDate' | 'leaveDate' | 'birthDate', date: Date | undefined) => {
     setSelectedDates(prev => ({
@@ -114,15 +162,9 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
     
     if (date) {
       const formattedDate = format(date, 'yyyy-MM-dd');
-      setFormData(prev => ({
-        ...prev,
-        [field]: formattedDate
-      }));
+      setValue(field, formattedDate);
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [field]: ''
-      }));
+      setValue(field, '');
     }
   };
 
@@ -134,21 +176,21 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
     } else if (numbers.length <= 6) {
       return `${numbers.slice(0, 4)}-${numbers.slice(4)}`;
     } else {
-      return `${numbers.slice(0, 4)}-${numbers.slice(4, 6)}-${numbers.slice(6, 8)}`;
+      const year = numbers.slice(0, 4);
+      const month = numbers.slice(4, 6);
+      const day = numbers.slice(6, 8);
+      
+      // 기본 포맷팅은 항상 수행하고, 유효성 검사는 별도로
+      return `${year}-${month}-${day}`;
     }
   };
 
   const handleDateInputChange = (field: 'enterDate' | 'leaveDate' | 'birthDate', value: string) => {
     const formattedValue = formatDateInput(value);
-    setFormData(prev => ({
-      ...prev,
-      [field]: formattedValue
-    }));
+    setValue(field, formattedValue);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = async (data: EmployeeFormData) => {
     if (!userData?.me?.data?.hospitalId) {
       alert('병원 정보를 찾을 수 없습니다.');
       return;
@@ -158,15 +200,15 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
       const result = await createEmployee({
         variables: {
           input: {
-            name: formData.name,
+            name: data.name,
             hospitalId: userData.me.data.hospitalId,
-            positionId: formData.positionId ? parseInt(formData.positionId) : undefined,
-            dutyId: formData.dutyId ? parseInt(formData.dutyId) : undefined,
-            state: formData.state,
-            enterDate: formData.enterDate || undefined,
-            leaveDate: formData.leaveDate || undefined,
-            cellPhone: formData.cellPhone || undefined,
-            birthDate: formData.birthDate || undefined,
+            positionId: data.positionId ? parseInt(data.positionId) : undefined,
+            dutyId: data.dutyId ? parseInt(data.dutyId) : undefined,
+            state: data.state,
+            enterDate: data.enterDate || undefined,
+            leaveDate: data.leaveDate || undefined,
+            cellPhone: data.cellPhone || undefined,
+            birthDate: data.birthDate || undefined,
           }
         }
       });
@@ -206,27 +248,27 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
           <CardTitle>새 직원 등록</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* 이름 */}
               <div className="space-y-2">
                 <Label htmlFor="name">이름 *</Label>
                 <Input
                   id="name"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  {...register('name')}
                   placeholder="직원 이름을 입력하세요"
-                  required
                 />
+                {errors.name && (
+                  <p className="text-sm text-red-500">{errors.name.message}</p>
+                )}
               </div>
 
               {/* 직책 */}
               <div className="space-y-2">
                 <Label htmlFor="position">직책 *</Label>
                 <Select
-                  value={formData.positionId}
-                  onValueChange={(value) => handleInputChange('positionId', value)}
-                  required
+                  value={watch('positionId')}
+                  onValueChange={(value) => setValue('positionId', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="직책을 선택하세요" />
@@ -239,15 +281,17 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.positionId && (
+                  <p className="text-sm text-red-500">{errors.positionId.message}</p>
+                )}
               </div>
 
               {/* 직위 */}
               <div className="space-y-2">
                 <Label htmlFor="duty">직위 *</Label>
                 <Select
-                  value={formData.dutyId}
-                  onValueChange={(value) => handleInputChange('dutyId', value)}
-                  required
+                  value={watch('dutyId')}
+                  onValueChange={(value) => setValue('dutyId', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="직위를 선택하세요" />
@@ -260,15 +304,17 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.dutyId && (
+                  <p className="text-sm text-red-500">{errors.dutyId.message}</p>
+                )}
               </div>
 
               {/* 상태 */}
               <div className="space-y-2">
                 <Label htmlFor="state">상태 *</Label>
                 <Select
-                  value={formData.state}
-                  onValueChange={(value) => handleInputChange('state', value as EmployeeState)}
-                  required
+                  value={watch('state')}
+                  onValueChange={(value) => setValue('state', value as EmployeeState)}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -278,6 +324,9 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
                     <SelectItem value={EmployeeState.Inactive}>퇴사</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.state && (
+                  <p className="text-sm text-red-500">{errors.state.message}</p>
+                )}
               </div>
 
               {/* 입사일 */}
@@ -286,7 +335,7 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
                 <div className="flex space-x-2">
                   <Input
                     id="enterDate"
-                    value={formData.enterDate}
+                    value={watch('enterDate')}
                     onChange={(e) => handleDateInputChange('enterDate', e.target.value)}
                     placeholder="YYYY-MM-DD"
                     maxLength={10}
@@ -307,6 +356,9 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
                     </PopoverContent>
                   </Popover>
                 </div>
+                {errors.enterDate && (
+                  <p className="text-sm text-red-500">{errors.enterDate.message}</p>
+                )}
               </div>
 
               {/* 퇴사일 */}
@@ -315,7 +367,7 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
                 <div className="flex space-x-2">
                   <Input
                     id="leaveDate"
-                    value={formData.leaveDate}
+                    value={watch('leaveDate')}
                     onChange={(e) => handleDateInputChange('leaveDate', e.target.value)}
                     placeholder="YYYY-MM-DD"
                     maxLength={10}
@@ -336,6 +388,9 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
                     </PopoverContent>
                   </Popover>
                 </div>
+                {errors.leaveDate && (
+                  <p className="text-sm text-red-500">{errors.leaveDate.message}</p>
+                )}
               </div>
 
               {/* 휴대전화 */}
@@ -343,10 +398,12 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
                 <Label htmlFor="cellPhone">휴대전화</Label>
                 <Input
                   id="cellPhone"
-                  value={formData.cellPhone}
-                  onChange={(e) => handleInputChange('cellPhone', e.target.value)}
+                  {...register('cellPhone')}
                   placeholder="010-1234-5678"
                 />
+                {errors.cellPhone && (
+                  <p className="text-sm text-red-500">{errors.cellPhone.message}</p>
+                )}
               </div>
 
               {/* 생년월일 */}
@@ -355,7 +412,7 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
                 <div className="flex space-x-2">
                   <Input
                     id="birthDate"
-                    value={formData.birthDate}
+                    value={watch('birthDate')}
                     onChange={(e) => handleDateInputChange('birthDate', e.target.value)}
                     placeholder="YYYY-MM-DD"
                     maxLength={10}
@@ -376,6 +433,9 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
                     </PopoverContent>
                   </Popover>
                 </div>
+                {errors.birthDate && (
+                  <p className="text-sm text-red-500">{errors.birthDate.message}</p>
+                )}
               </div>
             </div>
 

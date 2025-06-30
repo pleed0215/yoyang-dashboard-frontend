@@ -8,18 +8,8 @@ import { serverApolloClient } from "~/lib/apollo-client-server";
 import { RetrieveMyHospitalCommitteesQuery } from "~/graphql/types";
 import { contextWithToken } from "~/lib/apollo";
 import { useEffect } from "react";
+import { RETRIEVE_MY_HOSPITAL_COMMITTEES_QUERY } from "~/graphql/queries";
 
-const RETRIEVE_MY_HOSPITAL_COMMITTEES_QUERY = gql`
-  query RetrieveMyHospitalCommittees {
-    retrieveMyHospitalCommittees {
-        success
-        message
-        data {
-            name
-        }
-    }
-  }
-`;
 
 export const loader = async ({request}:Route.LoaderArgs) => {
   try {

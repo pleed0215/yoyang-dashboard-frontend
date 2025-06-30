@@ -408,6 +408,7 @@ export const RETRIEVE_MY_HOSPITAL_WARDS_QUERY = gql`
       success
       message
       data {
+        id
         name
       }
     }
@@ -420,6 +421,7 @@ export const RETRIEVE_MY_HOSPITAL_COMMITTEES_QUERY = gql`
       success
       message
       data {
+        id
         name
       }
     }

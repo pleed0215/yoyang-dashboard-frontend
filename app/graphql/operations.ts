@@ -41,6 +41,82 @@ export function useCreateEmployeeMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateEmployeeMutationHookResult = ReturnType<typeof useCreateEmployeeMutation>;
 export type CreateEmployeeMutationResult = Apollo.MutationResult<Types.CreateEmployeeMutation>;
 export type CreateEmployeeMutationOptions = Apollo.BaseMutationOptions<Types.CreateEmployeeMutation, Types.CreateEmployeeMutationVariables>;
+export const GetEmployeeDocument = gql`
+    query GetEmployee($employeeId: Int!) {
+  getEmployee(employeeId: $employeeId) {
+    success
+    message
+    data {
+      id
+      name
+      createdAt
+      updatedAt
+      enterDate
+      leaveDate
+      state
+      birthDate
+      cellPhone
+      position {
+        id
+        name
+      }
+      duty {
+        id
+        name
+      }
+      ward {
+        id
+        name
+      }
+      committees {
+        id
+        name
+      }
+      rooms {
+        id
+        name
+      }
+      parts {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetEmployeeQuery__
+ *
+ * To run a query within a React component, call `useGetEmployeeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEmployeeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEmployeeQuery({
+ *   variables: {
+ *      employeeId: // value for 'employeeId'
+ *   },
+ * });
+ */
+export function useGetEmployeeQuery(baseOptions: Apollo.QueryHookOptions<Types.GetEmployeeQuery, Types.GetEmployeeQueryVariables> & ({ variables: Types.GetEmployeeQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetEmployeeQuery, Types.GetEmployeeQueryVariables>(GetEmployeeDocument, options);
+      }
+export function useGetEmployeeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetEmployeeQuery, Types.GetEmployeeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetEmployeeQuery, Types.GetEmployeeQueryVariables>(GetEmployeeDocument, options);
+        }
+export function useGetEmployeeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetEmployeeQuery, Types.GetEmployeeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetEmployeeQuery, Types.GetEmployeeQueryVariables>(GetEmployeeDocument, options);
+        }
+export type GetEmployeeQueryHookResult = ReturnType<typeof useGetEmployeeQuery>;
+export type GetEmployeeLazyQueryHookResult = ReturnType<typeof useGetEmployeeLazyQuery>;
+export type GetEmployeeSuspenseQueryHookResult = ReturnType<typeof useGetEmployeeSuspenseQuery>;
+export type GetEmployeeQueryResult = Apollo.QueryResult<Types.GetEmployeeQuery, Types.GetEmployeeQueryVariables>;
 export const RetrieveMyHospitalEmployeesDocument = gql`
     query RetrieveMyHospitalEmployees {
   retrieveMyHospitalEmployees {
@@ -134,49 +210,6 @@ export function useUpdateEmployeeMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateEmployeeMutationHookResult = ReturnType<typeof useUpdateEmployeeMutation>;
 export type UpdateEmployeeMutationResult = Apollo.MutationResult<Types.UpdateEmployeeMutation>;
 export type UpdateEmployeeMutationOptions = Apollo.BaseMutationOptions<Types.UpdateEmployeeMutation, Types.UpdateEmployeeMutationVariables>;
-export const RetrieveMyHospitalCommitteesDocument = gql`
-    query RetrieveMyHospitalCommittees {
-  retrieveMyHospitalCommittees {
-    success
-    message
-    data {
-      name
-    }
-  }
-}
-    `;
-
-/**
- * __useRetrieveMyHospitalCommitteesQuery__
- *
- * To run a query within a React component, call `useRetrieveMyHospitalCommitteesQuery` and pass it any options that fit your needs.
- * When your component renders, `useRetrieveMyHospitalCommitteesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRetrieveMyHospitalCommitteesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useRetrieveMyHospitalCommitteesQuery(baseOptions?: Apollo.QueryHookOptions<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>(RetrieveMyHospitalCommitteesDocument, options);
-      }
-export function useRetrieveMyHospitalCommitteesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>(RetrieveMyHospitalCommitteesDocument, options);
-        }
-export function useRetrieveMyHospitalCommitteesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>(RetrieveMyHospitalCommitteesDocument, options);
-        }
-export type RetrieveMyHospitalCommitteesQueryHookResult = ReturnType<typeof useRetrieveMyHospitalCommitteesQuery>;
-export type RetrieveMyHospitalCommitteesLazyQueryHookResult = ReturnType<typeof useRetrieveMyHospitalCommitteesLazyQuery>;
-export type RetrieveMyHospitalCommitteesSuspenseQueryHookResult = ReturnType<typeof useRetrieveMyHospitalCommitteesSuspenseQuery>;
-export type RetrieveMyHospitalCommitteesQueryResult = Apollo.QueryResult<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>;
 export const RetrieveMyHospitalWardsAndRoomsDocument = gql`
     query RetrieveMyHospitalWardsAndRooms {
   retrieveMyHospitalWards {
@@ -1602,6 +1635,7 @@ export const RetrieveMyHospitalWardsDocument = gql`
     success
     message
     data {
+      id
       name
     }
   }
@@ -1639,6 +1673,50 @@ export type RetrieveMyHospitalWardsQueryHookResult = ReturnType<typeof useRetrie
 export type RetrieveMyHospitalWardsLazyQueryHookResult = ReturnType<typeof useRetrieveMyHospitalWardsLazyQuery>;
 export type RetrieveMyHospitalWardsSuspenseQueryHookResult = ReturnType<typeof useRetrieveMyHospitalWardsSuspenseQuery>;
 export type RetrieveMyHospitalWardsQueryResult = Apollo.QueryResult<Types.RetrieveMyHospitalWardsQuery, Types.RetrieveMyHospitalWardsQueryVariables>;
+export const RetrieveMyHospitalCommitteesDocument = gql`
+    query RetrieveMyHospitalCommittees {
+  retrieveMyHospitalCommittees {
+    success
+    message
+    data {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useRetrieveMyHospitalCommitteesQuery__
+ *
+ * To run a query within a React component, call `useRetrieveMyHospitalCommitteesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRetrieveMyHospitalCommitteesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRetrieveMyHospitalCommitteesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRetrieveMyHospitalCommitteesQuery(baseOptions?: Apollo.QueryHookOptions<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>(RetrieveMyHospitalCommitteesDocument, options);
+      }
+export function useRetrieveMyHospitalCommitteesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>(RetrieveMyHospitalCommitteesDocument, options);
+        }
+export function useRetrieveMyHospitalCommitteesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>(RetrieveMyHospitalCommitteesDocument, options);
+        }
+export type RetrieveMyHospitalCommitteesQueryHookResult = ReturnType<typeof useRetrieveMyHospitalCommitteesQuery>;
+export type RetrieveMyHospitalCommitteesLazyQueryHookResult = ReturnType<typeof useRetrieveMyHospitalCommitteesLazyQuery>;
+export type RetrieveMyHospitalCommitteesSuspenseQueryHookResult = ReturnType<typeof useRetrieveMyHospitalCommitteesSuspenseQuery>;
+export type RetrieveMyHospitalCommitteesQueryResult = Apollo.QueryResult<Types.RetrieveMyHospitalCommitteesQuery, Types.RetrieveMyHospitalCommitteesQueryVariables>;
 export const CreateMyHospitalPartDocument = gql`
     mutation CreateMyHospitalPart($name: String!) {
   createMyHospitalPart(name: $name) {

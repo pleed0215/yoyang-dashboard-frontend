@@ -1138,6 +1138,13 @@ export type CreateEmployeeMutationVariables = Exact<{
 
 export type CreateEmployeeMutation = { __typename?: 'Mutation', createEmployee: { __typename?: 'EmployeeOutput', success: boolean, message?: string | null, data?: { __typename?: 'EmployeeType', id: string } | null } };
 
+export type GetEmployeeQueryVariables = Exact<{
+  employeeId: Scalars['Int']['input'];
+}>;
+
+
+export type GetEmployeeQuery = { __typename?: 'Query', getEmployee: { __typename?: 'EmployeeOutput', success: boolean, message?: string | null, data?: { __typename?: 'EmployeeType', id: string, name: string, createdAt: any, updatedAt: any, enterDate?: any | null, leaveDate?: any | null, state: EmployeeState, birthDate?: any | null, cellPhone?: string | null, position?: { __typename?: 'HospitalPositionType', id: string, name: string } | null, duty?: { __typename?: 'HospitalDutyType', id: string, name: string } | null, ward?: { __typename?: 'HospitalWardType', id: string, name: string } | null, committees?: Array<{ __typename?: 'HospitalCommitteeType', id: string, name: string }> | null, rooms?: Array<{ __typename?: 'HospitalRoomType', id: string, name: string }> | null, parts?: Array<{ __typename?: 'HospitalPartType', id: string, name: string }> | null } | null } };
+
 export type RetrieveMyHospitalEmployeesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1150,11 +1157,6 @@ export type UpdateEmployeeMutationVariables = Exact<{
 
 
 export type UpdateEmployeeMutation = { __typename?: 'Mutation', updateEmployee: { __typename?: 'EmployeeOutput', success: boolean, message?: string | null } };
-
-export type RetrieveMyHospitalCommitteesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type RetrieveMyHospitalCommitteesQuery = { __typename?: 'Query', retrieveMyHospitalCommittees: { __typename?: 'RetrieveHospitalCommitteesOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'HospitalCommitteeType', name: string }> | null } };
 
 export type RetrieveMyHospitalWardsAndRoomsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1390,7 +1392,12 @@ export type RetrieveMyHospitalPartsQuery = { __typename?: 'Query', retrieveMyHos
 export type RetrieveMyHospitalWardsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RetrieveMyHospitalWardsQuery = { __typename?: 'Query', retrieveMyHospitalWards: { __typename?: 'RetrieveHospitalWardsOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'HospitalWardType', name: string }> | null } };
+export type RetrieveMyHospitalWardsQuery = { __typename?: 'Query', retrieveMyHospitalWards: { __typename?: 'RetrieveHospitalWardsOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'HospitalWardType', id: string, name: string }> | null } };
+
+export type RetrieveMyHospitalCommitteesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RetrieveMyHospitalCommitteesQuery = { __typename?: 'Query', retrieveMyHospitalCommittees: { __typename?: 'RetrieveHospitalCommitteesOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'HospitalCommitteeType', id: string, name: string }> | null } };
 
 export type CreateMyHospitalPartMutationVariables = Exact<{
   name: Scalars['String']['input'];
