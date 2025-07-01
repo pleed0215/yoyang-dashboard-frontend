@@ -5,6 +5,7 @@ import { Calendar } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover';
 import { Calendar as CalendarComponent } from '~/components/ui/calendar';
 import { DateTime } from 'luxon';
+import { ko } from 'date-fns/locale';
 
 interface DateInputProps {
   id: string;
@@ -79,6 +80,8 @@ export default function DateInput({ id, value, onChange, placeholder = "YYYY-MM-
             selected={selectedDate}
             onSelect={handleDateSelect}
             initialFocus
+            captionLayout="dropdown-years"
+            locale={ko}
           />
         </PopoverContent>
       </Popover>
