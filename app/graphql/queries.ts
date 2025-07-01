@@ -389,6 +389,33 @@ export const RETRIEVE_MY_HOSPITAL_POSITIONS_QUERY = gql`
   }
 `;
 
+export const CREATE_MY_HOSPITAL_POSITION_MUTATION = gql`
+  mutation CreateMyHospitalPosition($name: String!) {
+    createMyHospitalPosition(name: $name) {
+      success
+      message
+    }
+  }
+`
+
+export const UPDATE_HOSPITAL_POSITION_MUTATION = gql`
+  mutation UpdateHospitalPosition($positionId: Int!, $name: String!) {
+    updateHospitalPosition(positionId: $positionId, name: $name) {
+      success
+      message
+    }
+  }
+`;
+
+export const DELETE_HOSPITAL_POSITION_MUTATION = gql`
+  mutation DeleteHospitalPosition($positionId: Int!) {
+    deleteHospitalPosition(positionId: $positionId) {
+      success
+      message
+    }
+  }
+`;
+
 export const RETRIEVE_MY_HOSPITAL_PARTS_QUERY = gql`
   query RetrieveMyHospitalParts {
     retrieveMyHospitalParts {
@@ -457,6 +484,60 @@ export const UPDATE_HOSPITAL_PART_MUTATION = gql`
 export const DELETE_HOSPITAL_PART_MUTATION = gql`
   mutation DeleteHospitalPart($partId: Int!) {
     deleteHospitalPart(partId: $partId) {
+      success
+      message
+    }
+  }
+`;
+
+export const CREATE_MY_HOSPITAL_WARD_MUTATION = gql`
+  mutation CreateMyHospitalWard($name: String!) {
+    createMyHospitalWard(name: $name) {
+      success
+      message
+    }
+  }
+`;
+
+export const UPDATE_HOSPITAL_WARD_MUTATION = gql`
+  mutation UpdateHospitalWard($wardId: Int!, $name: String!) {
+    updateHospitalWard(wardId: $wardId, name: $name) {
+      success
+      message
+    }
+  }
+`;
+
+export const DELETE_HOSPITAL_WARD_MUTATION = gql`
+  mutation DeleteHospitalWard($wardId: Int!) {
+    deleteHospitalWard(wardId: $wardId) {
+      success
+      message
+    }
+  }
+`;
+
+export const CREATE_MY_HOSPITAL_COMMITTEE_MUTATION = gql`
+  mutation CreateMyHospitalCommittee($name: String!) {
+    createMyHospitalCommittee(name: $name) {
+      success
+      message
+    }
+  }
+`;
+
+export const UPDATE_HOSPITAL_COMMITTEE_MUTATION = gql`
+  mutation UpdateHospitalCommittee($committeeId: Int!, $name: String!) {
+    updateHospitalCommittee(committeeId: $committeeId, name: $name) {
+      success
+      message
+    }
+  }
+`;
+
+export const DELETE_HOSPITAL_COMMITTEE_MUTATION = gql`
+  mutation DeleteHospitalCommittee($committeeId: Int!) {
+    deleteHospitalCommittee(committeeId: $committeeId) {
       success
       message
     }

@@ -1384,6 +1384,28 @@ export type RetrieveMyHospitalPositionsQueryVariables = Exact<{ [key: string]: n
 
 export type RetrieveMyHospitalPositionsQuery = { __typename?: 'Query', retrieveMyHospitalPositions: { __typename?: 'RetrieveHospitalPositionsOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'HospitalPositionType', id: string, name: string }> | null } };
 
+export type CreateMyHospitalPositionMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type CreateMyHospitalPositionMutation = { __typename?: 'Mutation', createMyHospitalPosition: { __typename?: 'CreateHospitalPositionOutput', success: boolean, message?: string | null } };
+
+export type UpdateHospitalPositionMutationVariables = Exact<{
+  positionId: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+}>;
+
+
+export type UpdateHospitalPositionMutation = { __typename?: 'Mutation', updateHospitalPosition: { __typename?: 'UpdateHospitalPositionOutput', success: boolean, message?: string | null } };
+
+export type DeleteHospitalPositionMutationVariables = Exact<{
+  positionId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteHospitalPositionMutation = { __typename?: 'Mutation', deleteHospitalPosition: { __typename?: 'DeleteHospitalPositionOutput', success: boolean, message?: string | null } };
+
 export type RetrieveMyHospitalPartsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1420,3 +1442,47 @@ export type DeleteHospitalPartMutationVariables = Exact<{
 
 
 export type DeleteHospitalPartMutation = { __typename?: 'Mutation', deleteHospitalPart: { __typename?: 'DeleteHospitalPositionOutput', success: boolean, message?: string | null } };
+
+export type CreateMyHospitalWardMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type CreateMyHospitalWardMutation = { __typename?: 'Mutation', createMyHospitalWard: { __typename?: 'CreateHospitalWardOutput', success: boolean, message?: string | null } };
+
+export type UpdateHospitalWardMutationVariables = Exact<{
+  wardId: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+}>;
+
+
+export type UpdateHospitalWardMutation = { __typename?: 'Mutation', updateHospitalWard: { __typename?: 'UpdateHospitalWardOutput', success: boolean, message?: string | null } };
+
+export type DeleteHospitalWardMutationVariables = Exact<{
+  wardId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteHospitalWardMutation = { __typename?: 'Mutation', deleteHospitalWard: { __typename?: 'DeleteHospitalWardOutput', success: boolean, message?: string | null } };
+
+export type CreateMyHospitalCommitteeMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type CreateMyHospitalCommitteeMutation = { __typename?: 'Mutation', createMyHospitalCommittee: { __typename?: 'CreateHospitalCommitteeOutput', success: boolean, message?: string | null } };
+
+export type UpdateHospitalCommitteeMutationVariables = Exact<{
+  committeeId: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+}>;
+
+
+export type UpdateHospitalCommitteeMutation = { __typename?: 'Mutation', updateHospitalCommittee: { __typename?: 'UpdateHospitalCommitteeOutput', success: boolean, message?: string | null } };
+
+export type DeleteHospitalCommitteeMutationVariables = Exact<{
+  committeeId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteHospitalCommitteeMutation = { __typename?: 'Mutation', deleteHospitalCommittee: { __typename?: 'DeleteHospitalCommitteeOutput', success: boolean, message?: string | null } };

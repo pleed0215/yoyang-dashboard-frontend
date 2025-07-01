@@ -18,6 +18,7 @@ import { employeeStateBadgeVariant, employeeStateLabel } from '~/lib/enum-mappin
 import { EmployeeState } from '~/graphql/types';
 import { toast } from 'sonner';
 import PageInfo from '~/components/common/page-info';
+import { Tooltip, TooltipTrigger, TooltipContent } from '~/components/ui/tooltip';
 
 const RETRIEVE_MY_HOSPITAL_EMPLOYEES_QUERY = gql`
   query RetrieveMyHospitalEmployees {
@@ -375,23 +376,37 @@ export default function EmployeeIndexPage({ loaderData }: Route.ComponentProps) 
                       </TableCell>
                       <TableCell className="text-center w-24">
                         <div className="flex items-center space-x-2 w-20">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => navigate(`/employees/${employee.id}`)}
-                            className="cursor-pointer"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="default"
-                            size="sm"
-                            onClick={() => handleSaveChanges(employee.id)}
-                            disabled={!editState[employee.id]?.hasChanges}
-                            className="cursor-pointer"
-                          >
-                            <Save className="h-4 w-4" />
-                          </Button>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => navigate(`/employees/${employee.id}`)}
+                                className="cursor-pointer"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              상세보기
+                            </TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="default"
+                                size="sm"
+                                onClick={() => handleSaveChanges(employee.id)}
+                                disabled={!editState[employee.id]?.hasChanges}
+                                className="cursor-pointer"
+                              >
+                                <Save className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              저장
+                            </TooltipContent>
+                          </Tooltip>
                         </div>
                       </TableCell>
                     </TableRow>

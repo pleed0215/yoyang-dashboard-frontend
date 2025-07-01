@@ -1585,6 +1585,109 @@ export type RetrieveMyHospitalPositionsQueryHookResult = ReturnType<typeof useRe
 export type RetrieveMyHospitalPositionsLazyQueryHookResult = ReturnType<typeof useRetrieveMyHospitalPositionsLazyQuery>;
 export type RetrieveMyHospitalPositionsSuspenseQueryHookResult = ReturnType<typeof useRetrieveMyHospitalPositionsSuspenseQuery>;
 export type RetrieveMyHospitalPositionsQueryResult = Apollo.QueryResult<Types.RetrieveMyHospitalPositionsQuery, Types.RetrieveMyHospitalPositionsQueryVariables>;
+export const CreateMyHospitalPositionDocument = gql`
+    mutation CreateMyHospitalPosition($name: String!) {
+  createMyHospitalPosition(name: $name) {
+    success
+    message
+  }
+}
+    `;
+export type CreateMyHospitalPositionMutationFn = Apollo.MutationFunction<Types.CreateMyHospitalPositionMutation, Types.CreateMyHospitalPositionMutationVariables>;
+
+/**
+ * __useCreateMyHospitalPositionMutation__
+ *
+ * To run a mutation, you first call `useCreateMyHospitalPositionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMyHospitalPositionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMyHospitalPositionMutation, { data, loading, error }] = useCreateMyHospitalPositionMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateMyHospitalPositionMutation(baseOptions?: Apollo.MutationHookOptions<Types.CreateMyHospitalPositionMutation, Types.CreateMyHospitalPositionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.CreateMyHospitalPositionMutation, Types.CreateMyHospitalPositionMutationVariables>(CreateMyHospitalPositionDocument, options);
+      }
+export type CreateMyHospitalPositionMutationHookResult = ReturnType<typeof useCreateMyHospitalPositionMutation>;
+export type CreateMyHospitalPositionMutationResult = Apollo.MutationResult<Types.CreateMyHospitalPositionMutation>;
+export type CreateMyHospitalPositionMutationOptions = Apollo.BaseMutationOptions<Types.CreateMyHospitalPositionMutation, Types.CreateMyHospitalPositionMutationVariables>;
+export const UpdateHospitalPositionDocument = gql`
+    mutation UpdateHospitalPosition($positionId: Int!, $name: String!) {
+  updateHospitalPosition(positionId: $positionId, name: $name) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateHospitalPositionMutationFn = Apollo.MutationFunction<Types.UpdateHospitalPositionMutation, Types.UpdateHospitalPositionMutationVariables>;
+
+/**
+ * __useUpdateHospitalPositionMutation__
+ *
+ * To run a mutation, you first call `useUpdateHospitalPositionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateHospitalPositionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateHospitalPositionMutation, { data, loading, error }] = useUpdateHospitalPositionMutation({
+ *   variables: {
+ *      positionId: // value for 'positionId'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useUpdateHospitalPositionMutation(baseOptions?: Apollo.MutationHookOptions<Types.UpdateHospitalPositionMutation, Types.UpdateHospitalPositionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UpdateHospitalPositionMutation, Types.UpdateHospitalPositionMutationVariables>(UpdateHospitalPositionDocument, options);
+      }
+export type UpdateHospitalPositionMutationHookResult = ReturnType<typeof useUpdateHospitalPositionMutation>;
+export type UpdateHospitalPositionMutationResult = Apollo.MutationResult<Types.UpdateHospitalPositionMutation>;
+export type UpdateHospitalPositionMutationOptions = Apollo.BaseMutationOptions<Types.UpdateHospitalPositionMutation, Types.UpdateHospitalPositionMutationVariables>;
+export const DeleteHospitalPositionDocument = gql`
+    mutation DeleteHospitalPosition($positionId: Int!) {
+  deleteHospitalPosition(positionId: $positionId) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteHospitalPositionMutationFn = Apollo.MutationFunction<Types.DeleteHospitalPositionMutation, Types.DeleteHospitalPositionMutationVariables>;
+
+/**
+ * __useDeleteHospitalPositionMutation__
+ *
+ * To run a mutation, you first call `useDeleteHospitalPositionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteHospitalPositionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteHospitalPositionMutation, { data, loading, error }] = useDeleteHospitalPositionMutation({
+ *   variables: {
+ *      positionId: // value for 'positionId'
+ *   },
+ * });
+ */
+export function useDeleteHospitalPositionMutation(baseOptions?: Apollo.MutationHookOptions<Types.DeleteHospitalPositionMutation, Types.DeleteHospitalPositionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.DeleteHospitalPositionMutation, Types.DeleteHospitalPositionMutationVariables>(DeleteHospitalPositionDocument, options);
+      }
+export type DeleteHospitalPositionMutationHookResult = ReturnType<typeof useDeleteHospitalPositionMutation>;
+export type DeleteHospitalPositionMutationResult = Apollo.MutationResult<Types.DeleteHospitalPositionMutation>;
+export type DeleteHospitalPositionMutationOptions = Apollo.BaseMutationOptions<Types.DeleteHospitalPositionMutation, Types.DeleteHospitalPositionMutationVariables>;
 export const RetrieveMyHospitalPartsDocument = gql`
     query RetrieveMyHospitalParts {
   retrieveMyHospitalParts {
@@ -1828,3 +1931,209 @@ export function useDeleteHospitalPartMutation(baseOptions?: Apollo.MutationHookO
 export type DeleteHospitalPartMutationHookResult = ReturnType<typeof useDeleteHospitalPartMutation>;
 export type DeleteHospitalPartMutationResult = Apollo.MutationResult<Types.DeleteHospitalPartMutation>;
 export type DeleteHospitalPartMutationOptions = Apollo.BaseMutationOptions<Types.DeleteHospitalPartMutation, Types.DeleteHospitalPartMutationVariables>;
+export const CreateMyHospitalWardDocument = gql`
+    mutation CreateMyHospitalWard($name: String!) {
+  createMyHospitalWard(name: $name) {
+    success
+    message
+  }
+}
+    `;
+export type CreateMyHospitalWardMutationFn = Apollo.MutationFunction<Types.CreateMyHospitalWardMutation, Types.CreateMyHospitalWardMutationVariables>;
+
+/**
+ * __useCreateMyHospitalWardMutation__
+ *
+ * To run a mutation, you first call `useCreateMyHospitalWardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMyHospitalWardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMyHospitalWardMutation, { data, loading, error }] = useCreateMyHospitalWardMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateMyHospitalWardMutation(baseOptions?: Apollo.MutationHookOptions<Types.CreateMyHospitalWardMutation, Types.CreateMyHospitalWardMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.CreateMyHospitalWardMutation, Types.CreateMyHospitalWardMutationVariables>(CreateMyHospitalWardDocument, options);
+      }
+export type CreateMyHospitalWardMutationHookResult = ReturnType<typeof useCreateMyHospitalWardMutation>;
+export type CreateMyHospitalWardMutationResult = Apollo.MutationResult<Types.CreateMyHospitalWardMutation>;
+export type CreateMyHospitalWardMutationOptions = Apollo.BaseMutationOptions<Types.CreateMyHospitalWardMutation, Types.CreateMyHospitalWardMutationVariables>;
+export const UpdateHospitalWardDocument = gql`
+    mutation UpdateHospitalWard($wardId: Int!, $name: String!) {
+  updateHospitalWard(wardId: $wardId, name: $name) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateHospitalWardMutationFn = Apollo.MutationFunction<Types.UpdateHospitalWardMutation, Types.UpdateHospitalWardMutationVariables>;
+
+/**
+ * __useUpdateHospitalWardMutation__
+ *
+ * To run a mutation, you first call `useUpdateHospitalWardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateHospitalWardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateHospitalWardMutation, { data, loading, error }] = useUpdateHospitalWardMutation({
+ *   variables: {
+ *      wardId: // value for 'wardId'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useUpdateHospitalWardMutation(baseOptions?: Apollo.MutationHookOptions<Types.UpdateHospitalWardMutation, Types.UpdateHospitalWardMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UpdateHospitalWardMutation, Types.UpdateHospitalWardMutationVariables>(UpdateHospitalWardDocument, options);
+      }
+export type UpdateHospitalWardMutationHookResult = ReturnType<typeof useUpdateHospitalWardMutation>;
+export type UpdateHospitalWardMutationResult = Apollo.MutationResult<Types.UpdateHospitalWardMutation>;
+export type UpdateHospitalWardMutationOptions = Apollo.BaseMutationOptions<Types.UpdateHospitalWardMutation, Types.UpdateHospitalWardMutationVariables>;
+export const DeleteHospitalWardDocument = gql`
+    mutation DeleteHospitalWard($wardId: Int!) {
+  deleteHospitalWard(wardId: $wardId) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteHospitalWardMutationFn = Apollo.MutationFunction<Types.DeleteHospitalWardMutation, Types.DeleteHospitalWardMutationVariables>;
+
+/**
+ * __useDeleteHospitalWardMutation__
+ *
+ * To run a mutation, you first call `useDeleteHospitalWardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteHospitalWardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteHospitalWardMutation, { data, loading, error }] = useDeleteHospitalWardMutation({
+ *   variables: {
+ *      wardId: // value for 'wardId'
+ *   },
+ * });
+ */
+export function useDeleteHospitalWardMutation(baseOptions?: Apollo.MutationHookOptions<Types.DeleteHospitalWardMutation, Types.DeleteHospitalWardMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.DeleteHospitalWardMutation, Types.DeleteHospitalWardMutationVariables>(DeleteHospitalWardDocument, options);
+      }
+export type DeleteHospitalWardMutationHookResult = ReturnType<typeof useDeleteHospitalWardMutation>;
+export type DeleteHospitalWardMutationResult = Apollo.MutationResult<Types.DeleteHospitalWardMutation>;
+export type DeleteHospitalWardMutationOptions = Apollo.BaseMutationOptions<Types.DeleteHospitalWardMutation, Types.DeleteHospitalWardMutationVariables>;
+export const CreateMyHospitalCommitteeDocument = gql`
+    mutation CreateMyHospitalCommittee($name: String!) {
+  createMyHospitalCommittee(name: $name) {
+    success
+    message
+  }
+}
+    `;
+export type CreateMyHospitalCommitteeMutationFn = Apollo.MutationFunction<Types.CreateMyHospitalCommitteeMutation, Types.CreateMyHospitalCommitteeMutationVariables>;
+
+/**
+ * __useCreateMyHospitalCommitteeMutation__
+ *
+ * To run a mutation, you first call `useCreateMyHospitalCommitteeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMyHospitalCommitteeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMyHospitalCommitteeMutation, { data, loading, error }] = useCreateMyHospitalCommitteeMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateMyHospitalCommitteeMutation(baseOptions?: Apollo.MutationHookOptions<Types.CreateMyHospitalCommitteeMutation, Types.CreateMyHospitalCommitteeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.CreateMyHospitalCommitteeMutation, Types.CreateMyHospitalCommitteeMutationVariables>(CreateMyHospitalCommitteeDocument, options);
+      }
+export type CreateMyHospitalCommitteeMutationHookResult = ReturnType<typeof useCreateMyHospitalCommitteeMutation>;
+export type CreateMyHospitalCommitteeMutationResult = Apollo.MutationResult<Types.CreateMyHospitalCommitteeMutation>;
+export type CreateMyHospitalCommitteeMutationOptions = Apollo.BaseMutationOptions<Types.CreateMyHospitalCommitteeMutation, Types.CreateMyHospitalCommitteeMutationVariables>;
+export const UpdateHospitalCommitteeDocument = gql`
+    mutation UpdateHospitalCommittee($committeeId: Int!, $name: String!) {
+  updateHospitalCommittee(committeeId: $committeeId, name: $name) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateHospitalCommitteeMutationFn = Apollo.MutationFunction<Types.UpdateHospitalCommitteeMutation, Types.UpdateHospitalCommitteeMutationVariables>;
+
+/**
+ * __useUpdateHospitalCommitteeMutation__
+ *
+ * To run a mutation, you first call `useUpdateHospitalCommitteeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateHospitalCommitteeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateHospitalCommitteeMutation, { data, loading, error }] = useUpdateHospitalCommitteeMutation({
+ *   variables: {
+ *      committeeId: // value for 'committeeId'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useUpdateHospitalCommitteeMutation(baseOptions?: Apollo.MutationHookOptions<Types.UpdateHospitalCommitteeMutation, Types.UpdateHospitalCommitteeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UpdateHospitalCommitteeMutation, Types.UpdateHospitalCommitteeMutationVariables>(UpdateHospitalCommitteeDocument, options);
+      }
+export type UpdateHospitalCommitteeMutationHookResult = ReturnType<typeof useUpdateHospitalCommitteeMutation>;
+export type UpdateHospitalCommitteeMutationResult = Apollo.MutationResult<Types.UpdateHospitalCommitteeMutation>;
+export type UpdateHospitalCommitteeMutationOptions = Apollo.BaseMutationOptions<Types.UpdateHospitalCommitteeMutation, Types.UpdateHospitalCommitteeMutationVariables>;
+export const DeleteHospitalCommitteeDocument = gql`
+    mutation DeleteHospitalCommittee($committeeId: Int!) {
+  deleteHospitalCommittee(committeeId: $committeeId) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteHospitalCommitteeMutationFn = Apollo.MutationFunction<Types.DeleteHospitalCommitteeMutation, Types.DeleteHospitalCommitteeMutationVariables>;
+
+/**
+ * __useDeleteHospitalCommitteeMutation__
+ *
+ * To run a mutation, you first call `useDeleteHospitalCommitteeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteHospitalCommitteeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteHospitalCommitteeMutation, { data, loading, error }] = useDeleteHospitalCommitteeMutation({
+ *   variables: {
+ *      committeeId: // value for 'committeeId'
+ *   },
+ * });
+ */
+export function useDeleteHospitalCommitteeMutation(baseOptions?: Apollo.MutationHookOptions<Types.DeleteHospitalCommitteeMutation, Types.DeleteHospitalCommitteeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.DeleteHospitalCommitteeMutation, Types.DeleteHospitalCommitteeMutationVariables>(DeleteHospitalCommitteeDocument, options);
+      }
+export type DeleteHospitalCommitteeMutationHookResult = ReturnType<typeof useDeleteHospitalCommitteeMutation>;
+export type DeleteHospitalCommitteeMutationResult = Apollo.MutationResult<Types.DeleteHospitalCommitteeMutation>;
+export type DeleteHospitalCommitteeMutationOptions = Apollo.BaseMutationOptions<Types.DeleteHospitalCommitteeMutation, Types.DeleteHospitalCommitteeMutationVariables>;
