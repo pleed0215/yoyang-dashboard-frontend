@@ -1692,6 +1692,8 @@ export type RetrievePatientListQueryVariables = Exact<{
   hospitalId: Scalars['Int']['input'];
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  wardId?: InputMaybe<Scalars['Int']['input']>;
+  roomId?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 

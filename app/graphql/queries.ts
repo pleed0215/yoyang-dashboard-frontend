@@ -545,8 +545,8 @@ export const DELETE_HOSPITAL_COMMITTEE_MUTATION = gql`
 `;
 
 export const RETRIEVE_PATIENT_LIST_QUERY = gql`
-  query RetrievePatientList($page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {
-    retrievePatientList(page: $page, pageSize: $pageSize, hospitalId: $hospitalId, startDate: $startDate, endDate: $endDate) {
+  query RetrievePatientList($page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime, $wardId: Int, $roomId: Int) {
+    retrievePatientList(page: $page, pageSize: $pageSize, hospitalId: $hospitalId, startDate: $startDate, endDate: $endDate, wardId: $wardId, roomId: $roomId) {
       success
       message
       pageInfo {

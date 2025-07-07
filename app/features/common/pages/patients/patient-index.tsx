@@ -1,5 +1,5 @@
 import type { Route } from './+types/patient-index';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import DateInput from '~/components/common/date-input';
 import { Button } from '~/components/ui/button';
@@ -12,6 +12,7 @@ import { RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY } from '~/graphql/queries';
 import { contextWithToken } from '~/lib/apollo';
 import { RetrieveMyHospitalWardsAndRoomsQuery } from '~/graphql/types';
 import { useMeQuery, useRetrievePatientListQuery } from '~/graphql/operations';
+import { toast } from 'sonner';
 
 function getToday() {
   const today = new Date();
@@ -58,6 +59,8 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
   // 날짜 상태
   const [startDate, setStartDate] = useState(getDateBefore(7)); // 기본 1주일 전
   const [endDate, setEndDate] = useState(getToday());
+  const [queryStartDate, setQueryStartDate] = useState(startDate);
+  const [queryEndDate, setQueryEndDate] = useState(endDate);
 
   // 페이지네이션 상태
   const page = Number(searchParams.get('page') ?? 1);
@@ -68,15 +71,80 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
   const hospitalId = meData?.me?.data?.hospitalId;
   const validHospitalId = typeof hospitalId === 'number' && !isNaN(hospitalId) ? hospitalId : undefined;
 
+  // 병동/병실 상태 및 searchParams 연동
+  const wards = wardRoomData || [];
+  const wardNames = wards.map((w: any) => w.name);
+  const wardParam = searchParams.get('ward') || '';
+  const roomParam = searchParams.get('room') || '';
+  const [selectedWard, setSelectedWard] = useState(wardParam);
+  const [selectedRoom, setSelectedRoom] = useState(roomParam);
+  const selectedWardObj = wards.find((w: any) => w.name === selectedWard);
+  const rooms = selectedWardObj?.rooms || [];
+  const roomNames = rooms.map((r: any) => r.name);
+
+  // 병동이 바뀌면 병실도 초기화
+  useEffect(() => {
+    setSelectedRoom('');
+  }, [selectedWard]);
+
+  // 조회 버튼 클릭 시 명칭→id 변환 후 쿼리 실행
+  const handleSearch = () => {
+    // 날짜 유효성 검사 (생략, 기존 코드 유지)
+    if (!startDate || !endDate) {
+      toast.error('조회 시작일과 종료일을 모두 입력해주세요.');
+      return;
+    }
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(startDate) || !dateRegex.test(endDate)) {
+      toast.error('날짜 형식이 올바르지 않습니다. (예: 2024-01-01)');
+      return;
+    }
+    if (startDate > endDate) {
+      toast.error('조회 시작일이 종료일보다 늦을 수 없습니다.');
+      return;
+    }
+    if (endDate < startDate) {
+      toast.error('조회 종료일이 시작일보다 빠를 수 없습니다.');
+      return;
+    }
+    // 명칭 → id 변환
+    const wardId = selectedWard ? wards.find((w: any) => w.name === selectedWard)?.id : undefined;
+    const roomId = selectedRoom ? rooms.find((r: any) => r.name === selectedRoom)?.id : undefined;
+    setQueryStartDate(startDate);
+    setQueryEndDate(endDate);
+    setQueryWardId(typeof wardId === 'number' ? wardId : undefined);
+    setQueryRoomId(typeof roomId === 'number' ? roomId : undefined);
+    // ward/room 명칭을 searchParams에 반영 (선택된 경우만)
+    if (selectedWard) {
+      searchParams.set('ward', selectedWard);
+    } else {
+      searchParams.delete('ward');
+    }
+    if (selectedRoom) {
+      searchParams.set('room', selectedRoom);
+    } else {
+      searchParams.delete('room');
+    }
+    searchParams.set('page', '1');
+    setSearchParams(searchParams, { preventScrollReset: true });
+  };
+
+  // 쿼리용 wardId/roomId 상태
+  const [queryWardId, setQueryWardId] = useState<number | undefined>(undefined);
+  const [queryRoomId, setQueryRoomId] = useState<number | undefined>(undefined);
+
   // 환자 목록 쿼리
+  const patientQueryVars: any = {
+    hospitalId: validHospitalId!,
+    page,
+    pageSize,
+    startDate: queryStartDate,
+    endDate: queryEndDate,
+  };
+  if (typeof queryWardId === 'number') patientQueryVars.wardId = queryWardId;
+  if (typeof queryRoomId === 'number') patientQueryVars.roomId = queryRoomId;
   const { data, loading, error } = useRetrievePatientListQuery({
-    variables: {
-      hospitalId: validHospitalId!, // undefined일 때는 skip
-      page,
-      pageSize,
-      startDate,
-      endDate,
-    },
+    variables: patientQueryVars,
     skip: !validHospitalId,
     fetchPolicy: 'cache-and-network',
   });
@@ -115,6 +183,9 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
     return <div className="p-8 text-center text-red-500">오류가 발생했습니다: {error.message}</div>;
   }
 
+  console.log(wards);
+  console.log(patients);
+
   return (
     <div className="space-y-4 p-4">
       <div className="flex items-center justify-between">
@@ -129,12 +200,46 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
           <DateInput id="start-date" value={startDate} onChange={setStartDate} label="조회 시작일" />
           <span>~</span>
           <DateInput id="end-date" value={endDate} onChange={setEndDate} label="조회 종료일" />
-          <div className="flex gap-2 ml-2">
-            <Button variant="outline" size="sm" onClick={() => handleDateGroup('week')}>1주일</Button>
-            <Button variant="outline" size="sm" onClick={() => handleDateGroup('month')}>1개월</Button>
-            <Button variant="outline" size="sm" onClick={() => handleDateGroup('6month')}>6개월</Button>
-            <Button variant="outline" size="sm" onClick={() => handleDateGroup('year')}>1년</Button>
+          <div className="flex ml-2">
+            <Button variant="outline" size="sm" className="rounded-r-none" onClick={() => handleDateGroup('week')}>1주일</Button>
+            <Button variant="outline" size="sm" className="rounded-none border-l-0" onClick={() => handleDateGroup('month')}>1개월</Button>
+            <Button variant="outline" size="sm" className="rounded-none border-l-0" onClick={() => handleDateGroup('6month')}>6개월</Button>
+            <Button variant="outline" size="sm" className="rounded-l-none border-l-0" onClick={() => handleDateGroup('year')}>1년</Button>
+            <div className="w-2" />
+            <Button variant="default" size="sm" onClick={handleSearch}>조회</Button>
           </div>
+        </div>
+      </div>
+      {/* 병동/병실 select UI */}
+      <div className="flex items-center gap-4 mt-2">
+        <div className="flex items-center gap-2">
+          <label htmlFor="ward-select" className="text-sm font-medium">병동</label>
+          <select
+            id="ward-select"
+            className="border rounded px-2 py-1"
+            value={selectedWard}
+            onChange={e => setSelectedWard(e.target.value)}
+          >
+            <option value="">전체</option>
+            {wardNames.map(name => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="room-select" className="text-sm font-medium">병실</label>
+          <select
+            id="room-select"
+            className="border rounded px-2 py-1"
+            value={selectedRoom}
+            onChange={e => setSelectedRoom(e.target.value)}
+            disabled={!selectedWard}
+          >
+            <option value="">전체</option>
+            {roomNames.map(name => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
         </div>
       </div>
       <Card>
@@ -166,8 +271,8 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
                     <TableCell className="text-center">{patient.id}</TableCell>
                     <TableCell className="text-center">{patient.name}</TableCell>
                     <TableCell className="text-center">{patient.gender ?? '-'}</TableCell>
-                    <TableCell className="text-center">{patient.wardId ?? '-'}</TableCell>
-                    <TableCell className="text-center">{patient.roomId ?? '-'}</TableCell>
+                    <TableCell className="text-center">{wards.find((w: any) => w.id === patient.wardId)?.name ?? '-'}</TableCell>
+                    <TableCell className="text-center">{wards.flatMap((w: any) => w.rooms).find((r: any) => r.id === patient.roomId)?.name ?? '-'}</TableCell>
                     <TableCell className="text-center">{patient.enterDate ? new Date(patient.enterDate).toLocaleDateString() : '-'}</TableCell>
                     <TableCell className="text-center">{patient.leaveDate ? new Date(patient.leaveDate).toLocaleDateString() : '-'}</TableCell>
                     <TableCell className="text-center">-</TableCell>
