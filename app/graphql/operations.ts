@@ -210,172 +210,6 @@ export function useUpdateEmployeeMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateEmployeeMutationHookResult = ReturnType<typeof useUpdateEmployeeMutation>;
 export type UpdateEmployeeMutationResult = Apollo.MutationResult<Types.UpdateEmployeeMutation>;
 export type UpdateEmployeeMutationOptions = Apollo.BaseMutationOptions<Types.UpdateEmployeeMutation, Types.UpdateEmployeeMutationVariables>;
-export const RetrieveMyHospitalWardsAndRoomsDocument = gql`
-    query RetrieveMyHospitalWardsAndRooms {
-  retrieveMyHospitalWards {
-    success
-    message
-    data {
-      id
-      name
-      rooms {
-        id
-        name
-        size
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useRetrieveMyHospitalWardsAndRoomsQuery__
- *
- * To run a query within a React component, call `useRetrieveMyHospitalWardsAndRoomsQuery` and pass it any options that fit your needs.
- * When your component renders, `useRetrieveMyHospitalWardsAndRoomsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRetrieveMyHospitalWardsAndRoomsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useRetrieveMyHospitalWardsAndRoomsQuery(baseOptions?: Apollo.QueryHookOptions<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>(RetrieveMyHospitalWardsAndRoomsDocument, options);
-      }
-export function useRetrieveMyHospitalWardsAndRoomsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>(RetrieveMyHospitalWardsAndRoomsDocument, options);
-        }
-export function useRetrieveMyHospitalWardsAndRoomsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>(RetrieveMyHospitalWardsAndRoomsDocument, options);
-        }
-export type RetrieveMyHospitalWardsAndRoomsQueryHookResult = ReturnType<typeof useRetrieveMyHospitalWardsAndRoomsQuery>;
-export type RetrieveMyHospitalWardsAndRoomsLazyQueryHookResult = ReturnType<typeof useRetrieveMyHospitalWardsAndRoomsLazyQuery>;
-export type RetrieveMyHospitalWardsAndRoomsSuspenseQueryHookResult = ReturnType<typeof useRetrieveMyHospitalWardsAndRoomsSuspenseQuery>;
-export type RetrieveMyHospitalWardsAndRoomsQueryResult = Apollo.QueryResult<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>;
-export const CreateMyHospitalRoomDocument = gql`
-    mutation CreateMyHospitalRoom($wardId: Int!, $name: String!, $size: Int) {
-  createMyHospitalRoom(wardId: $wardId, name: $name, size: $size) {
-    success
-    message
-    data {
-      id
-      name
-      size
-    }
-  }
-}
-    `;
-export type CreateMyHospitalRoomMutationFn = Apollo.MutationFunction<Types.CreateMyHospitalRoomMutation, Types.CreateMyHospitalRoomMutationVariables>;
-
-/**
- * __useCreateMyHospitalRoomMutation__
- *
- * To run a mutation, you first call `useCreateMyHospitalRoomMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMyHospitalRoomMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createMyHospitalRoomMutation, { data, loading, error }] = useCreateMyHospitalRoomMutation({
- *   variables: {
- *      wardId: // value for 'wardId'
- *      name: // value for 'name'
- *      size: // value for 'size'
- *   },
- * });
- */
-export function useCreateMyHospitalRoomMutation(baseOptions?: Apollo.MutationHookOptions<Types.CreateMyHospitalRoomMutation, Types.CreateMyHospitalRoomMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Types.CreateMyHospitalRoomMutation, Types.CreateMyHospitalRoomMutationVariables>(CreateMyHospitalRoomDocument, options);
-      }
-export type CreateMyHospitalRoomMutationHookResult = ReturnType<typeof useCreateMyHospitalRoomMutation>;
-export type CreateMyHospitalRoomMutationResult = Apollo.MutationResult<Types.CreateMyHospitalRoomMutation>;
-export type CreateMyHospitalRoomMutationOptions = Apollo.BaseMutationOptions<Types.CreateMyHospitalRoomMutation, Types.CreateMyHospitalRoomMutationVariables>;
-export const UpdateHospitalRoomDocument = gql`
-    mutation UpdateHospitalRoom($roomId: Int!, $name: String, $wardId: Int, $size: Int) {
-  updateHospitalRoom(roomId: $roomId, name: $name, wardId: $wardId, size: $size) {
-    success
-    message
-    data {
-      id
-      name
-      size
-    }
-  }
-}
-    `;
-export type UpdateHospitalRoomMutationFn = Apollo.MutationFunction<Types.UpdateHospitalRoomMutation, Types.UpdateHospitalRoomMutationVariables>;
-
-/**
- * __useUpdateHospitalRoomMutation__
- *
- * To run a mutation, you first call `useUpdateHospitalRoomMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateHospitalRoomMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateHospitalRoomMutation, { data, loading, error }] = useUpdateHospitalRoomMutation({
- *   variables: {
- *      roomId: // value for 'roomId'
- *      name: // value for 'name'
- *      wardId: // value for 'wardId'
- *      size: // value for 'size'
- *   },
- * });
- */
-export function useUpdateHospitalRoomMutation(baseOptions?: Apollo.MutationHookOptions<Types.UpdateHospitalRoomMutation, Types.UpdateHospitalRoomMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Types.UpdateHospitalRoomMutation, Types.UpdateHospitalRoomMutationVariables>(UpdateHospitalRoomDocument, options);
-      }
-export type UpdateHospitalRoomMutationHookResult = ReturnType<typeof useUpdateHospitalRoomMutation>;
-export type UpdateHospitalRoomMutationResult = Apollo.MutationResult<Types.UpdateHospitalRoomMutation>;
-export type UpdateHospitalRoomMutationOptions = Apollo.BaseMutationOptions<Types.UpdateHospitalRoomMutation, Types.UpdateHospitalRoomMutationVariables>;
-export const DeleteHospitalRoomDocument = gql`
-    mutation DeleteHospitalRoom($roomId: Int!) {
-  deleteHospitalRoom(roomId: $roomId) {
-    success
-    message
-  }
-}
-    `;
-export type DeleteHospitalRoomMutationFn = Apollo.MutationFunction<Types.DeleteHospitalRoomMutation, Types.DeleteHospitalRoomMutationVariables>;
-
-/**
- * __useDeleteHospitalRoomMutation__
- *
- * To run a mutation, you first call `useDeleteHospitalRoomMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteHospitalRoomMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteHospitalRoomMutation, { data, loading, error }] = useDeleteHospitalRoomMutation({
- *   variables: {
- *      roomId: // value for 'roomId'
- *   },
- * });
- */
-export function useDeleteHospitalRoomMutation(baseOptions?: Apollo.MutationHookOptions<Types.DeleteHospitalRoomMutation, Types.DeleteHospitalRoomMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Types.DeleteHospitalRoomMutation, Types.DeleteHospitalRoomMutationVariables>(DeleteHospitalRoomDocument, options);
-      }
-export type DeleteHospitalRoomMutationHookResult = ReturnType<typeof useDeleteHospitalRoomMutation>;
-export type DeleteHospitalRoomMutationResult = Apollo.MutationResult<Types.DeleteHospitalRoomMutation>;
-export type DeleteHospitalRoomMutationOptions = Apollo.BaseMutationOptions<Types.DeleteHospitalRoomMutation, Types.DeleteHospitalRoomMutationVariables>;
 export const RetrieveHospitalListDocument = gql`
     query RetrieveHospitalList($name: String!) {
   retrieveHospitalList(hospitalName: $name) {
@@ -2137,3 +1971,554 @@ export function useDeleteHospitalCommitteeMutation(baseOptions?: Apollo.Mutation
 export type DeleteHospitalCommitteeMutationHookResult = ReturnType<typeof useDeleteHospitalCommitteeMutation>;
 export type DeleteHospitalCommitteeMutationResult = Apollo.MutationResult<Types.DeleteHospitalCommitteeMutation>;
 export type DeleteHospitalCommitteeMutationOptions = Apollo.BaseMutationOptions<Types.DeleteHospitalCommitteeMutation, Types.DeleteHospitalCommitteeMutationVariables>;
+export const RetrievePatientListDocument = gql`
+    query RetrievePatientList($page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {
+  retrievePatientList(
+    page: $page
+    pageSize: $pageSize
+    hospitalId: $hospitalId
+    startDate: $startDate
+    endDate: $endDate
+  ) {
+    success
+    message
+    pageInfo {
+      currentPage
+      hasNextPage
+      hasPreviousPage
+      total
+      totalPages
+    }
+    data {
+      id
+      name
+      gender
+      roomId
+      wardId
+      enterDate
+      leaveDate
+    }
+  }
+}
+    `;
+
+/**
+ * __useRetrievePatientListQuery__
+ *
+ * To run a query within a React component, call `useRetrievePatientListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRetrievePatientListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRetrievePatientListQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      pageSize: // value for 'pageSize'
+ *      hospitalId: // value for 'hospitalId'
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *   },
+ * });
+ */
+export function useRetrievePatientListQuery(baseOptions: Apollo.QueryHookOptions<Types.RetrievePatientListQuery, Types.RetrievePatientListQueryVariables> & ({ variables: Types.RetrievePatientListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.RetrievePatientListQuery, Types.RetrievePatientListQueryVariables>(RetrievePatientListDocument, options);
+      }
+export function useRetrievePatientListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrievePatientListQuery, Types.RetrievePatientListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.RetrievePatientListQuery, Types.RetrievePatientListQueryVariables>(RetrievePatientListDocument, options);
+        }
+export function useRetrievePatientListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrievePatientListQuery, Types.RetrievePatientListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.RetrievePatientListQuery, Types.RetrievePatientListQueryVariables>(RetrievePatientListDocument, options);
+        }
+export type RetrievePatientListQueryHookResult = ReturnType<typeof useRetrievePatientListQuery>;
+export type RetrievePatientListLazyQueryHookResult = ReturnType<typeof useRetrievePatientListLazyQuery>;
+export type RetrievePatientListSuspenseQueryHookResult = ReturnType<typeof useRetrievePatientListSuspenseQuery>;
+export type RetrievePatientListQueryResult = Apollo.QueryResult<Types.RetrievePatientListQuery, Types.RetrievePatientListQueryVariables>;
+export const RetrieveWardPatientListDocument = gql`
+    query RetrieveWardPatientList($wardId: Int!, $page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {
+  retrievePatientList(
+    wardId: $wardId
+    page: $page
+    pageSize: $pageSize
+    hospitalId: $hospitalId
+    startDate: $startDate
+    endDate: $endDate
+  ) {
+    success
+    message
+    pageInfo {
+      currentPage
+      hasNextPage
+      hasPreviousPage
+      total
+      totalPages
+    }
+    data {
+      id
+      name
+      gender
+      roomId
+      wardId
+      enterDate
+      leaveDate
+    }
+  }
+}
+    `;
+
+/**
+ * __useRetrieveWardPatientListQuery__
+ *
+ * To run a query within a React component, call `useRetrieveWardPatientListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRetrieveWardPatientListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRetrieveWardPatientListQuery({
+ *   variables: {
+ *      wardId: // value for 'wardId'
+ *      page: // value for 'page'
+ *      pageSize: // value for 'pageSize'
+ *      hospitalId: // value for 'hospitalId'
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *   },
+ * });
+ */
+export function useRetrieveWardPatientListQuery(baseOptions: Apollo.QueryHookOptions<Types.RetrieveWardPatientListQuery, Types.RetrieveWardPatientListQueryVariables> & ({ variables: Types.RetrieveWardPatientListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.RetrieveWardPatientListQuery, Types.RetrieveWardPatientListQueryVariables>(RetrieveWardPatientListDocument, options);
+      }
+export function useRetrieveWardPatientListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrieveWardPatientListQuery, Types.RetrieveWardPatientListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.RetrieveWardPatientListQuery, Types.RetrieveWardPatientListQueryVariables>(RetrieveWardPatientListDocument, options);
+        }
+export function useRetrieveWardPatientListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrieveWardPatientListQuery, Types.RetrieveWardPatientListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.RetrieveWardPatientListQuery, Types.RetrieveWardPatientListQueryVariables>(RetrieveWardPatientListDocument, options);
+        }
+export type RetrieveWardPatientListQueryHookResult = ReturnType<typeof useRetrieveWardPatientListQuery>;
+export type RetrieveWardPatientListLazyQueryHookResult = ReturnType<typeof useRetrieveWardPatientListLazyQuery>;
+export type RetrieveWardPatientListSuspenseQueryHookResult = ReturnType<typeof useRetrieveWardPatientListSuspenseQuery>;
+export type RetrieveWardPatientListQueryResult = Apollo.QueryResult<Types.RetrieveWardPatientListQuery, Types.RetrieveWardPatientListQueryVariables>;
+export const RetrieveRoomPatientListDocument = gql`
+    query RetrieveRoomPatientList($roomId: Int!, $page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {
+  retrievePatientList(
+    roomId: $roomId
+    page: $page
+    pageSize: $pageSize
+    hospitalId: $hospitalId
+    startDate: $startDate
+    endDate: $endDate
+  ) {
+    success
+    message
+    data {
+      id
+      name
+      gender
+      roomId
+      wardId
+      enterDate
+      leaveDate
+    }
+  }
+}
+    `;
+
+/**
+ * __useRetrieveRoomPatientListQuery__
+ *
+ * To run a query within a React component, call `useRetrieveRoomPatientListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRetrieveRoomPatientListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRetrieveRoomPatientListQuery({
+ *   variables: {
+ *      roomId: // value for 'roomId'
+ *      page: // value for 'page'
+ *      pageSize: // value for 'pageSize'
+ *      hospitalId: // value for 'hospitalId'
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *   },
+ * });
+ */
+export function useRetrieveRoomPatientListQuery(baseOptions: Apollo.QueryHookOptions<Types.RetrieveRoomPatientListQuery, Types.RetrieveRoomPatientListQueryVariables> & ({ variables: Types.RetrieveRoomPatientListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.RetrieveRoomPatientListQuery, Types.RetrieveRoomPatientListQueryVariables>(RetrieveRoomPatientListDocument, options);
+      }
+export function useRetrieveRoomPatientListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrieveRoomPatientListQuery, Types.RetrieveRoomPatientListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.RetrieveRoomPatientListQuery, Types.RetrieveRoomPatientListQueryVariables>(RetrieveRoomPatientListDocument, options);
+        }
+export function useRetrieveRoomPatientListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrieveRoomPatientListQuery, Types.RetrieveRoomPatientListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.RetrieveRoomPatientListQuery, Types.RetrieveRoomPatientListQueryVariables>(RetrieveRoomPatientListDocument, options);
+        }
+export type RetrieveRoomPatientListQueryHookResult = ReturnType<typeof useRetrieveRoomPatientListQuery>;
+export type RetrieveRoomPatientListLazyQueryHookResult = ReturnType<typeof useRetrieveRoomPatientListLazyQuery>;
+export type RetrieveRoomPatientListSuspenseQueryHookResult = ReturnType<typeof useRetrieveRoomPatientListSuspenseQuery>;
+export type RetrieveRoomPatientListQueryResult = Apollo.QueryResult<Types.RetrieveRoomPatientListQuery, Types.RetrieveRoomPatientListQueryVariables>;
+export const CreatePatientDocument = gql`
+    mutation CreatePatient($input: CreatePatientInput!) {
+  createPatient(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreatePatientMutationFn = Apollo.MutationFunction<Types.CreatePatientMutation, Types.CreatePatientMutationVariables>;
+
+/**
+ * __useCreatePatientMutation__
+ *
+ * To run a mutation, you first call `useCreatePatientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePatientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPatientMutation, { data, loading, error }] = useCreatePatientMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreatePatientMutation(baseOptions?: Apollo.MutationHookOptions<Types.CreatePatientMutation, Types.CreatePatientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.CreatePatientMutation, Types.CreatePatientMutationVariables>(CreatePatientDocument, options);
+      }
+export type CreatePatientMutationHookResult = ReturnType<typeof useCreatePatientMutation>;
+export type CreatePatientMutationResult = Apollo.MutationResult<Types.CreatePatientMutation>;
+export type CreatePatientMutationOptions = Apollo.BaseMutationOptions<Types.CreatePatientMutation, Types.CreatePatientMutationVariables>;
+export const BulkCreatePatientsFromFileDocument = gql`
+    mutation BulkCreatePatientsFromFile($input: BulkCreatePatientsFromFileInput!) {
+  bulkCreatePatientsFromFile(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type BulkCreatePatientsFromFileMutationFn = Apollo.MutationFunction<Types.BulkCreatePatientsFromFileMutation, Types.BulkCreatePatientsFromFileMutationVariables>;
+
+/**
+ * __useBulkCreatePatientsFromFileMutation__
+ *
+ * To run a mutation, you first call `useBulkCreatePatientsFromFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useBulkCreatePatientsFromFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [bulkCreatePatientsFromFileMutation, { data, loading, error }] = useBulkCreatePatientsFromFileMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useBulkCreatePatientsFromFileMutation(baseOptions?: Apollo.MutationHookOptions<Types.BulkCreatePatientsFromFileMutation, Types.BulkCreatePatientsFromFileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.BulkCreatePatientsFromFileMutation, Types.BulkCreatePatientsFromFileMutationVariables>(BulkCreatePatientsFromFileDocument, options);
+      }
+export type BulkCreatePatientsFromFileMutationHookResult = ReturnType<typeof useBulkCreatePatientsFromFileMutation>;
+export type BulkCreatePatientsFromFileMutationResult = Apollo.MutationResult<Types.BulkCreatePatientsFromFileMutation>;
+export type BulkCreatePatientsFromFileMutationOptions = Apollo.BaseMutationOptions<Types.BulkCreatePatientsFromFileMutation, Types.BulkCreatePatientsFromFileMutationVariables>;
+export const UpdatePatientDocument = gql`
+    mutation UpdatePatient($patientId: Int!, $input: UpdatePatientInput!) {
+  updatePatient(patientId: $patientId, input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdatePatientMutationFn = Apollo.MutationFunction<Types.UpdatePatientMutation, Types.UpdatePatientMutationVariables>;
+
+/**
+ * __useUpdatePatientMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientMutation, { data, loading, error }] = useUpdatePatientMutation({
+ *   variables: {
+ *      patientId: // value for 'patientId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdatePatientMutation(baseOptions?: Apollo.MutationHookOptions<Types.UpdatePatientMutation, Types.UpdatePatientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UpdatePatientMutation, Types.UpdatePatientMutationVariables>(UpdatePatientDocument, options);
+      }
+export type UpdatePatientMutationHookResult = ReturnType<typeof useUpdatePatientMutation>;
+export type UpdatePatientMutationResult = Apollo.MutationResult<Types.UpdatePatientMutation>;
+export type UpdatePatientMutationOptions = Apollo.BaseMutationOptions<Types.UpdatePatientMutation, Types.UpdatePatientMutationVariables>;
+export const DeletePatientDocument = gql`
+    mutation DeletePatient($patientId: Int!) {
+  deletePatient(patientId: $patientId) {
+    success
+    message
+  }
+}
+    `;
+export type DeletePatientMutationFn = Apollo.MutationFunction<Types.DeletePatientMutation, Types.DeletePatientMutationVariables>;
+
+/**
+ * __useDeletePatientMutation__
+ *
+ * To run a mutation, you first call `useDeletePatientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePatientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePatientMutation, { data, loading, error }] = useDeletePatientMutation({
+ *   variables: {
+ *      patientId: // value for 'patientId'
+ *   },
+ * });
+ */
+export function useDeletePatientMutation(baseOptions?: Apollo.MutationHookOptions<Types.DeletePatientMutation, Types.DeletePatientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.DeletePatientMutation, Types.DeletePatientMutationVariables>(DeletePatientDocument, options);
+      }
+export type DeletePatientMutationHookResult = ReturnType<typeof useDeletePatientMutation>;
+export type DeletePatientMutationResult = Apollo.MutationResult<Types.DeletePatientMutation>;
+export type DeletePatientMutationOptions = Apollo.BaseMutationOptions<Types.DeletePatientMutation, Types.DeletePatientMutationVariables>;
+export const GetPatientDocument = gql`
+    query GetPatient($patientId: Int!) {
+  getPatient(patientId: $patientId) {
+    success
+    message
+    data {
+      id
+      name
+      gender
+      roomId
+      wardId
+      enterDate
+      leaveDate
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientQuery__
+ *
+ * To run a query within a React component, call `useGetPatientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientQuery({
+ *   variables: {
+ *      patientId: // value for 'patientId'
+ *   },
+ * });
+ */
+export function useGetPatientQuery(baseOptions: Apollo.QueryHookOptions<Types.GetPatientQuery, Types.GetPatientQueryVariables> & ({ variables: Types.GetPatientQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetPatientQuery, Types.GetPatientQueryVariables>(GetPatientDocument, options);
+      }
+export function useGetPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetPatientQuery, Types.GetPatientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetPatientQuery, Types.GetPatientQueryVariables>(GetPatientDocument, options);
+        }
+export function useGetPatientSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetPatientQuery, Types.GetPatientQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetPatientQuery, Types.GetPatientQueryVariables>(GetPatientDocument, options);
+        }
+export type GetPatientQueryHookResult = ReturnType<typeof useGetPatientQuery>;
+export type GetPatientLazyQueryHookResult = ReturnType<typeof useGetPatientLazyQuery>;
+export type GetPatientSuspenseQueryHookResult = ReturnType<typeof useGetPatientSuspenseQuery>;
+export type GetPatientQueryResult = Apollo.QueryResult<Types.GetPatientQuery, Types.GetPatientQueryVariables>;
+export const RetrieveMyHospitalWardsAndRoomsDocument = gql`
+    query RetrieveMyHospitalWardsAndRooms {
+  retrieveMyHospitalWards {
+    success
+    message
+    data {
+      id
+      name
+      rooms {
+        id
+        name
+        size
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useRetrieveMyHospitalWardsAndRoomsQuery__
+ *
+ * To run a query within a React component, call `useRetrieveMyHospitalWardsAndRoomsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRetrieveMyHospitalWardsAndRoomsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRetrieveMyHospitalWardsAndRoomsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRetrieveMyHospitalWardsAndRoomsQuery(baseOptions?: Apollo.QueryHookOptions<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>(RetrieveMyHospitalWardsAndRoomsDocument, options);
+      }
+export function useRetrieveMyHospitalWardsAndRoomsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>(RetrieveMyHospitalWardsAndRoomsDocument, options);
+        }
+export function useRetrieveMyHospitalWardsAndRoomsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>(RetrieveMyHospitalWardsAndRoomsDocument, options);
+        }
+export type RetrieveMyHospitalWardsAndRoomsQueryHookResult = ReturnType<typeof useRetrieveMyHospitalWardsAndRoomsQuery>;
+export type RetrieveMyHospitalWardsAndRoomsLazyQueryHookResult = ReturnType<typeof useRetrieveMyHospitalWardsAndRoomsLazyQuery>;
+export type RetrieveMyHospitalWardsAndRoomsSuspenseQueryHookResult = ReturnType<typeof useRetrieveMyHospitalWardsAndRoomsSuspenseQuery>;
+export type RetrieveMyHospitalWardsAndRoomsQueryResult = Apollo.QueryResult<Types.RetrieveMyHospitalWardsAndRoomsQuery, Types.RetrieveMyHospitalWardsAndRoomsQueryVariables>;
+export const CreateMyHospitalRoomDocument = gql`
+    mutation CreateMyHospitalRoom($wardId: Int!, $name: String!, $size: Int) {
+  createMyHospitalRoom(wardId: $wardId, name: $name, size: $size) {
+    success
+    message
+    data {
+      id
+      name
+      size
+    }
+  }
+}
+    `;
+export type CreateMyHospitalRoomMutationFn = Apollo.MutationFunction<Types.CreateMyHospitalRoomMutation, Types.CreateMyHospitalRoomMutationVariables>;
+
+/**
+ * __useCreateMyHospitalRoomMutation__
+ *
+ * To run a mutation, you first call `useCreateMyHospitalRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMyHospitalRoomMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMyHospitalRoomMutation, { data, loading, error }] = useCreateMyHospitalRoomMutation({
+ *   variables: {
+ *      wardId: // value for 'wardId'
+ *      name: // value for 'name'
+ *      size: // value for 'size'
+ *   },
+ * });
+ */
+export function useCreateMyHospitalRoomMutation(baseOptions?: Apollo.MutationHookOptions<Types.CreateMyHospitalRoomMutation, Types.CreateMyHospitalRoomMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.CreateMyHospitalRoomMutation, Types.CreateMyHospitalRoomMutationVariables>(CreateMyHospitalRoomDocument, options);
+      }
+export type CreateMyHospitalRoomMutationHookResult = ReturnType<typeof useCreateMyHospitalRoomMutation>;
+export type CreateMyHospitalRoomMutationResult = Apollo.MutationResult<Types.CreateMyHospitalRoomMutation>;
+export type CreateMyHospitalRoomMutationOptions = Apollo.BaseMutationOptions<Types.CreateMyHospitalRoomMutation, Types.CreateMyHospitalRoomMutationVariables>;
+export const UpdateHospitalRoomDocument = gql`
+    mutation UpdateHospitalRoom($roomId: Int!, $name: String, $wardId: Int, $size: Int) {
+  updateHospitalRoom(roomId: $roomId, name: $name, wardId: $wardId, size: $size) {
+    success
+    message
+    data {
+      id
+      name
+      size
+    }
+  }
+}
+    `;
+export type UpdateHospitalRoomMutationFn = Apollo.MutationFunction<Types.UpdateHospitalRoomMutation, Types.UpdateHospitalRoomMutationVariables>;
+
+/**
+ * __useUpdateHospitalRoomMutation__
+ *
+ * To run a mutation, you first call `useUpdateHospitalRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateHospitalRoomMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateHospitalRoomMutation, { data, loading, error }] = useUpdateHospitalRoomMutation({
+ *   variables: {
+ *      roomId: // value for 'roomId'
+ *      name: // value for 'name'
+ *      wardId: // value for 'wardId'
+ *      size: // value for 'size'
+ *   },
+ * });
+ */
+export function useUpdateHospitalRoomMutation(baseOptions?: Apollo.MutationHookOptions<Types.UpdateHospitalRoomMutation, Types.UpdateHospitalRoomMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UpdateHospitalRoomMutation, Types.UpdateHospitalRoomMutationVariables>(UpdateHospitalRoomDocument, options);
+      }
+export type UpdateHospitalRoomMutationHookResult = ReturnType<typeof useUpdateHospitalRoomMutation>;
+export type UpdateHospitalRoomMutationResult = Apollo.MutationResult<Types.UpdateHospitalRoomMutation>;
+export type UpdateHospitalRoomMutationOptions = Apollo.BaseMutationOptions<Types.UpdateHospitalRoomMutation, Types.UpdateHospitalRoomMutationVariables>;
+export const DeleteHospitalRoomDocument = gql`
+    mutation DeleteHospitalRoom($roomId: Int!) {
+  deleteHospitalRoom(roomId: $roomId) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteHospitalRoomMutationFn = Apollo.MutationFunction<Types.DeleteHospitalRoomMutation, Types.DeleteHospitalRoomMutationVariables>;
+
+/**
+ * __useDeleteHospitalRoomMutation__
+ *
+ * To run a mutation, you first call `useDeleteHospitalRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteHospitalRoomMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteHospitalRoomMutation, { data, loading, error }] = useDeleteHospitalRoomMutation({
+ *   variables: {
+ *      roomId: // value for 'roomId'
+ *   },
+ * });
+ */
+export function useDeleteHospitalRoomMutation(baseOptions?: Apollo.MutationHookOptions<Types.DeleteHospitalRoomMutation, Types.DeleteHospitalRoomMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.DeleteHospitalRoomMutation, Types.DeleteHospitalRoomMutationVariables>(DeleteHospitalRoomDocument, options);
+      }
+export type DeleteHospitalRoomMutationHookResult = ReturnType<typeof useDeleteHospitalRoomMutation>;
+export type DeleteHospitalRoomMutationResult = Apollo.MutationResult<Types.DeleteHospitalRoomMutation>;
+export type DeleteHospitalRoomMutationOptions = Apollo.BaseMutationOptions<Types.DeleteHospitalRoomMutation, Types.DeleteHospitalRoomMutationVariables>;

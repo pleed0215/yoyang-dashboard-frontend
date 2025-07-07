@@ -15,6 +15,43 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type AdmitFee = {
+  __typename?: 'AdmitFee';
+  createdAt: Scalars['DateTime']['output'];
+  hospitalId: Scalars['Int']['output'];
+  id: Scalars['Int']['output'];
+  insuranceFee: Scalars['Int']['output'];
+  memo?: Maybe<Scalars['String']['output']>;
+  nonInsuranceFee: Scalars['Int']['output'];
+  paidAt?: Maybe<Scalars['DateTime']['output']>;
+  patient: Patient;
+  patientId: Scalars['Int']['output'];
+  selfFee: Scalars['Int']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export enum AdmitFeePaymentMethod {
+  BankTransfer = 'BANK_TRANSFER',
+  Card = 'CARD',
+  Cash = 'CASH',
+  Etc = 'ETC'
+}
+
+export type AdmitFeeResponse = {
+  __typename?: 'AdmitFeeResponse';
+  data?: Maybe<AdmitFee>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
+export enum AdmitFeeState {
+  Cancelled = 'CANCELLED',
+  Paid = 'PAID',
+  Refunded = 'REFUNDED',
+  Requesting = 'REQUESTING'
+}
+
 export type BaseHospitalInfoOutput = {
   __typename?: 'BaseHospitalInfoOutput';
   data?: Maybe<BaseHospitalType>;
@@ -33,6 +70,12 @@ export type BaseHospitalType = {
   ykiho: Scalars['String']['output'];
 };
 
+export type BulkCreatePatientsFromFileInput = {
+  file: Scalars['String']['input'];
+  fileType: PatientFileType;
+  hospitalId: Scalars['Int']['input'];
+};
+
 export type CommonResponse = {
   __typename?: 'CommonResponse';
   errors?: Maybe<Array<GraphQlError>>;
@@ -48,6 +91,18 @@ export enum CommonState {
   Pending = 'PENDING',
   PendingDeletion = 'PENDING_DELETION'
 }
+
+export type CreateAdmitFeeInputDto = {
+  hospitalId: Scalars['Int']['input'];
+  insuranceFee: Scalars['Float']['input'];
+  memo?: InputMaybe<Scalars['String']['input']>;
+  nonInsuranceFee: Scalars['Float']['input'];
+  paidAt?: InputMaybe<Scalars['DateTime']['input']>;
+  patientId: Scalars['Int']['input'];
+  paymentMethod?: InputMaybe<AdmitFeePaymentMethod>;
+  selfFee: Scalars['Float']['input'];
+  state?: InputMaybe<AdmitFeeState>;
+};
 
 export type CreateHospitalCommitteeOutput = {
   __typename?: 'CreateHospitalCommitteeOutput';
@@ -87,6 +142,18 @@ export type CreateHospitalWardOutput = {
   errors?: Maybe<Array<GraphQlError>>;
   message?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
+};
+
+export type CreatePatientInput = {
+  birthDate?: InputMaybe<Scalars['DateTime']['input']>;
+  chartId: Scalars['Int']['input'];
+  enterDate?: InputMaybe<Scalars['DateTime']['input']>;
+  gender?: InputMaybe<PatientGender>;
+  hospitalId: Scalars['Int']['input'];
+  leaveDate?: InputMaybe<Scalars['DateTime']['input']>;
+  name: Scalars['String']['input'];
+  roomId: Scalars['Int']['input'];
+  wardId: Scalars['Int']['input'];
 };
 
 export type DeleteHospitalCommitteeOutput = {
@@ -378,6 +445,9 @@ export type Mutation = {
   addEmployeeCommittee: EmployeeOutput;
   addEmployeePart: EmployeeOutput;
   addEmployeeRoom: EmployeeOutput;
+  bulkCreatePatients: PaginatedPatientResponse;
+  bulkCreatePatientsFromFile: PaginatedPatientResponse;
+  createAdmitFee: AdmitFeeResponse;
   createEmployee: EmployeeOutput;
   /** 병원 위원회를 생성합니다. */
   createHospitalCommittee: CreateHospitalCommitteeOutput;
@@ -407,6 +477,8 @@ export type Mutation = {
   createMyHospitalRoom: CreateHospitalRoomOutput;
   /** 나의 병원 병동을 생성합니다. (로그인 기반) */
   createMyHospitalWard: CreateHospitalWardOutput;
+  createPatient: PatientResponse;
+  deleteAdmitFee: CommonResponse;
   deleteEmployee: EmployeeDeleteOutput;
   /** 병원 위원회를 삭제합니다. */
   deleteHospitalCommittee: DeleteHospitalCommitteeOutput;
@@ -421,6 +493,7 @@ export type Mutation = {
   /** 병원 병동을 삭제합니다. */
   deleteHospitalWard: DeleteHospitalWardOutput;
   deleteJoinRequestForCurrentUser: CommonResponse;
+  deletePatient: CommonResponse;
   denyCreateHospitalRequest: CommonResponse;
   /** 요청된 가입신청을 거절합니다. ADMIN 전용 */
   denyJoinRequest: CommonResponse;
@@ -444,6 +517,7 @@ export type Mutation = {
   /** 병원에서 직원을 제외합니다. ADMIN 전용 */
   unlinkStaff: CommonResponse;
   unlinkUserForAdmin: CommonResponse;
+  updateAdmitFee: AdmitFeeResponse;
   updateEmployee: EmployeeOutput;
   /** 병원 위원회를 수정합니다. */
   updateHospitalCommittee: UpdateHospitalCommitteeOutput;
@@ -458,6 +532,7 @@ export type Mutation = {
   /** 병원 병동을 수정합니다. */
   updateHospitalWard: UpdateHospitalWardOutput;
   updateManyUserStatusForAdmin: CommonResponse;
+  updatePatient: PatientResponse;
   /** 사용자 프로필 정보를 업데이트합니다. 로그인 필수. */
   updateProfile: UpdateProfileOutput;
   updateUserStatusForAdmin: CommonResponse;
@@ -489,6 +564,21 @@ export type MutationAddEmployeePartArgs = {
 export type MutationAddEmployeeRoomArgs = {
   employeeId: Scalars['Int']['input'];
   roomId: Scalars['Int']['input'];
+};
+
+
+export type MutationBulkCreatePatientsArgs = {
+  inputs: Array<CreatePatientInput>;
+};
+
+
+export type MutationBulkCreatePatientsFromFileArgs = {
+  input: BulkCreatePatientsFromFileInput;
+};
+
+
+export type MutationCreateAdmitFeeArgs = {
+  input: CreateAdmitFeeInputDto;
 };
 
 
@@ -572,6 +662,16 @@ export type MutationCreateMyHospitalWardArgs = {
 };
 
 
+export type MutationCreatePatientArgs = {
+  input: CreatePatientInput;
+};
+
+
+export type MutationDeleteAdmitFeeArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteEmployeeArgs = {
   employeeId: Scalars['Int']['input'];
 };
@@ -604,6 +704,11 @@ export type MutationDeleteHospitalRoomArgs = {
 
 export type MutationDeleteHospitalWardArgs = {
   wardId: Scalars['Int']['input'];
+};
+
+
+export type MutationDeletePatientArgs = {
+  patientId: Scalars['Int']['input'];
 };
 
 
@@ -701,6 +806,12 @@ export type MutationUnlinkUserForAdminArgs = {
 };
 
 
+export type MutationUpdateAdmitFeeArgs = {
+  id: Scalars['Int']['input'];
+  input: UpdateAdmitFeeInputDto;
+};
+
+
 export type MutationUpdateEmployeeArgs = {
   employeeId: Scalars['Int']['input'];
   input: EmployeeUpdateInput;
@@ -750,6 +861,12 @@ export type MutationUpdateManyUserStatusForAdminArgs = {
 };
 
 
+export type MutationUpdatePatientArgs = {
+  input: UpdatePatientInput;
+  patientId: Scalars['Int']['input'];
+};
+
+
 export type MutationUpdateProfileArgs = {
   username: Scalars['String']['input'];
 };
@@ -769,19 +886,78 @@ export type PageInfo = {
   totalPages: Scalars['Int']['output'];
 };
 
+export type PaginatedAdmitFeeResponse = {
+  __typename?: 'PaginatedAdmitFeeResponse';
+  data?: Maybe<Array<AdmitFee>>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  pageInfo?: Maybe<PageInfo>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type PaginatedPatientResponse = {
+  __typename?: 'PaginatedPatientResponse';
+  data?: Maybe<Array<Patient>>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  pageInfo?: Maybe<PageInfo>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type Patient = {
+  __typename?: 'Patient';
+  admitFees: Array<AdmitFee>;
+  birthDate?: Maybe<Scalars['DateTime']['output']>;
+  chartId: Scalars['Int']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  enterDate?: Maybe<Scalars['DateTime']['output']>;
+  gender?: Maybe<PatientGender>;
+  hospital?: Maybe<HospitalType>;
+  hospitalId: Scalars['Int']['output'];
+  id: Scalars['Int']['output'];
+  leaveDate?: Maybe<Scalars['DateTime']['output']>;
+  name: Scalars['String']['output'];
+  room?: Maybe<HospitalRoomType>;
+  roomId: Scalars['Int']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  ward?: Maybe<HospitalWardType>;
+  wardId: Scalars['Int']['output'];
+};
+
+export enum PatientFileType {
+  Csv = 'CSV',
+  Excel = 'EXCEL'
+}
+
+export enum PatientGender {
+  Female = 'FEMALE',
+  Male = 'MALE'
+}
+
+export type PatientResponse = {
+  __typename?: 'PatientResponse';
+  data?: Maybe<Patient>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   /** ADMIN 유저 전용. 병원에 가입 신청 목록을 가져옵니다. Pagination 가능. */
   adminOnlyRetrieveJoinRequest: RetrieveJoinRequestOutput;
+  getAdmitFee: AdmitFeeResponse;
   getEmployee: EmployeeOutput;
   getHospitalByYkiho: GetHospitalInfoByYkihoOutput;
   getHospitalInfoByYkiho: BaseHospitalInfoOutput;
   getJoinRequestByCurrentUser: JoinHospitalRequestOutput;
+  getPatient: PatientResponse;
   getRegisterRequest: RequestCreateHospitalOutput;
   /** 테스트용 */
   getUserById: UserType;
   /** 현재 사용자의 프로필 데이터를 가져옵니다. 로그인 토큰 필수. */
   me: GetUserOutput;
+  retrieveAdmitFeeList: PaginatedAdmitFeeResponse;
   retrieveCreateHospitalRequest: RetrieveCreateHospitalListOutput;
   retrieveEmployees: EmployeesOutput;
   /** 병원 위원회 목록을 조회합니다. */
@@ -811,6 +987,7 @@ export type Query = {
   retrieveMyHospitalRooms: RetrieveHospitalRoomsOutput;
   /** 나의 병원 병동 목록을 조회합니다. (로그인 기반) */
   retrieveMyHospitalWards: RetrieveHospitalWardsOutput;
+  retrievePatientList: PaginatedPatientResponse;
   /** ADMIN 유저의 병원 유저 목록을 받아옵니다. 로그인 필수. Pagination 가능. */
   retrieveStaff: RetrieveUserOutput;
   /** 병원에 소속된 직원 정보를 가져옵니다. */
@@ -825,6 +1002,11 @@ export type Query = {
 export type QueryAdminOnlyRetrieveJoinRequestArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
+};
+
+
+export type QueryGetAdmitFeeArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -843,6 +1025,11 @@ export type QueryGetHospitalInfoByYkihoArgs = {
 };
 
 
+export type QueryGetPatientArgs = {
+  patientId: Scalars['Int']['input'];
+};
+
+
 export type QueryGetRegisterRequestArgs = {
   ykiho: Scalars['String']['input'];
 };
@@ -850,6 +1037,14 @@ export type QueryGetRegisterRequestArgs = {
 
 export type QueryGetUserByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryRetrieveAdmitFeeListArgs = {
+  hospitalId?: InputMaybe<Scalars['Int']['input']>;
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
+  patientId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -916,6 +1111,17 @@ export type QueryRetrieveMyHospitalEmployeesArgs = {
 
 
 export type QueryRetrieveMyHospitalRoomsArgs = {
+  wardId?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryRetrievePatientListArgs = {
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  hospitalId: Scalars['Int']['input'];
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
+  roomId?: InputMaybe<Scalars['Int']['input']>;
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
   wardId?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -1048,6 +1254,18 @@ export type TokenOutput = {
   refreshToken: Scalars['String']['output'];
 };
 
+export type UpdateAdmitFeeInputDto = {
+  hospitalId?: InputMaybe<Scalars['Int']['input']>;
+  insuranceFee?: InputMaybe<Scalars['Float']['input']>;
+  memo?: InputMaybe<Scalars['String']['input']>;
+  nonInsuranceFee?: InputMaybe<Scalars['Float']['input']>;
+  paidAt?: InputMaybe<Scalars['DateTime']['input']>;
+  patientId?: InputMaybe<Scalars['Int']['input']>;
+  paymentMethod?: InputMaybe<AdmitFeePaymentMethod>;
+  selfFee?: InputMaybe<Scalars['Float']['input']>;
+  state?: InputMaybe<AdmitFeeState>;
+};
+
 export type UpdateHospitalCommitteeOutput = {
   __typename?: 'UpdateHospitalCommitteeOutput';
   data?: Maybe<HospitalCommitteeType>;
@@ -1090,6 +1308,18 @@ export type UpdateHospitalWardOutput = {
 
 export type UpdateManyUserStatusInput = {
   users: Array<UpdateUserStatusInput>;
+};
+
+export type UpdatePatientInput = {
+  birthDate?: InputMaybe<Scalars['DateTime']['input']>;
+  chartId?: InputMaybe<Scalars['Int']['input']>;
+  enterDate?: InputMaybe<Scalars['DateTime']['input']>;
+  gender?: InputMaybe<PatientGender>;
+  hospitalId?: InputMaybe<Scalars['Int']['input']>;
+  leaveDate?: InputMaybe<Scalars['DateTime']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  roomId?: InputMaybe<Scalars['Int']['input']>;
+  wardId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UpdateProfileOutput = {
@@ -1157,37 +1387,6 @@ export type UpdateEmployeeMutationVariables = Exact<{
 
 
 export type UpdateEmployeeMutation = { __typename?: 'Mutation', updateEmployee: { __typename?: 'EmployeeOutput', success: boolean, message?: string | null } };
-
-export type RetrieveMyHospitalWardsAndRoomsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type RetrieveMyHospitalWardsAndRoomsQuery = { __typename?: 'Query', retrieveMyHospitalWards: { __typename?: 'RetrieveHospitalWardsOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'HospitalWardType', id: string, name: string, rooms?: Array<{ __typename?: 'HospitalRoomType', id: string, name: string, size?: number | null }> | null }> | null } };
-
-export type CreateMyHospitalRoomMutationVariables = Exact<{
-  wardId: Scalars['Int']['input'];
-  name: Scalars['String']['input'];
-  size?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-
-export type CreateMyHospitalRoomMutation = { __typename?: 'Mutation', createMyHospitalRoom: { __typename?: 'CreateHospitalRoomOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalRoomType', id: string, name: string, size?: number | null } | null } };
-
-export type UpdateHospitalRoomMutationVariables = Exact<{
-  roomId: Scalars['Int']['input'];
-  name?: InputMaybe<Scalars['String']['input']>;
-  wardId?: InputMaybe<Scalars['Int']['input']>;
-  size?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-
-export type UpdateHospitalRoomMutation = { __typename?: 'Mutation', updateHospitalRoom: { __typename?: 'UpdateHospitalRoomOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalRoomType', id: string, name: string, size?: number | null } | null } };
-
-export type DeleteHospitalRoomMutationVariables = Exact<{
-  roomId: Scalars['Int']['input'];
-}>;
-
-
-export type DeleteHospitalRoomMutation = { __typename?: 'Mutation', deleteHospitalRoom: { __typename?: 'DeleteHospitalRoomOutput', success: boolean, message?: string | null } };
 
 export type RetrieveHospitalListQueryVariables = Exact<{
   name: Scalars['String']['input'];
@@ -1486,3 +1685,105 @@ export type DeleteHospitalCommitteeMutationVariables = Exact<{
 
 
 export type DeleteHospitalCommitteeMutation = { __typename?: 'Mutation', deleteHospitalCommittee: { __typename?: 'DeleteHospitalCommitteeOutput', success: boolean, message?: string | null } };
+
+export type RetrievePatientListQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  hospitalId: Scalars['Int']['input'];
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+}>;
+
+
+export type RetrievePatientListQuery = { __typename?: 'Query', retrievePatientList: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
+
+export type RetrieveWardPatientListQueryVariables = Exact<{
+  wardId: Scalars['Int']['input'];
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  hospitalId: Scalars['Int']['input'];
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+}>;
+
+
+export type RetrieveWardPatientListQuery = { __typename?: 'Query', retrievePatientList: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
+
+export type RetrieveRoomPatientListQueryVariables = Exact<{
+  roomId: Scalars['Int']['input'];
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  hospitalId: Scalars['Int']['input'];
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+}>;
+
+
+export type RetrieveRoomPatientListQuery = { __typename?: 'Query', retrievePatientList: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
+
+export type CreatePatientMutationVariables = Exact<{
+  input: CreatePatientInput;
+}>;
+
+
+export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientResponse', success: boolean, message?: string | null } };
+
+export type BulkCreatePatientsFromFileMutationVariables = Exact<{
+  input: BulkCreatePatientsFromFileInput;
+}>;
+
+
+export type BulkCreatePatientsFromFileMutation = { __typename?: 'Mutation', bulkCreatePatientsFromFile: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null } };
+
+export type UpdatePatientMutationVariables = Exact<{
+  patientId: Scalars['Int']['input'];
+  input: UpdatePatientInput;
+}>;
+
+
+export type UpdatePatientMutation = { __typename?: 'Mutation', updatePatient: { __typename?: 'PatientResponse', success: boolean, message?: string | null } };
+
+export type DeletePatientMutationVariables = Exact<{
+  patientId: Scalars['Int']['input'];
+}>;
+
+
+export type DeletePatientMutation = { __typename?: 'Mutation', deletePatient: { __typename?: 'CommonResponse', success: boolean, message?: string | null } };
+
+export type GetPatientQueryVariables = Exact<{
+  patientId: Scalars['Int']['input'];
+}>;
+
+
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientResponse', success: boolean, message?: string | null, data?: { __typename?: 'Patient', id: number, name: string, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null } | null } };
+
+export type RetrieveMyHospitalWardsAndRoomsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RetrieveMyHospitalWardsAndRoomsQuery = { __typename?: 'Query', retrieveMyHospitalWards: { __typename?: 'RetrieveHospitalWardsOutput', success: boolean, message?: string | null, data?: Array<{ __typename?: 'HospitalWardType', id: string, name: string, rooms?: Array<{ __typename?: 'HospitalRoomType', id: string, name: string, size?: number | null }> | null }> | null } };
+
+export type CreateMyHospitalRoomMutationVariables = Exact<{
+  wardId: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+  size?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type CreateMyHospitalRoomMutation = { __typename?: 'Mutation', createMyHospitalRoom: { __typename?: 'CreateHospitalRoomOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalRoomType', id: string, name: string, size?: number | null } | null } };
+
+export type UpdateHospitalRoomMutationVariables = Exact<{
+  roomId: Scalars['Int']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  wardId?: InputMaybe<Scalars['Int']['input']>;
+  size?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type UpdateHospitalRoomMutation = { __typename?: 'Mutation', updateHospitalRoom: { __typename?: 'UpdateHospitalRoomOutput', success: boolean, message?: string | null, data?: { __typename?: 'HospitalRoomType', id: string, name: string, size?: number | null } | null } };
+
+export type DeleteHospitalRoomMutationVariables = Exact<{
+  roomId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteHospitalRoomMutation = { __typename?: 'Mutation', deleteHospitalRoom: { __typename?: 'DeleteHospitalRoomOutput', success: boolean, message?: string | null } };

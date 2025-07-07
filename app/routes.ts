@@ -48,5 +48,10 @@ export default [
         route('/pending', 'features/admin/pages/admin-users-pending.tsx'),
       ]),
     ]),
+    ...prefix('/patients', [
+      index('features/common/pages/patients/patient-index.tsx'),
+      route('/add', 'features/common/pages/patients/patient-add.tsx'),
+      route('/:patientId', 'features/common/pages/patients/patient-detail.tsx'),
+    ]),
   ]),
 ] satisfies RouteConfig;

@@ -9,61 +9,7 @@ import { Input } from "~/components/ui/input";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { LabelInput } from "~/components/common/label-input";
-
-const RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY = gql`
-  query RetrieveMyHospitalWardsAndRooms {
-    retrieveMyHospitalWards {
-      success
-      message
-      data {
-        id
-        name
-        rooms {
-          id
-          name
-          size
-        }
-      }
-    }
-  }
-`;
-
-const CREATE_HOSPITAL_ROOM_MUTATION = gql`
-  mutation CreateMyHospitalRoom($wardId: Int!, $name: String!, $size: Int) {
-    createMyHospitalRoom(wardId: $wardId, name: $name, size: $size) {
-      success
-      message
-      data {
-        id
-        name
-        size
-      }
-    }
-  }
-`;
-
-const UPDATE_HOSPITAL_ROOM_MUTATION = gql`
-  mutation UpdateHospitalRoom($roomId: Int!, $name: String, $wardId: Int, $size: Int) {
-    updateHospitalRoom(roomId: $roomId, name: $name, wardId: $wardId, size: $size) {
-      success
-      message
-      data {
-        id
-        name
-        size
-      }
-    }
-  }
-`;
-
-const DELETE_HOSPITAL_ROOM_MUTATION = gql`
-  mutation DeleteHospitalRoom($roomId: Int!) {
-    deleteHospitalRoom(roomId: $roomId) {
-      success
-      message
-    }
-  }
-`;
+import { CREATE_HOSPITAL_ROOM_MUTATION, RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY, UPDATE_HOSPITAL_ROOM_MUTATION, DELETE_HOSPITAL_ROOM_MUTATION } from "~/graphql/queries";
 
 // loader는 빈 객체만 반환
 export const loader = async () => ({ });

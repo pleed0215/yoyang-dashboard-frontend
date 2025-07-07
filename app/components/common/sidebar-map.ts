@@ -45,7 +45,17 @@ export const commonMenus = {
       { title: '직원 목록', path: '/employees', icon: List },
       { title: '직원 추가', path: '/employees/add', icon: UserPlus },
     ],
-  }
+  },
+
+  patient: {
+    title: '환자 관련',
+    path: '/patients',
+    icon: Users,
+    children: [
+      { title: '환자 목록', path: '/patients', icon: List },
+      { title: '환자 추가', path: '/patients/add', icon: UserPlus },
+    ],
+  },
 };
 
 export const roleBasedMenus: RoleBasedMenus = {
@@ -103,6 +113,7 @@ export const roleBasedMenus: RoleBasedMenus = {
     // 병원 관련 메뉴를 공통 메뉴로 대체
     commonMenus.hospital,
     commonMenus.employee,
+    commonMenus.patient,
   ],
   [UserRole.Staff]: {
     withoutHospital: [
@@ -127,6 +138,7 @@ export const roleBasedMenus: RoleBasedMenus = {
       // 병원 관련 메뉴를 공통 메뉴로 대체
       commonMenus.hospital,
       commonMenus.employee,
+      commonMenus.patient,
     ],
   },
 };

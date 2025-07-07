@@ -543,3 +543,183 @@ export const DELETE_HOSPITAL_COMMITTEE_MUTATION = gql`
     }
   }
 `;
+
+export const RETRIEVE_PATIENT_LIST_QUERY = gql`
+  query RetrievePatientList($page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {
+    retrievePatientList(page: $page, pageSize: $pageSize, hospitalId: $hospitalId, startDate: $startDate, endDate: $endDate) {
+      success
+      message
+      pageInfo {
+        currentPage
+        hasNextPage
+        hasPreviousPage
+        total
+        totalPages
+      }
+      data {
+        id
+        name
+        gender
+        roomId
+        wardId
+        enterDate
+        leaveDate
+      }
+    }
+  }
+`;
+
+
+export const RETRIEVE_WARD_PATIENT_LIST_QUERY = gql`
+  query RetrieveWardPatientList($wardId: Int!, $page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {
+    retrievePatientList(wardId: $wardId, page: $page, pageSize: $pageSize, hospitalId: $hospitalId, startDate: $startDate, endDate: $endDate) {
+      success
+      message
+      pageInfo {
+        currentPage
+        hasNextPage
+        hasPreviousPage
+        total
+        totalPages
+      }
+      data {
+        id
+        name
+        gender
+        roomId
+        wardId
+        enterDate
+        leaveDate
+      }
+    }
+  }
+`;
+
+
+export const RETRIEVE_ROOM_PATIENT_LIST_QUERY = gql`
+  query RetrieveRoomPatientList($roomId: Int!, $page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {
+    retrievePatientList(roomId: $roomId, page: $page, pageSize: $pageSize, hospitalId: $hospitalId, startDate: $startDate, endDate: $endDate) {
+      success
+      message
+      
+      data {
+        id
+        name
+        gender
+        roomId
+        wardId
+        enterDate
+        leaveDate
+      }
+    }
+  }
+`;
+
+export const CREATE_PATIENT_MUTATION = gql`
+  mutation CreatePatient($input: CreatePatientInput!) {
+    createPatient(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const BULK_CREATE_PATIENTS_FROM_FILE_MUTATION = gql`
+  mutation BulkCreatePatientsFromFile($input: BulkCreatePatientsFromFileInput!) {
+    bulkCreatePatientsFromFile(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const UPDATE_PATIENT_MUTATION = gql`
+  mutation UpdatePatient($patientId: Int!, $input: UpdatePatientInput!) { 
+    updatePatient(patientId: $patientId, input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const DELETE_PATIENT_MUTATION = gql`
+  mutation DeletePatient($patientId: Int!) {
+    deletePatient(patientId: $patientId) {
+      success
+      message
+    }
+  }
+`;
+
+export const GET_PATIENT_DETAIL_QUERY = gql`
+  query GetPatient($patientId: Int!) {
+    getPatient(patientId: $patientId) {
+      success
+      message
+      data {
+        id
+        name
+        gender
+        roomId
+        wardId
+        enterDate
+        leaveDate
+      }
+    }
+  }
+`;
+
+export const RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY = gql`
+  query RetrieveMyHospitalWardsAndRooms {
+    retrieveMyHospitalWards {
+      success
+      message
+      data {
+        id
+        name
+        rooms {
+          id
+          name
+          size
+        }
+      }
+    }
+  }
+`;
+
+export const CREATE_HOSPITAL_ROOM_MUTATION = gql`
+  mutation CreateMyHospitalRoom($wardId: Int!, $name: String!, $size: Int) {
+    createMyHospitalRoom(wardId: $wardId, name: $name, size: $size) {
+      success
+      message
+      data {
+        id
+        name
+        size
+      }
+    }
+  }
+`;
+
+export const UPDATE_HOSPITAL_ROOM_MUTATION = gql`
+  mutation UpdateHospitalRoom($roomId: Int!, $name: String, $wardId: Int, $size: Int) {
+    updateHospitalRoom(roomId: $roomId, name: $name, wardId: $wardId, size: $size) {
+      success
+      message
+      data {
+        id
+        name
+        size
+      }
+    }
+  }
+`;
+
+export const DELETE_HOSPITAL_ROOM_MUTATION = gql`
+  mutation DeleteHospitalRoom($roomId: Int!) {
+    deleteHospitalRoom(roomId: $roomId) {
+      success
+      message
+    }
+  }
+`;
