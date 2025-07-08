@@ -2241,6 +2241,40 @@ export function useBulkCreatePatientsFromFileMutation(baseOptions?: Apollo.Mutat
 export type BulkCreatePatientsFromFileMutationHookResult = ReturnType<typeof useBulkCreatePatientsFromFileMutation>;
 export type BulkCreatePatientsFromFileMutationResult = Apollo.MutationResult<Types.BulkCreatePatientsFromFileMutation>;
 export type BulkCreatePatientsFromFileMutationOptions = Apollo.BaseMutationOptions<Types.BulkCreatePatientsFromFileMutation, Types.BulkCreatePatientsFromFileMutationVariables>;
+export const BulkCreatePatientsDocument = gql`
+    mutation BulkCreatePatients($inputs: [CreatePatientInput!]!) {
+  bulkCreatePatients(inputs: $inputs) {
+    success
+    message
+  }
+}
+    `;
+export type BulkCreatePatientsMutationFn = Apollo.MutationFunction<Types.BulkCreatePatientsMutation, Types.BulkCreatePatientsMutationVariables>;
+
+/**
+ * __useBulkCreatePatientsMutation__
+ *
+ * To run a mutation, you first call `useBulkCreatePatientsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useBulkCreatePatientsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [bulkCreatePatientsMutation, { data, loading, error }] = useBulkCreatePatientsMutation({
+ *   variables: {
+ *      inputs: // value for 'inputs'
+ *   },
+ * });
+ */
+export function useBulkCreatePatientsMutation(baseOptions?: Apollo.MutationHookOptions<Types.BulkCreatePatientsMutation, Types.BulkCreatePatientsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.BulkCreatePatientsMutation, Types.BulkCreatePatientsMutationVariables>(BulkCreatePatientsDocument, options);
+      }
+export type BulkCreatePatientsMutationHookResult = ReturnType<typeof useBulkCreatePatientsMutation>;
+export type BulkCreatePatientsMutationResult = Apollo.MutationResult<Types.BulkCreatePatientsMutation>;
+export type BulkCreatePatientsMutationOptions = Apollo.BaseMutationOptions<Types.BulkCreatePatientsMutation, Types.BulkCreatePatientsMutationVariables>;
 export const UpdatePatientDocument = gql`
     mutation UpdatePatient($patientId: Int!, $input: UpdatePatientInput!) {
   updatePatient(patientId: $patientId, input: $input) {

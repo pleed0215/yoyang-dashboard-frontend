@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import DateInput from '~/components/common/date-input';
 import { Button } from '~/components/ui/button';
-import PageInfo from '~/components/common/page-info';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '~/components/ui/table';
 import { Plus } from 'lucide-react';
@@ -13,6 +12,16 @@ import { contextWithToken } from '~/lib/apollo';
 import { RetrieveMyHospitalWardsAndRoomsQuery } from '~/graphql/types';
 import { useMeQuery, useRetrievePatientListQuery } from '~/graphql/operations';
 import { toast } from 'sonner';
+import * as React from 'react';
+import { ColumnDef } from '@tanstack/react-table';
+import { DataTable } from '~/components/common/data-table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationEllipsis,
+} from '~/components/ui/pagination';
 
 function getToday() {
   const today = new Date();
@@ -186,6 +195,18 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
   console.log(wards);
   console.log(patients);
 
+  // DataTable columns 정의
+  const columns: ColumnDef<any>[] = [
+    { accessorKey: 'id', header: 'ID', cell: info => <div className="text-center">{info.getValue() as number}</div> },
+    { accessorKey: 'name', header: '이름', cell: info => <div className="text-center">{info.getValue() as string}</div> },
+    { accessorKey: 'gender', header: '성별', cell: info => <div className="text-center">{info.getValue() as string | undefined ?? '-'}</div> },
+    { accessorKey: 'wardId', header: '병동', cell: info => <div className="text-center">{wards.find((w: any) => w.id === info.row.original.wardId)?.name ?? '-'}</div> },
+    { accessorKey: 'roomId', header: '병실', cell: info => <div className="text-center">{wards.flatMap((w: any) => w.rooms).find((r: any) => r.id === info.row.original.roomId)?.name ?? '-'}</div> },
+    { accessorKey: 'enterDate', header: '입원일', cell: info => <div className="text-center">{info.getValue() ? new Date(info.getValue() as string).toLocaleDateString() : '-'}</div> },
+    { accessorKey: 'leaveDate', header: '퇴원일', cell: info => <div className="text-center">{info.getValue() ? new Date(info.getValue() as string).toLocaleDateString() : '-'}</div> },
+    { id: 'actions', header: '액션', cell: () => <div className="text-center">-</div> },
+  ];
+
   return (
     <div className="space-y-4 p-4">
       <div className="flex items-center justify-between">
@@ -247,45 +268,12 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
           <CardTitle>환자 목록</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">ID</TableHead>
-                <TableHead className="text-center">이름</TableHead>
-                <TableHead className="text-center">성별</TableHead>
-                <TableHead className="text-center">병동</TableHead>
-                <TableHead className="text-center">병실</TableHead>
-                <TableHead className="text-center">입원일</TableHead>
-                <TableHead className="text-center">퇴원일</TableHead>
-                <TableHead className="text-center">액션</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {patients.length === 0 ? (
-                <TableRow>
-                  <TableCell className="text-center" colSpan={8}>데이터 없음</TableCell>
-                </TableRow>
-              ) : (
-                patients.map((patient) => (
-                  <TableRow key={patient.id}>
-                    <TableCell className="text-center">{patient.id}</TableCell>
-                    <TableCell className="text-center">{patient.name}</TableCell>
-                    <TableCell className="text-center">{patient.gender ?? '-'}</TableCell>
-                    <TableCell className="text-center">{wards.find((w: any) => w.id === patient.wardId)?.name ?? '-'}</TableCell>
-                    <TableCell className="text-center">{wards.flatMap((w: any) => w.rooms).find((r: any) => r.id === patient.roomId)?.name ?? '-'}</TableCell>
-                    <TableCell className="text-center">{patient.enterDate ? new Date(patient.enterDate).toLocaleDateString() : '-'}</TableCell>
-                    <TableCell className="text-center">{patient.leaveDate ? new Date(patient.leaveDate).toLocaleDateString() : '-'}</TableCell>
-                    <TableCell className="text-center">-</TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+          <DataTable columns={columns} data={patients} page={page} totalPages={totalPages} onPageChange={p => {
+            searchParams.set('page', p.toString());
+            setSearchParams(searchParams, { preventScrollReset: true });
+          }} />
         </CardContent>
       </Card>
-      <div className="flex justify-center mt-4">
-        <PageInfo totalPages={totalPages} />
-      </div>
     </div>
   );
 } 

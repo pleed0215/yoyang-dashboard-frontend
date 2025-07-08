@@ -633,6 +633,15 @@ export const BULK_CREATE_PATIENTS_FROM_FILE_MUTATION = gql`
   }
 `;
 
+export const BULK_CREATE_PATIENTS = gql`
+  mutation BulkCreatePatients($inputs: [CreatePatientInput!]!) {
+    bulkCreatePatients(inputs: $inputs) {
+      success
+      message
+    }
+  }
+`;
+
 export const UPDATE_PATIENT_MUTATION = gql`
   mutation UpdatePatient($patientId: Int!, $input: UpdatePatientInput!) { 
     updatePatient(patientId: $patientId, input: $input) {

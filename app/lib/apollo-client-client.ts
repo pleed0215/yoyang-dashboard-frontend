@@ -3,6 +3,7 @@ import {ApolloClient, } from "@apollo/client/core"
 import {from} from "@apollo/client/link/core"
 import {onError} from '@apollo/client/link/error';
 import {HttpLink} from "@apollo/client/link/http"
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs"
 
 // Type import
 import type { NormalizedCacheObject } from '@apollo/client';
@@ -42,7 +43,7 @@ export function createClientApolloClient(initialState = {}) {
   // If there's no existing client, create a new one
   const _apolloClient = apolloClient ?? new ApolloClient({
     ssrMode: false, // Always false for client-side
-    link: from([errorLink, createHttpLink()]),
+    link: from([errorLink, createHttpLink(), createUploadLink({uri: `${BACKEND_URL}/graphql`, credentials: 'include'})]),
     cache: new InMemoryCache().restore(initialState),
     connectToDevTools: import.meta.env.DEV, // Enable DevTools in development
   });

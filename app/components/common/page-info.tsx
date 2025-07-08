@@ -24,17 +24,22 @@ export default function PageInfo({ totalPages }: PageInfoProps) {
     <div>
       <Pagination>
         <PaginationContent>
+          {/* 처음으로 이동 */}
+          {page > 1 && (
+            <PaginationItem>
+              <PaginationLink
+                href="?page=1"
+                onClick={event => {
+                  event.preventDefault();
+                  onClick(1);
+                }}
+              >
+                처음
+              </PaginationLink>
+            </PaginationItem>
+          )}
           {page === 1 ? null : (
             <>
-              <PaginationItem>
-                <PaginationPrevious
-                  href={`?page=${page - 1}`}
-                  onClick={event => {
-                    event.preventDefault();
-                    onClick(page - 1);
-                  }}
-                />
-              </PaginationItem>
               <PaginationItem>
                 <PaginationLink
                   href={`?page=${page - 1}`}
@@ -78,16 +83,21 @@ export default function PageInfo({ totalPages }: PageInfoProps) {
                   <PaginationEllipsis />
                 </PaginationItem>
               )}
-              <PaginationItem>
-                <PaginationNext
-                  href={`?page=${page + 1}`}
-                  onClick={event => {
-                    event.preventDefault();
-                    onClick(page + 1);
-                  }}
-                />
-              </PaginationItem>
             </>
+          )}
+          {/* 마지막으로 이동 */}
+          {page < totalPages && (
+            <PaginationItem>
+              <PaginationLink
+                href={`?page=${totalPages}`}
+                onClick={event => {
+                  event.preventDefault();
+                  onClick(totalPages);
+                }}
+              >
+                마지막
+              </PaginationLink>
+            </PaginationItem>
           )}
         </PaginationContent>
       </Pagination>
