@@ -10,30 +10,48 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { LabelInput } from "~/components/common/label-input";
 import { CREATE_HOSPITAL_ROOM_MUTATION, RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY, UPDATE_HOSPITAL_ROOM_MUTATION, DELETE_HOSPITAL_ROOM_MUTATION } from "~/graphql/queries";
+import { useNavigate, useSearchParams } from 'react-router';
+import { RetrieveMyHospitalWardsAndRoomsQuery } from "~/graphql/types";
 
 // loader는 빈 객체만 반환
 export const loader = async () => ({ });
 
 export default function HospitalRoomsPage({}:Route.ComponentProps) {
   const apolloClient = useApolloClient();
-  const { data, loading: queryLoading, refetch } = useQuery(RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY, );
+  const { data, loading: queryLoading, refetch } = useQuery<RetrieveMyHospitalWardsAndRoomsQuery>(RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY);
   const wards = data?.retrieveMyHospitalWards?.data ?? [];
-  // 병동 id/name 기준으로 상태 관리
   const wardOptions = wards.map((w: any) => ({ id: w.id ?? w.name, name: w.name, rooms: w.rooms ?? [] }));
-  const [selectedWardId, setSelectedWardId] = useState(wardOptions[0]?.id ?? "");
+
+  // search param 연동
+  const [searchParams, setSearchParams] = useSearchParams();
+  const wardParam = searchParams.get('ward') || '';
+  const [selectedWardId, setSelectedWardId] = useState(wardParam);
   useEffect(() => {
-    if (wardOptions.length > 0 && !wardOptions.find(w => w.id === selectedWardId)) {
-      setSelectedWardId(wardOptions[0].id);
+    // search param이 바뀌면 select도 동기화
+    setSelectedWardId(wardParam);
+  }, [wardParam]);
+  useEffect(() => {
+    // select가 바뀌면 search param도 동기화
+    if (selectedWardId) {
+      searchParams.set('ward', selectedWardId);
+      setSearchParams(searchParams, { preventScrollReset: true });
+    } else {
+      searchParams.delete('ward');
+      setSearchParams(searchParams, { preventScrollReset: true });
     }
-  }, [data]);
-  const selectedWard = wardOptions.find(w => w.id === selectedWardId);
+  }, [selectedWardId]);
+
+  // 병동이 없거나 선택되지 않으면 추가/수정/삭제 불가
+  const selectedWard = wardOptions.find(w => w.id === Number(selectedWardId));
   const filteredRooms = selectedWard?.rooms ?? [];
+  console.log(selectedWard, filteredRooms);
 
   // 추가/수정 상태 관리
   const [editRoomId, setEditRoomId] = useState<number|null>(null);
   const [editRoomName, setEditRoomName] = useState("");
   const [editRoomSize, setEditRoomSize] = useState("");
   const [mutationLoading, setMutationLoading] = useState(false);
+  const [formError, setFormError] = useState<string>("");
 
   // react-hook-form 세팅
   const {
@@ -41,13 +59,27 @@ export default function HospitalRoomsPage({}:Route.ComponentProps) {
     handleSubmit,
     reset,
     formState: { errors },
+    setError,
+    clearErrors,
   } = useForm({
     defaultValues: { name: "", size: "6" },
   });
 
   // 병실 추가 (react-hook-form용)
   const onAddRoom = async (values: { name: string; size: string }) => {
-    if (!values.name.trim()) return;
+    setFormError("");
+    if (!selectedWardId) {
+      setFormError("병동을 먼저 선택하세요.");
+      return;
+    }
+    if (!values.name.trim()) {
+      setFormError("병실명을 입력하세요.");
+      return;
+    }
+    if (!values.size || isNaN(Number(values.size)) || Number(values.size) < 1) {
+      setFormError("인원수는 1 이상의 숫자여야 합니다.");
+      return;
+    }
     setMutationLoading(true);
     try {
       const { data } = await apolloClient.mutate({
@@ -63,8 +95,10 @@ export default function HospitalRoomsPage({}:Route.ComponentProps) {
         reset();
         refetch();
       } else {
-        toast.error(data?.createMyHospitalRoom?.message || "추가 실패");
+        setFormError(data?.createMyHospitalRoom?.message || "추가 실패");
       }
+    } catch (e: any) {
+      setFormError(e?.message || "알 수 없는 오류가 발생했습니다.");
     } finally {
       setMutationLoading(false);
     }
@@ -72,7 +106,15 @@ export default function HospitalRoomsPage({}:Route.ComponentProps) {
 
   // 병실 수정
   const handleEditRoom = async (id: number) => {
-    if (!editRoomName.trim()) return;
+    setFormError("");
+    if (!editRoomName.trim()) {
+      setFormError("병실명을 입력하세요.");
+      return;
+    }
+    if (!editRoomSize || isNaN(Number(editRoomSize)) || Number(editRoomSize) < 1) {
+      setFormError("인원수는 1 이상의 숫자여야 합니다.");
+      return;
+    }
     setMutationLoading(true);
     try {
       const { data } = await apolloClient.mutate({
@@ -91,7 +133,7 @@ export default function HospitalRoomsPage({}:Route.ComponentProps) {
         setEditRoomSize("");
         refetch();
       } else {
-        toast.error(data?.updateHospitalRoom?.message || "수정 실패");
+        setFormError(data?.updateHospitalRoom?.message || "수정 실패");
       }
     } finally {
       setMutationLoading(false);
@@ -111,7 +153,7 @@ export default function HospitalRoomsPage({}:Route.ComponentProps) {
         toast.success("병실이 삭제되었습니다.");
         refetch();
       } else {
-        toast.error(data?.deleteHospitalRoom?.message || "삭제 실패");
+        setFormError(data?.deleteHospitalRoom?.message || "삭제 실패");
       }
     } finally {
       setMutationLoading(false);
@@ -132,8 +174,9 @@ export default function HospitalRoomsPage({}:Route.ComponentProps) {
               className="border rounded px-2 py-1 min-w-[120px]"
               value={selectedWardId}
               onChange={e => setSelectedWardId(e.target.value)}
-              disabled={queryLoading || mutationLoading}
+              disabled={queryLoading || mutationLoading || wardOptions.length === 0}
             >
+              <option value="">병동을 선택하세요</option>
               {wardOptions.map((w: any) => (
                 <option key={w.id} value={w.id}>{w.name}</option>
               ))}
@@ -143,30 +186,26 @@ export default function HospitalRoomsPage({}:Route.ComponentProps) {
           <form onSubmit={handleSubmit(onAddRoom)} className="flex gap-2 mb-4 justify-center items-end">
             <LabelInput
               label="병실명"
-              {...register("name", { required: "병실명을 입력하세요." })}
-              errors={errors.name?.message}
+              {...register("name")}
               className="w-40"
-              disabled={mutationLoading}
+              disabled={mutationLoading || !selectedWardId}
             />
             <LabelInput
               label="인원수"
               type="number"
               min={1}
-              {...register("size", {
-                required: "인원수를 입력하세요.",
-                pattern: {
-                  value: /^\d+$/,
-                  message: "숫자만 입력하세요.",
-                },
-              })}
-              errors={errors.size?.message}
+              {...register("size")}
               className="w-24"
-              disabled={mutationLoading}
+              disabled={mutationLoading || !selectedWardId}
             />
-            <Button type="submit" disabled={mutationLoading} className="cursor-pointer">추가</Button>
+            <Button type="submit" disabled={mutationLoading || !selectedWardId} className="cursor-pointer">추가</Button>
           </form>
+          {/* 오류 메시지 통합 */}
+          {formError && <div className="text-center text-red-500 mb-4">{formError}</div>}
           {queryLoading ? (
             <div className="text-center text-muted-foreground py-8">로딩 중...</div>
+          ) : !selectedWardId ? (
+            <div className="text-center text-muted-foreground py-8">병동을 먼저 선택하세요.</div>
           ) : filteredRooms.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">병실 정보가 없습니다.</div>
           ) : (
