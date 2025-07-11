@@ -545,7 +545,7 @@ export const DELETE_HOSPITAL_COMMITTEE_MUTATION = gql`
 `;
 
 export const RETRIEVE_PATIENT_LIST_QUERY = gql`
-  query RetrievePatientList($page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime, $wardId: Int, $roomId: Int) {
+  query RetrievePatientList($page: Int = 1, $pageSize: Int = 50, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime, $wardId: Int, $roomId: Int) {
     retrievePatientList(page: $page, pageSize: $pageSize, hospitalId: $hospitalId, startDate: $startDate, endDate: $endDate, wardId: $wardId, roomId: $roomId) {
       success
       message
@@ -559,6 +559,7 @@ export const RETRIEVE_PATIENT_LIST_QUERY = gql`
       data {
         id
         name
+        chartId
         gender
         roomId
         wardId
@@ -587,6 +588,7 @@ export const RETRIEVE_WARD_PATIENT_LIST_QUERY = gql`
         name
         gender
         roomId
+        chartId
         wardId
         enterDate
         leaveDate
@@ -601,11 +603,18 @@ export const RETRIEVE_ROOM_PATIENT_LIST_QUERY = gql`
     retrievePatientList(roomId: $roomId, page: $page, pageSize: $pageSize, hospitalId: $hospitalId, startDate: $startDate, endDate: $endDate) {
       success
       message
-      
+      pageInfo {
+        currentPage
+        hasNextPage
+        hasPreviousPage
+        total
+        totalPages
+      }
       data {
         id
         name
         gender
+        chartId
         roomId
         wardId
         enterDate

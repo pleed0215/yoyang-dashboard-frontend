@@ -4,7 +4,6 @@ import { useNavigate, useSearchParams } from 'react-router';
 import DateInput from '~/components/common/date-input';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '~/components/ui/table';
 import { Plus } from 'lucide-react';
 import { serverApolloClient } from '~/lib/apollo-client-server';
 import { RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY } from '~/graphql/queries';
@@ -12,16 +11,8 @@ import { contextWithToken } from '~/lib/apollo';
 import { RetrieveMyHospitalWardsAndRoomsQuery } from '~/graphql/types';
 import { useMeQuery, useRetrievePatientListQuery } from '~/graphql/operations';
 import { toast } from 'sonner';
-import * as React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '~/components/common/data-table';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationEllipsis,
-} from '~/components/ui/pagination';
 
 function getToday() {
   const today = new Date();
@@ -73,7 +64,7 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
 
   // 페이지네이션 상태
   const page = Number(searchParams.get('page') ?? 1);
-  const pageSize = 10;
+  const pageSize = 50;
 
   // 내 병원 정보
   const { data: meData, loading: meLoading } = useMeQuery();

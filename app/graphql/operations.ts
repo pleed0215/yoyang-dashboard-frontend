@@ -1972,7 +1972,7 @@ export type DeleteHospitalCommitteeMutationHookResult = ReturnType<typeof useDel
 export type DeleteHospitalCommitteeMutationResult = Apollo.MutationResult<Types.DeleteHospitalCommitteeMutation>;
 export type DeleteHospitalCommitteeMutationOptions = Apollo.BaseMutationOptions<Types.DeleteHospitalCommitteeMutation, Types.DeleteHospitalCommitteeMutationVariables>;
 export const RetrievePatientListDocument = gql`
-    query RetrievePatientList($page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime, $wardId: Int, $roomId: Int) {
+    query RetrievePatientList($page: Int = 1, $pageSize: Int = 50, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime, $wardId: Int, $roomId: Int) {
   retrievePatientList(
     page: $page
     pageSize: $pageSize
@@ -1994,6 +1994,7 @@ export const RetrievePatientListDocument = gql`
     data {
       id
       name
+      chartId
       gender
       roomId
       wardId
@@ -2066,6 +2067,7 @@ export const RetrieveWardPatientListDocument = gql`
       name
       gender
       roomId
+      chartId
       wardId
       enterDate
       leaveDate
@@ -2123,10 +2125,18 @@ export const RetrieveRoomPatientListDocument = gql`
   ) {
     success
     message
+    pageInfo {
+      currentPage
+      hasNextPage
+      hasPreviousPage
+      total
+      totalPages
+    }
     data {
       id
       name
       gender
+      chartId
       roomId
       wardId
       enterDate

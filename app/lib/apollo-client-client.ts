@@ -43,7 +43,7 @@ export function createClientApolloClient(initialState = {}) {
   // If there's no existing client, create a new one
   const _apolloClient = apolloClient ?? new ApolloClient({
     ssrMode: false, // Always false for client-side
-    link: from([errorLink, createHttpLink(), createUploadLink({uri: `${BACKEND_URL}/graphql`, credentials: 'include'})]),
+    link: from([errorLink, createHttpLink() ]),
     cache: new InMemoryCache().restore(initialState),
     connectToDevTools: import.meta.env.DEV, // Enable DevTools in development
   });

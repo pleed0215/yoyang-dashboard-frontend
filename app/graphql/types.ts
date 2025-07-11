@@ -1698,7 +1698,7 @@ export type RetrievePatientListQueryVariables = Exact<{
 }>;
 
 
-export type RetrievePatientListQuery = { __typename?: 'Query', retrievePatientList: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
+export type RetrievePatientListQuery = { __typename?: 'Query', retrievePatientList: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, chartId: number, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
 
 export type RetrieveWardPatientListQueryVariables = Exact<{
   wardId: Scalars['Int']['input'];
@@ -1710,7 +1710,7 @@ export type RetrieveWardPatientListQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveWardPatientListQuery = { __typename?: 'Query', retrievePatientList: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
+export type RetrieveWardPatientListQuery = { __typename?: 'Query', retrievePatientList: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, gender?: PatientGender | null, roomId: number, chartId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
 
 export type RetrieveRoomPatientListQueryVariables = Exact<{
   roomId: Scalars['Int']['input'];
@@ -1722,7 +1722,7 @@ export type RetrieveRoomPatientListQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveRoomPatientListQuery = { __typename?: 'Query', retrievePatientList: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
+export type RetrieveRoomPatientListQuery = { __typename?: 'Query', retrievePatientList: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, gender?: PatientGender | null, chartId: number, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
 
 export type CreatePatientMutationVariables = Exact<{
   input: CreatePatientInput;
