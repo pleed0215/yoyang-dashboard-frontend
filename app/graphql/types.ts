@@ -358,6 +358,23 @@ export type HospitalPartType = {
   staff?: Maybe<Array<EmployeeType>>;
 };
 
+export type HospitalPatientCount = {
+  __typename?: 'HospitalPatientCount';
+  date: Scalars['DateTime']['output'];
+  hospitalId: Scalars['Int']['output'];
+  patients?: Maybe<Array<Patient>>;
+  totalCount: Scalars['Int']['output'];
+  ward?: Maybe<Array<WardPatientCount>>;
+};
+
+export type HospitalPatientCountResponse = {
+  __typename?: 'HospitalPatientCountResponse';
+  data?: Maybe<HospitalPatientCount>;
+  errors?: Maybe<Array<GraphQlError>>;
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type HospitalPositionType = {
   __typename?: 'HospitalPositionType';
   hospitalId: Scalars['Float']['output'];
@@ -951,11 +968,14 @@ export type Query = {
   getEmployee: EmployeeOutput;
   getHospitalByYkiho: GetHospitalInfoByYkihoOutput;
   getHospitalInfoByYkiho: BaseHospitalInfoOutput;
+  getHospitalPatientCountOnDate: HospitalPatientCountResponse;
   getJoinRequestByCurrentUser: JoinHospitalRequestOutput;
   getPatient: PatientResponse;
   getRegisterRequest: RequestCreateHospitalOutput;
+  getRoomPatientCountOnDate: RoomPatientCount;
   /** 테스트용 */
   getUserById: UserType;
+  getWardPatientCountOnDate: WardPatientCount;
   /** 현재 사용자의 프로필 데이터를 가져옵니다. 로그인 토큰 필수. */
   me: GetUserOutput;
   retrieveAdmitFeeList: PaginatedAdmitFeeResponse;
@@ -989,6 +1009,7 @@ export type Query = {
   /** 나의 병원 병동 목록을 조회합니다. (로그인 기반) */
   retrieveMyHospitalWards: RetrieveHospitalWardsOutput;
   retrievePatientList: PaginatedPatientResponse;
+  retrievePatientsOnThatDate: PaginatedPatientResponse;
   /** ADMIN 유저의 병원 유저 목록을 받아옵니다. 로그인 필수. Pagination 가능. */
   retrieveStaff: RetrieveUserOutput;
   /** 병원에 소속된 직원 정보를 가져옵니다. */
@@ -1026,6 +1047,12 @@ export type QueryGetHospitalInfoByYkihoArgs = {
 };
 
 
+export type QueryGetHospitalPatientCountOnDateArgs = {
+  date: Scalars['DateTime']['input'];
+  hospitalId: Scalars['Int']['input'];
+};
+
+
 export type QueryGetPatientArgs = {
   patientId: Scalars['Int']['input'];
 };
@@ -1036,8 +1063,20 @@ export type QueryGetRegisterRequestArgs = {
 };
 
 
+export type QueryGetRoomPatientCountOnDateArgs = {
+  date: Scalars['DateTime']['input'];
+  roomId: Scalars['Int']['input'];
+};
+
+
 export type QueryGetUserByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetWardPatientCountOnDateArgs = {
+  date: Scalars['DateTime']['input'];
+  wardId: Scalars['Int']['input'];
 };
 
 
@@ -1123,6 +1162,16 @@ export type QueryRetrievePatientListArgs = {
   pageSize?: Scalars['Int']['input'];
   roomId?: InputMaybe<Scalars['Int']['input']>;
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  wardId?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryRetrievePatientsOnThatDateArgs = {
+  date: Scalars['DateTime']['input'];
+  hospitalId: Scalars['Int']['input'];
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  roomId?: InputMaybe<Scalars['Int']['input']>;
   wardId?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -1249,6 +1298,15 @@ export type RetrieveUserOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type RoomPatientCount = {
+  __typename?: 'RoomPatientCount';
+  date: Scalars['DateTime']['output'];
+  patients?: Maybe<Array<Patient>>;
+  roomId: Scalars['Int']['output'];
+  roomInfo: HospitalRoomType;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type TokenOutput = {
   __typename?: 'TokenOutput';
   accessToken: Scalars['String']['output'];
@@ -1360,6 +1418,17 @@ export type UserType = {
   state: CommonState;
   updatedAt: Scalars['DateTime']['output'];
   username: Scalars['String']['output'];
+};
+
+export type WardPatientCount = {
+  __typename?: 'WardPatientCount';
+  date: Scalars['DateTime']['output'];
+  patients?: Maybe<Array<Patient>>;
+  room?: Maybe<Array<RoomPatientCount>>;
+  roomPatientCounts?: Maybe<Array<RoomPatientCount>>;
+  totalCount: Scalars['Int']['output'];
+  wardId: Scalars['Int']['output'];
+  wardInfo: HospitalWardType;
 };
 
 export type CreateEmployeeMutationVariables = Exact<{
@@ -1699,6 +1768,26 @@ export type RetrievePatientListQueryVariables = Exact<{
 
 
 export type RetrievePatientListQuery = { __typename?: 'Query', retrievePatientList: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, pageInfo?: { __typename?: 'PageInfo', currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean, total?: number | null, totalPages: number } | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, chartId: number, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
+
+export type RetrievePatientsOnThatDateQueryVariables = Exact<{
+  date: Scalars['DateTime']['input'];
+  hospitalId: Scalars['Int']['input'];
+  wardId?: InputMaybe<Scalars['Int']['input']>;
+  roomId?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type RetrievePatientsOnThatDateQuery = { __typename?: 'Query', retrievePatientsOnThatDate: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, chartId: number, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
+
+export type GetHospitalPatientCountOnDateQueryVariables = Exact<{
+  date: Scalars['DateTime']['input'];
+  hospitalId: Scalars['Int']['input'];
+}>;
+
+
+export type GetHospitalPatientCountOnDateQuery = { __typename?: 'Query', getHospitalPatientCountOnDate: { __typename?: 'HospitalPatientCountResponse', success: boolean, message?: string | null, data?: { __typename?: 'HospitalPatientCount', totalCount: number, date: any, hospitalId: number, ward?: Array<{ __typename?: 'WardPatientCount', wardId: number, totalCount: number, wardInfo: { __typename?: 'HospitalWardType', name: string }, room?: Array<{ __typename?: 'RoomPatientCount', totalCount: number, roomId: number, roomInfo: { __typename?: 'HospitalRoomType', name: string } }> | null }> | null } | null } };
 
 export type RetrieveWardPatientListQueryVariables = Exact<{
   wardId: Scalars['Int']['input'];

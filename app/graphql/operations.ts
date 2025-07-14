@@ -2043,6 +2043,130 @@ export type RetrievePatientListQueryHookResult = ReturnType<typeof useRetrievePa
 export type RetrievePatientListLazyQueryHookResult = ReturnType<typeof useRetrievePatientListLazyQuery>;
 export type RetrievePatientListSuspenseQueryHookResult = ReturnType<typeof useRetrievePatientListSuspenseQuery>;
 export type RetrievePatientListQueryResult = Apollo.QueryResult<Types.RetrievePatientListQuery, Types.RetrievePatientListQueryVariables>;
+export const RetrievePatientsOnThatDateDocument = gql`
+    query RetrievePatientsOnThatDate($date: DateTime!, $hospitalId: Int!, $wardId: Int, $roomId: Int, $page: Int, $pageSize: Int) {
+  retrievePatientsOnThatDate(
+    date: $date
+    hospitalId: $hospitalId
+    wardId: $wardId
+    roomId: $roomId
+    page: $page
+    pageSize: $pageSize
+  ) {
+    success
+    message
+    data {
+      id
+      name
+      chartId
+      gender
+      roomId
+      wardId
+      enterDate
+      leaveDate
+    }
+  }
+}
+    `;
+
+/**
+ * __useRetrievePatientsOnThatDateQuery__
+ *
+ * To run a query within a React component, call `useRetrievePatientsOnThatDateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRetrievePatientsOnThatDateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRetrievePatientsOnThatDateQuery({
+ *   variables: {
+ *      date: // value for 'date'
+ *      hospitalId: // value for 'hospitalId'
+ *      wardId: // value for 'wardId'
+ *      roomId: // value for 'roomId'
+ *      page: // value for 'page'
+ *      pageSize: // value for 'pageSize'
+ *   },
+ * });
+ */
+export function useRetrievePatientsOnThatDateQuery(baseOptions: Apollo.QueryHookOptions<Types.RetrievePatientsOnThatDateQuery, Types.RetrievePatientsOnThatDateQueryVariables> & ({ variables: Types.RetrievePatientsOnThatDateQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.RetrievePatientsOnThatDateQuery, Types.RetrievePatientsOnThatDateQueryVariables>(RetrievePatientsOnThatDateDocument, options);
+      }
+export function useRetrievePatientsOnThatDateLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.RetrievePatientsOnThatDateQuery, Types.RetrievePatientsOnThatDateQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.RetrievePatientsOnThatDateQuery, Types.RetrievePatientsOnThatDateQueryVariables>(RetrievePatientsOnThatDateDocument, options);
+        }
+export function useRetrievePatientsOnThatDateSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.RetrievePatientsOnThatDateQuery, Types.RetrievePatientsOnThatDateQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.RetrievePatientsOnThatDateQuery, Types.RetrievePatientsOnThatDateQueryVariables>(RetrievePatientsOnThatDateDocument, options);
+        }
+export type RetrievePatientsOnThatDateQueryHookResult = ReturnType<typeof useRetrievePatientsOnThatDateQuery>;
+export type RetrievePatientsOnThatDateLazyQueryHookResult = ReturnType<typeof useRetrievePatientsOnThatDateLazyQuery>;
+export type RetrievePatientsOnThatDateSuspenseQueryHookResult = ReturnType<typeof useRetrievePatientsOnThatDateSuspenseQuery>;
+export type RetrievePatientsOnThatDateQueryResult = Apollo.QueryResult<Types.RetrievePatientsOnThatDateQuery, Types.RetrievePatientsOnThatDateQueryVariables>;
+export const GetHospitalPatientCountOnDateDocument = gql`
+    query GetHospitalPatientCountOnDate($date: DateTime!, $hospitalId: Int!) {
+  getHospitalPatientCountOnDate(date: $date, hospitalId: $hospitalId) {
+    success
+    message
+    data {
+      totalCount
+      date
+      hospitalId
+      ward {
+        wardId
+        totalCount
+        wardInfo {
+          name
+        }
+        room {
+          totalCount
+          roomId
+          roomInfo {
+            name
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetHospitalPatientCountOnDateQuery__
+ *
+ * To run a query within a React component, call `useGetHospitalPatientCountOnDateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHospitalPatientCountOnDateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetHospitalPatientCountOnDateQuery({
+ *   variables: {
+ *      date: // value for 'date'
+ *      hospitalId: // value for 'hospitalId'
+ *   },
+ * });
+ */
+export function useGetHospitalPatientCountOnDateQuery(baseOptions: Apollo.QueryHookOptions<Types.GetHospitalPatientCountOnDateQuery, Types.GetHospitalPatientCountOnDateQueryVariables> & ({ variables: Types.GetHospitalPatientCountOnDateQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetHospitalPatientCountOnDateQuery, Types.GetHospitalPatientCountOnDateQueryVariables>(GetHospitalPatientCountOnDateDocument, options);
+      }
+export function useGetHospitalPatientCountOnDateLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetHospitalPatientCountOnDateQuery, Types.GetHospitalPatientCountOnDateQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetHospitalPatientCountOnDateQuery, Types.GetHospitalPatientCountOnDateQueryVariables>(GetHospitalPatientCountOnDateDocument, options);
+        }
+export function useGetHospitalPatientCountOnDateSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetHospitalPatientCountOnDateQuery, Types.GetHospitalPatientCountOnDateQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetHospitalPatientCountOnDateQuery, Types.GetHospitalPatientCountOnDateQueryVariables>(GetHospitalPatientCountOnDateDocument, options);
+        }
+export type GetHospitalPatientCountOnDateQueryHookResult = ReturnType<typeof useGetHospitalPatientCountOnDateQuery>;
+export type GetHospitalPatientCountOnDateLazyQueryHookResult = ReturnType<typeof useGetHospitalPatientCountOnDateLazyQuery>;
+export type GetHospitalPatientCountOnDateSuspenseQueryHookResult = ReturnType<typeof useGetHospitalPatientCountOnDateSuspenseQuery>;
+export type GetHospitalPatientCountOnDateQueryResult = Apollo.QueryResult<Types.GetHospitalPatientCountOnDateQuery, Types.GetHospitalPatientCountOnDateQueryVariables>;
 export const RetrieveWardPatientListDocument = gql`
     query RetrieveWardPatientList($wardId: Int!, $page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {
   retrievePatientList(

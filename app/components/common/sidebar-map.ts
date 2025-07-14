@@ -52,6 +52,7 @@ export const commonMenus = {
     path: '/patients',
     icon: Users,
     children: [
+      { title: '입원 현황', path: '/patients/list', icon: Bed },
       { title: '환자 목록', path: '/patients', icon: List },
       { title: '환자 추가', path: '/patients/add', icon: UserPlus },
     ],

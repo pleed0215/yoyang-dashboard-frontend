@@ -570,6 +570,53 @@ export const RETRIEVE_PATIENT_LIST_QUERY = gql`
   }
 `;
 
+export const RETRIEVE_PATIENT_ON_THAT_DATE_QUERY = gql`
+  query RetrievePatientsOnThatDate($date: DateTime!, $hospitalId: Int!, $wardId: Int, $roomId: Int, $page: Int, $pageSize: Int) {
+    retrievePatientsOnThatDate(date: $date, hospitalId: $hospitalId, wardId: $wardId, roomId: $roomId, page: $page, pageSize: $pageSize) {
+      success
+      message
+      
+      data {
+        id
+        name
+        chartId
+        gender
+        roomId
+        wardId
+        enterDate
+        leaveDate
+      }
+    }
+  }
+`;
+
+export const PATIENT_COUNT_ON_DATE_QUERY = gql`
+  query GetHospitalPatientCountOnDate($date: DateTime!, $hospitalId: Int! ) {
+    getHospitalPatientCountOnDate(date: $date, hospitalId: $hospitalId) {
+      success
+      message
+      data {
+        totalCount
+        date
+        hospitalId
+        ward {
+          wardId
+          totalCount
+          wardInfo {
+            name
+          }
+          room {
+            totalCount
+            roomId
+            roomInfo {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+  `;
 
 export const RETRIEVE_WARD_PATIENT_LIST_QUERY = gql`
   query RetrieveWardPatientList($wardId: Int!, $page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {

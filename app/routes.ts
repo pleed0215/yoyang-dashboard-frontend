@@ -52,6 +52,7 @@ export default [
       index('features/common/pages/patients/patient-index.tsx'),
       route('/add', 'features/common/pages/patients/patient-add.tsx'),
       route('/:patientId', 'features/common/pages/patients/patient-detail.tsx'),
+      route('/list', 'features/common/pages/patients/patient-list.tsx'),
     ]),
   ]),
 ] satisfies RouteConfig;
