@@ -318,6 +318,18 @@ export type GraphQlError = {
   stack?: Maybe<Scalars['String']['output']>;
 };
 
+export type HospitalAdmissionReport = {
+  __typename?: 'HospitalAdmissionReport';
+  currentCount: Scalars['Int']['output'];
+  date: Scalars['DateTime']['output'];
+  enterCount: Scalars['Int']['output'];
+  hospitalId: Scalars['Int']['output'];
+  leaveCount: Scalars['Int']['output'];
+  patients?: Maybe<Array<Patient>>;
+  totalCount: Scalars['Int']['output'];
+  ward?: Maybe<Array<WardAdmissionReport>>;
+};
+
 export type HospitalCommitteeType = {
   __typename?: 'HospitalCommitteeType';
   hospitalId: Scalars['Float']['output'];
@@ -966,15 +978,18 @@ export type Query = {
   adminOnlyRetrieveJoinRequest: RetrieveJoinRequestOutput;
   getAdmitFee: AdmitFeeResponse;
   getEmployee: EmployeeOutput;
+  getHospitalAdmissionReportOnDateRange: Array<HospitalAdmissionReport>;
   getHospitalByYkiho: GetHospitalInfoByYkihoOutput;
   getHospitalInfoByYkiho: BaseHospitalInfoOutput;
   getHospitalPatientCountOnDate: HospitalPatientCountResponse;
   getJoinRequestByCurrentUser: JoinHospitalRequestOutput;
   getPatient: PatientResponse;
   getRegisterRequest: RequestCreateHospitalOutput;
+  getRoomAdmissionReportOnDateRange: Array<RoomAdmissionReport>;
   getRoomPatientCountOnDate: RoomPatientCount;
   /** 테스트용 */
   getUserById: UserType;
+  getWardAdmissionReportOnDateRange: Array<WardAdmissionReport>;
   getWardPatientCountOnDate: WardPatientCount;
   /** 현재 사용자의 프로필 데이터를 가져옵니다. 로그인 토큰 필수. */
   me: GetUserOutput;
@@ -1037,6 +1052,13 @@ export type QueryGetEmployeeArgs = {
 };
 
 
+export type QueryGetHospitalAdmissionReportOnDateRangeArgs = {
+  endDate: Scalars['DateTime']['input'];
+  hospitalId: Scalars['Int']['input'];
+  startDate: Scalars['DateTime']['input'];
+};
+
+
 export type QueryGetHospitalByYkihoArgs = {
   ykiho: Scalars['String']['input'];
 };
@@ -1063,6 +1085,13 @@ export type QueryGetRegisterRequestArgs = {
 };
 
 
+export type QueryGetRoomAdmissionReportOnDateRangeArgs = {
+  endDate: Scalars['DateTime']['input'];
+  roomId: Scalars['Int']['input'];
+  startDate: Scalars['DateTime']['input'];
+};
+
+
 export type QueryGetRoomPatientCountOnDateArgs = {
   date: Scalars['DateTime']['input'];
   roomId: Scalars['Int']['input'];
@@ -1071,6 +1100,13 @@ export type QueryGetRoomPatientCountOnDateArgs = {
 
 export type QueryGetUserByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetWardAdmissionReportOnDateRangeArgs = {
+  endDate: Scalars['DateTime']['input'];
+  startDate: Scalars['DateTime']['input'];
+  wardId: Scalars['Int']['input'];
 };
 
 
@@ -1298,6 +1334,18 @@ export type RetrieveUserOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type RoomAdmissionReport = {
+  __typename?: 'RoomAdmissionReport';
+  currentCount: Scalars['Int']['output'];
+  date: Scalars['DateTime']['output'];
+  enterCount: Scalars['Int']['output'];
+  leaveCount: Scalars['Int']['output'];
+  patients?: Maybe<Array<Patient>>;
+  roomId: Scalars['Int']['output'];
+  roomInfo: HospitalRoomType;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type RoomPatientCount = {
   __typename?: 'RoomPatientCount';
   date: Scalars['DateTime']['output'];
@@ -1418,6 +1466,19 @@ export type UserType = {
   state: CommonState;
   updatedAt: Scalars['DateTime']['output'];
   username: Scalars['String']['output'];
+};
+
+export type WardAdmissionReport = {
+  __typename?: 'WardAdmissionReport';
+  currentCount: Scalars['Int']['output'];
+  date: Scalars['DateTime']['output'];
+  enterCount: Scalars['Int']['output'];
+  leaveCount: Scalars['Int']['output'];
+  patients?: Maybe<Array<Patient>>;
+  room?: Maybe<Array<RoomAdmissionReport>>;
+  totalCount: Scalars['Int']['output'];
+  wardId: Scalars['Int']['output'];
+  wardInfo: HospitalWardType;
 };
 
 export type WardPatientCount = {
@@ -1779,7 +1840,7 @@ export type RetrievePatientsOnThatDateQueryVariables = Exact<{
 }>;
 
 
-export type RetrievePatientsOnThatDateQuery = { __typename?: 'Query', retrievePatientsOnThatDate: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, chartId: number, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
+export type RetrievePatientsOnThatDateQuery = { __typename?: 'Query', retrievePatientsOnThatDate: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null, data?: Array<{ __typename?: 'Patient', id: number, name: string, chartId: number, birthDate?: any | null, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null }> | null } };
 
 export type GetHospitalPatientCountOnDateQueryVariables = Exact<{
   date: Scalars['DateTime']['input'];
@@ -1886,3 +1947,12 @@ export type DeleteHospitalRoomMutationVariables = Exact<{
 
 
 export type DeleteHospitalRoomMutation = { __typename?: 'Mutation', deleteHospitalRoom: { __typename?: 'DeleteHospitalRoomOutput', success: boolean, message?: string | null } };
+
+export type GetHospitalAdmissionReportOnDateRangeQueryVariables = Exact<{
+  startDate: Scalars['DateTime']['input'];
+  endDate: Scalars['DateTime']['input'];
+  hospitalId: Scalars['Int']['input'];
+}>;
+
+
+export type GetHospitalAdmissionReportOnDateRangeQuery = { __typename?: 'Query', getHospitalAdmissionReportOnDateRange: Array<{ __typename?: 'HospitalAdmissionReport', date: any, totalCount: number, currentCount: number, enterCount: number, leaveCount: number, ward?: Array<{ __typename?: 'WardAdmissionReport', date: any, totalCount: number, currentCount: number, enterCount: number, leaveCount: number, wardInfo: { __typename?: 'HospitalWardType', id: number, name: string } }> | null }> };

@@ -580,6 +580,7 @@ export const RETRIEVE_PATIENT_ON_THAT_DATE_QUERY = gql`
         id
         name
         chartId
+        birthDate
         gender
         roomId
         wardId
@@ -785,6 +786,29 @@ export const DELETE_HOSPITAL_ROOM_MUTATION = gql`
     deleteHospitalRoom(roomId: $roomId) {
       success
       message
+    }
+  }
+`;
+
+export const GET_HOSPITAL_ADMISSION_REPORT_ON_DATE_RANGE_QUERY = gql`
+  query GetHospitalAdmissionReportOnDateRange($startDate: DateTime!, $endDate: DateTime!, $hospitalId: Int!) {
+    getHospitalAdmissionReportOnDateRange(startDate: $startDate, endDate: $endDate, hospitalId: $hospitalId) {
+      date
+      totalCount
+      currentCount
+      enterCount
+      leaveCount
+      ward {
+        date
+        totalCount
+        currentCount
+        enterCount
+        leaveCount
+        wardInfo {
+          id
+          name
+        }
+      }
     }
   }
 `;

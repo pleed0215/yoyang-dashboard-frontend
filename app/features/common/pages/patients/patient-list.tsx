@@ -7,21 +7,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { serverApolloClient } from '~/lib/apollo-client-server';
 import { RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY } from '~/graphql/queries';
 import { contextWithToken } from '~/lib/apollo';
-import { RetrieveMyHospitalWardsAndRoomsQuery } from '~/graphql/types';
+import { RetrieveMyHospitalWardsAndRoomsQuery, RetrievePatientsOnThatDateQuery } from '~/graphql/types';
 import { useMeQuery, useRetrievePatientsOnThatDateQuery } from '~/graphql/operations';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Separator } from '~/components/ui/separator';
+import { DateTime } from 'luxon';
 
 function getToday() {
-  const today = new Date();
-  return today.toISOString().slice(0, 10);
+  return DateTime.now().toFormat('yyyy-MM-dd');
 }
 
 function addDays(dateStr: string, days: number) {
-  const date = new Date(dateStr);
-  date.setDate(date.getDate() + days);
-  return date.toISOString().slice(0, 10);
+  return DateTime.fromISO(dateStr).plus({ days }).toFormat('yyyy-MM-dd');
 }
-
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   try {
@@ -44,7 +42,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 export default function PatientListPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const {wardRoomData} = loaderData;
+  const { wardRoomData } = loaderData;
   const [date, setDate] = useState(() => searchParams.get('date') || getToday());
 
   // 날짜 searchParam 연동
@@ -79,23 +77,24 @@ export default function PatientListPage({ loaderData }: Route.ComponentProps) {
     fetchPolicy: 'cache-and-network',
   });
 
-  const patients = data?.retrievePatientsOnThatDate?.data ?? [];
+  const patients = (data?.retrievePatientsOnThatDate?.data ?? []) as NonNullable<RetrievePatientsOnThatDateQuery['retrievePatientsOnThatDate']>['data'];
   // 병동/병실 정보
-  const wards = wardRoomData || [];
+  const wards = (wardRoomData ?? []) as NonNullable<RetrieveMyHospitalWardsAndRoomsQuery['retrieveMyHospitalWards']>['data'] ?? [];
 
   // 병동별로 환자 분류
-  const wardMap: Record<number, any[]> = {};
-  for (const ward of wards) {
+  const wardMap: Record<number, typeof patients> = {};
+  for (const ward of wards ?? []) {
     wardMap[ward.id] = [];
   }
-  for (const patient of patients) {
-    if (patient.wardId && wardMap[patient.wardId]) {
-      wardMap[patient.wardId].push(patient);
+  for (const patient of (patients ?? [])) {
+    if (patient.wardId) {
+      wardMap[patient.wardId] ??= [];
+      (wardMap[patient.wardId]!).push(patient);
     }
   }
 
   // 전체 입원 환자 수
-  const totalPatientCount = patients.length;
+  const totalPatientCount = (patients ?? []).length;
 
   if (meLoading || loading) {
     return <div className="p-8 text-center">로딩 중...</div>;
@@ -106,6 +105,7 @@ export default function PatientListPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="space-y-4 p-4">
+      <h1 className="text-2xl font-bold mb-2">입원 현황</h1>
       <div className="flex items-center gap-4 mb-4">
         <Button variant="outline" size="sm" onClick={handlePrevDay} className="cursor-pointer"><ChevronLeft /></Button>
         <DateInput id="date" value={date} onChange={d => handleDateChange(d)} label="조회일" />
@@ -113,7 +113,7 @@ export default function PatientListPage({ loaderData }: Route.ComponentProps) {
       </div>
       {/* 전체 입원 환자 수 (date input 아래) */}
       <div className="text-lg font-semibold mb-2">총 입원: {totalPatientCount}명</div>
-      {wards.map((ward: any) => (
+      {(wards ?? []).map((ward) => (
         <Card key={ward.id} className="mb-6">
           <CardHeader>
             <CardTitle >
@@ -123,53 +123,67 @@ export default function PatientListPage({ loaderData }: Route.ComponentProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {ward.rooms.length === 0 ? (
+            {!(ward.rooms && ward.rooms.length > 0) ? (
               <div className="text-gray-500">등록된 병실이 없습니다.</div>
             ) : (
               <div className="flex flex-col gap-4">
-                {ward.rooms.map((room: any) => {
-                  const roomPatients = patients.filter((p: any) => p.roomId === room.id);
+                {(ward.rooms ?? []).map((room) => {
+                  const roomPatients = (patients ?? []).filter((p) => p.roomId === room.id);
                   return (
                     <Card key={room.id} className="border border-gray-100">
-                      <CardHeader className="py-1 px-2 border-b border-gray-100 flex flex-row items-center">
-                        <CardTitle className="text-sm font-normal text-foreground text-left p-0 m-0">
-                          {room.name}
-                        </CardTitle>
-                        <div className="text-xs text-muted-foreground font-normal text-right whitespace-nowrap ml-2">
-                          {room.size ? `${room.size}인실, ` : ''}{roomPatients.length}명 입원 중
-                        </div>
-                      </CardHeader>
                       <CardContent>
+                        <div className="flex flex-row items-center justify-start mb-1">
+                          <span className="text-sm font-normal text-foreground text-left">{room.name}</span>
+                          <span className="text-xs text-muted-foreground font-normal text-right whitespace-nowrap ml-2">
+                            {room.size ? `${room.size}인실, ` : ''}{roomPatients.length}명 입원 중
+                          </span>
+                        </div>
                         {roomPatients.length === 0 ? (
                           <div className="text-gray-400 text-center">환자 없음</div>
                         ) : (
                           <div className="flex flex-row flex-wrap gap-1 justify-start">
-                            {roomPatients.map((patient: any) => {
-                              // 나이 계산 (생년월일이 있다면)
+                            {/* 입원 환자 카드 */}
+                            {roomPatients.map((patient) => {
                               let age = '-';
-                              if (patient.birth) {
-                                const birth = new Date(patient.birth);
-                                const today = new Date(date);
-                                let years = today.getFullYear() - birth.getFullYear();
-                                const m = today.getMonth() - birth.getMonth();
-                                if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) years--;
+                              const birthValue = patient.birthDate;
+                              if (birthValue) {
+                                const birth = DateTime.fromISO(birthValue);
+                                const today = DateTime.fromISO(date);
+                                let years = today.year - birth.year;
+                                if (
+                                  today.month < birth.month ||
+                                  (today.month === birth.month && today.day < birth.day)
+                                ) {
+                                  years--;
+                                }
                                 age = years.toString();
                               }
                               return (
                                 <Card key={patient.id} className="w-32 min-w-[7rem] border border-gray-100 p-0 overflow-hidden">
                                   <CardContent className="py-1 px-2 flex flex-col justify-center items-center h-24">
                                     <div className="text-[10px] text-gray-400 font-normal leading-tight w-full text-center mb-0.5">차트번호 {patient.chartId ?? '-'}</div>
-                                    <div className="font-semibold text-xs mb-0.5 w-full text-center">{patient.name}</div>
-                                    <div className="text-[10px] text-gray-500 mb-0.5 w-full text-center">
-                                      ({patient.gender ?? '-'}{patient.birth ? `, ${age}세` : ''})
+                                    <div className="font-semibold text-xs mb-0.5 w-full text-center">
+                                      {patient.name}
+                                      <span className="text-[10px] text-gray-500 ml-1 align-middle">
+                                        ({patient.gender === 'MALE' ? '남' : patient.gender === 'FEMALE' ? '여' : '-'}{birthValue ? `, ${age}세` : ''})
+                                      </span>
                                     </div>
                                     <div className="text-[10px] text-gray-400 w-full text-center">
-                                      입원일: {patient.enterDate ? new Date(patient.enterDate).toISOString().slice(0, 10) : '-'}
+                                      입원일: {patient.enterDate ? DateTime.fromISO(patient.enterDate).toFormat('yyyy-MM-dd') : '-'}
                                     </div>
                                   </CardContent>
                                 </Card>
                               );
                             })}
+                            {/* 빈 침상 카드 */}
+                            {room.size && room.size > roomPatients.length &&
+                              Array.from({ length: room.size - roomPatients.length }).map((_, idx) => (
+                                <Card key={`empty-bed-${room.id}-${idx}`} className="w-32 min-w-[7rem] border border-dashed border-gray-200 p-0 overflow-hidden bg-muted">
+                                  <CardContent className="py-1 px-2 flex flex-col justify-center items-center h-24">
+                                    <div className="flex-1 flex items-center justify-center w-full h-full text-xs text-gray-400">빈 병상</div>
+                                  </CardContent>
+                                </Card>
+                              ))}
                           </div>
                         )}
                       </CardContent>

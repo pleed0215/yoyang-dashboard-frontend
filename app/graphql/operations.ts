@@ -2059,6 +2059,7 @@ export const RetrievePatientsOnThatDateDocument = gql`
       id
       name
       chartId
+      birthDate
       gender
       roomId
       wardId
@@ -2694,3 +2695,64 @@ export function useDeleteHospitalRoomMutation(baseOptions?: Apollo.MutationHookO
 export type DeleteHospitalRoomMutationHookResult = ReturnType<typeof useDeleteHospitalRoomMutation>;
 export type DeleteHospitalRoomMutationResult = Apollo.MutationResult<Types.DeleteHospitalRoomMutation>;
 export type DeleteHospitalRoomMutationOptions = Apollo.BaseMutationOptions<Types.DeleteHospitalRoomMutation, Types.DeleteHospitalRoomMutationVariables>;
+export const GetHospitalAdmissionReportOnDateRangeDocument = gql`
+    query GetHospitalAdmissionReportOnDateRange($startDate: DateTime!, $endDate: DateTime!, $hospitalId: Int!) {
+  getHospitalAdmissionReportOnDateRange(
+    startDate: $startDate
+    endDate: $endDate
+    hospitalId: $hospitalId
+  ) {
+    date
+    totalCount
+    currentCount
+    enterCount
+    leaveCount
+    ward {
+      date
+      totalCount
+      currentCount
+      enterCount
+      leaveCount
+      wardInfo {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetHospitalAdmissionReportOnDateRangeQuery__
+ *
+ * To run a query within a React component, call `useGetHospitalAdmissionReportOnDateRangeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHospitalAdmissionReportOnDateRangeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetHospitalAdmissionReportOnDateRangeQuery({
+ *   variables: {
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *      hospitalId: // value for 'hospitalId'
+ *   },
+ * });
+ */
+export function useGetHospitalAdmissionReportOnDateRangeQuery(baseOptions: Apollo.QueryHookOptions<Types.GetHospitalAdmissionReportOnDateRangeQuery, Types.GetHospitalAdmissionReportOnDateRangeQueryVariables> & ({ variables: Types.GetHospitalAdmissionReportOnDateRangeQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetHospitalAdmissionReportOnDateRangeQuery, Types.GetHospitalAdmissionReportOnDateRangeQueryVariables>(GetHospitalAdmissionReportOnDateRangeDocument, options);
+      }
+export function useGetHospitalAdmissionReportOnDateRangeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetHospitalAdmissionReportOnDateRangeQuery, Types.GetHospitalAdmissionReportOnDateRangeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetHospitalAdmissionReportOnDateRangeQuery, Types.GetHospitalAdmissionReportOnDateRangeQueryVariables>(GetHospitalAdmissionReportOnDateRangeDocument, options);
+        }
+export function useGetHospitalAdmissionReportOnDateRangeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetHospitalAdmissionReportOnDateRangeQuery, Types.GetHospitalAdmissionReportOnDateRangeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetHospitalAdmissionReportOnDateRangeQuery, Types.GetHospitalAdmissionReportOnDateRangeQueryVariables>(GetHospitalAdmissionReportOnDateRangeDocument, options);
+        }
+export type GetHospitalAdmissionReportOnDateRangeQueryHookResult = ReturnType<typeof useGetHospitalAdmissionReportOnDateRangeQuery>;
+export type GetHospitalAdmissionReportOnDateRangeLazyQueryHookResult = ReturnType<typeof useGetHospitalAdmissionReportOnDateRangeLazyQuery>;
+export type GetHospitalAdmissionReportOnDateRangeSuspenseQueryHookResult = ReturnType<typeof useGetHospitalAdmissionReportOnDateRangeSuspenseQuery>;
+export type GetHospitalAdmissionReportOnDateRangeQueryResult = Apollo.QueryResult<Types.GetHospitalAdmissionReportOnDateRangeQuery, Types.GetHospitalAdmissionReportOnDateRangeQueryVariables>;
