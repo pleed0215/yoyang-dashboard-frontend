@@ -99,10 +99,10 @@ export default function PatientStatusPage({ loaderData }: Route.ComponentProps) 
         <Button size="sm" variant="outline" onClick={() => handleMonthChange(DateTime.fromISO(month + '-01').minus({ months: 1 }).toFormat('yyyy-MM'))}>이전달</Button>
         <Button size="sm" variant="outline" onClick={() => handleMonthChange(DateTime.fromISO(month + '-01').plus({ months: 1 }).toFormat('yyyy-MM'))}>다음달</Button>
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto overflow-y-auto">
         <Table className="min-w-3xl max-w-6xl w-full text-xs">
           <TableHeader>
-            <TableRow className="bg-muted">
+            <TableRow className="bg-muted hover:bg-muted">
               <TableHead className="border px-0.5 py-0.5 text-center w-24 whitespace-nowrap text-xs" rowSpan={2}>날짜</TableHead>
               <TableHead className="border px-0.5 py-0.5 text-center text-xs w-10 whitespace-nowrap" rowSpan={2}>전체 재원</TableHead>
               <TableHead className="border px-0.5 py-0.5 text-center text-xs w-10 whitespace-nowrap" rowSpan={2}>입원</TableHead>
@@ -111,7 +111,7 @@ export default function PatientStatusPage({ loaderData }: Route.ComponentProps) 
                 <TableHead key={wardId} className="border px-0.5 py-0.5 text-center text-xs" colSpan={3}>{wardIdToName[wardId]}</TableHead>
               ))}
             </TableRow>
-            <TableRow className="bg-muted">
+            <TableRow className="bg-muted hover:bg-muted">
               {wardIds.map(wardId => [
                 <TableHead key={wardId + '-current'} className="border px-0.5 py-1 text-center text-xs w-10 whitespace-nowrap">재원</TableHead>,
                 <TableHead key={wardId + '-enter'} className="border px-0.5 py-1 text-center text-xs w-10 whitespace-nowrap">입원</TableHead>,
