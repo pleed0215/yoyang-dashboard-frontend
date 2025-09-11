@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { safeStorage } from '~/lib/safe-storage';
 
 type Theme = 'dark' | 'light';
 
@@ -18,7 +19,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('theme') as Theme;
+      const savedTheme = safeStorage.getItem('theme') as Theme;
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
 
@@ -32,7 +33,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     setTheme: (newTheme: Theme) => {
       setTheme(newTheme);
       if (typeof window !== 'undefined') {
-        localStorage.setItem('theme', newTheme);
+        safeStorage.setItem('theme', newTheme);
         document.documentElement.className = newTheme;
       }
     },

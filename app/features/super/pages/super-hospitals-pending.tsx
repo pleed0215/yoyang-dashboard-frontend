@@ -57,7 +57,6 @@ export default function SuperHospitalsPendingPage() {
   // 승인/거절 mutation
   const [accept, { loading: acceptLoading }] = useAcceptCreateHospitalRequestMutation({
     onCompleted: (res) => {
-        console.log(res);
       if (res.acceptCreateHospitalRequest.success) {
         toast.success('승인되었습니다.');
         setOpen(false);

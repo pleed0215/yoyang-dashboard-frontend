@@ -1,5 +1,5 @@
 import type { Route } from './+types/patient-index';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import DateInput from '~/components/common/date-input';
 import { Button } from '~/components/ui/button';
@@ -13,6 +13,7 @@ import { useMeQuery, useRetrievePatientListQuery } from '~/graphql/operations';
 import { toast } from 'sonner';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '~/components/common/data-table';
+import { DataTableSkeleton } from '~/components/common/lazy-wrapper';
 
 function getToday() {
   const today = new Date();
@@ -177,26 +178,42 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
   const totalPages = pageInfo?.totalPages ?? 1;
 
   if (meLoading || loading) {
-    return <div className="p-8 text-center">로딩 중...</div>;
+    return <DataTableSkeleton />;
   }
   if (error) {
     return <div className="p-8 text-center text-red-500">오류가 발생했습니다: {error.message}</div>;
   }
 
-  console.log(wards);
-  console.log(patients);
+  // 룸 맵을 미리 생성해서 성능 최적화
+  const roomsMap = useMemo(() => {
+    const map = new Map();
+    wards.forEach((ward: any) => {
+      ward.rooms?.forEach((room: any) => {
+        map.set(room.id, room.name);
+      });
+    });
+    return map;
+  }, [wards]);
+
+  const wardsMap = useMemo(() => {
+    const map = new Map();
+    wards.forEach((ward: any) => {
+      map.set(ward.id, ward.name);
+    });
+    return map;
+  }, [wards]);
 
   // DataTable columns 정의
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<any>[] = useMemo(() => [
     { accessorKey: 'id', header: 'ID', cell: info => <div className="text-center">{info.getValue() as number}</div> },
     { accessorKey: 'name', header: '이름', cell: info => <div className="text-center">{info.getValue() as string}</div> },
     { accessorKey: 'gender', header: '성별', cell: info => <div className="text-center">{info.getValue() as string | undefined ?? '-'}</div> },
-    { accessorKey: 'wardId', header: '병동', cell: info => <div className="text-center">{wards.find((w: any) => w.id === info.row.original.wardId)?.name ?? '-'}</div> },
-    { accessorKey: 'roomId', header: '병실', cell: info => <div className="text-center">{wards.flatMap((w: any) => w.rooms).find((r: any) => r.id === info.row.original.roomId)?.name ?? '-'}</div> },
+    { accessorKey: 'wardId', header: '병동', cell: info => <div className="text-center">{wardsMap.get(info.row.original.wardId) ?? '-'}</div> },
+    { accessorKey: 'roomId', header: '병실', cell: info => <div className="text-center">{roomsMap.get(info.row.original.roomId) ?? '-'}</div> },
     { accessorKey: 'enterDate', header: '입원일', cell: info => <div className="text-center">{info.getValue() ? new Date(info.getValue() as string).toLocaleDateString() : '-'}</div> },
     { accessorKey: 'leaveDate', header: '퇴원일', cell: info => <div className="text-center">{info.getValue() ? new Date(info.getValue() as string).toLocaleDateString() : '-'}</div> },
     { id: 'actions', header: '액션', cell: () => <div className="text-center">-</div> },
-  ];
+  ], [wardsMap, roomsMap]);
 
   return (
     <div className="space-y-4 p-4">

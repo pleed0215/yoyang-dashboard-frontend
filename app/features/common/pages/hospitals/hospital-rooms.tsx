@@ -44,7 +44,6 @@ export default function HospitalRoomsPage({}:Route.ComponentProps) {
   // 병동이 없거나 선택되지 않으면 추가/수정/삭제 불가
   const selectedWard = wardOptions.find(w => w.id === Number(selectedWardId));
   const filteredRooms = selectedWard?.rooms ?? [];
-  console.log(selectedWard, filteredRooms);
 
   // 추가/수정 상태 관리
   const [editRoomId, setEditRoomId] = useState<number|null>(null);

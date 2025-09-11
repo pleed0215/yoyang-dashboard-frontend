@@ -65,7 +65,7 @@ export const loader = async ({ request }: any) => {
     context: { ...contextWithToken(request) },
     fetchPolicy: 'no-cache',
   });
-  console.log(data);
+
   return {
     data: data?.retrieveHospitalList?.data ?? [],
     apolloState: serverApolloClient.extract(),

@@ -8,6 +8,67 @@ import createUploadLink from "apollo-upload-client/createUploadLink.mjs"
 // Type import
 import type { NormalizedCacheObject } from '@apollo/client';
 
+// Cache configuration with optimized policies
+const cacheConfig = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        // 환자 목록 캐시 정책
+        retrievePatientList: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+        // 병동 및 병실 정보 캐시 정책 - 자주 변경되지 않으므로 캐시 유지
+        retrieveMyHospitalWardsAndRooms: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+        // 병원 목록 캐시 정책
+        retrieveHospitalList: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+      },
+    },
+    Patient: {
+      fields: {
+        // 환자 관련 필드 캐시 정책
+        enterDate: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+        leaveDate: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+      },
+    },
+    Hospital: {
+      keyFields: ["ykiho"], // ykiho를 unique key로 사용
+    },
+    Ward: {
+      keyFields: ["id"],
+      fields: {
+        rooms: {
+          merge(existing = [], incoming) {
+            return incoming;
+          },
+        },
+      },
+    },
+    Room: {
+      keyFields: ["id"],
+    },
+  },
+  // 전체 캐시 크기 제한 (메모리 최적화)
+  resultCaching: true,
+});
+
 // Get the backend URL from environment variables for client-side
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -44,8 +105,19 @@ export function createClientApolloClient(initialState = {}) {
   const _apolloClient = apolloClient ?? new ApolloClient({
     ssrMode: false, // Always false for client-side
     link: from([errorLink, createHttpLink() ]),
-    cache: new InMemoryCache().restore(initialState),
+    cache: cacheConfig.restore(initialState),
     connectToDevTools: import.meta.env.DEV, // Enable DevTools in development
+    // 기본 fetch 정책을 cache-first로 설정
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'cache-first',
+        errorPolicy: 'ignore',
+      },
+      query: {
+        fetchPolicy: 'cache-first',
+        errorPolicy: 'all',
+      },
+    },
   });
 
   // Create the Apollo Client only once in the client

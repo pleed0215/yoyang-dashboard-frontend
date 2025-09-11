@@ -1,4 +1,6 @@
 // app/utils/theme.ts
+import { safeStorage } from './safe-storage';
+
 export type Theme = 'light' | 'dark';
 
 export function getSystemTheme(): Theme {
@@ -7,6 +9,6 @@ export function getSystemTheme(): Theme {
 }
 
 export function getStoredTheme(): Theme {
-  if (typeof window === 'undefined') return 'light';
-  return (localStorage.getItem('theme') as Theme) || getSystemTheme();
+  const storedTheme = safeStorage.getItem('theme') as Theme;
+  return storedTheme || getSystemTheme();
 }

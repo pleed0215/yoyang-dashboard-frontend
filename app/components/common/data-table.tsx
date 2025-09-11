@@ -35,23 +35,37 @@ interface DataTableProps<T> {
 }
 
 // 정렬 가능한 컬럼 헤더 생성 함수
-function SortableHeader({ column, title }: { column: any; title: string }) {
+const SortableHeader = React.memo(function SortableHeader({ column, title }: { column: any; title: string }) {
+  const handleSortToggle = React.useCallback(() => {
+    column.toggleSorting(column.getIsSorted() === 'asc');
+  }, [column]);
+
   return (
     <Button
       variant="ghost"
       size="sm"
       className="px-1 h-8"
-      onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      onClick={handleSortToggle}
     >
       <span>{title}</span>
       <ArrowUpDown className="ml-1 h-3 w-3" />
     </Button>
   );
-}
+});
 
-export function DataTable<T>({ columns, data, page, totalPages, onPageChange }: DataTableProps<T>) {
+export const DataTable = React.memo(function DataTable<T>({ columns, data, page, totalPages, onPageChange }: DataTableProps<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const table = useReactTable({
+
+  const handlePaginationChange = React.useCallback((up: any) => {
+    if (typeof up === 'function') {
+      const next = up({ pageIndex: page - 1, pageSize: 10 });
+      onPageChange(next.pageIndex + 1);
+    } else {
+      onPageChange(up.pageIndex + 1);
+    }
+  }, [page, onPageChange]);
+
+  const tableConfig = React.useMemo(() => ({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -61,15 +75,15 @@ export function DataTable<T>({ columns, data, page, totalPages, onPageChange }: 
     pageCount: totalPages,
     state: { sorting, pagination: { pageIndex: page - 1, pageSize: 10 } },
     onSortingChange: setSorting,
-    onPaginationChange: up => {
-      if (typeof up === 'function') {
-        const next = up({ pageIndex: page - 1, pageSize: 10 });
-        onPageChange(next.pageIndex + 1);
-      } else {
-        onPageChange(up.pageIndex + 1);
-      }
-    },
-  });
+    onPaginationChange: handlePaginationChange,
+  }), [data, columns, totalPages, page, sorting, handlePaginationChange]);
+
+  const table = useReactTable(tableConfig);
+
+  const handlePageClick = React.useCallback((targetPage: number) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    onPageChange(targetPage);
+  }, [onPageChange]);
 
   return (
     <div>
@@ -118,10 +132,7 @@ export function DataTable<T>({ columns, data, page, totalPages, onPageChange }: 
               <PaginationItem>
                 <PaginationLink
                   href="?page=1"
-                  onClick={e => {
-                    e.preventDefault();
-                    onPageChange(1);
-                  }}
+                  onClick={handlePageClick(1)}
                 >
                   처음
                 </PaginationLink>
@@ -134,10 +145,7 @@ export function DataTable<T>({ columns, data, page, totalPages, onPageChange }: 
               <PaginationItem>
                 <PaginationLink
                   href={`?page=${page - 1}`}
-                  onClick={e => {
-                    e.preventDefault();
-                    onPageChange(page - 1);
-                  }}
+                  onClick={handlePageClick(page - 1)}
                 >
                   {page - 1}
                 </PaginationLink>
@@ -147,10 +155,7 @@ export function DataTable<T>({ columns, data, page, totalPages, onPageChange }: 
           <PaginationItem>
             <PaginationLink
               href={`?page=${page}`}
-              onClick={e => {
-                e.preventDefault();
-                onPageChange(page);
-              }}
+              onClick={handlePageClick(page)}
               isActive
             >
               {page}
@@ -161,10 +166,7 @@ export function DataTable<T>({ columns, data, page, totalPages, onPageChange }: 
               <PaginationItem>
                 <PaginationLink
                   href={`?page=${page + 1}`}
-                  onClick={e => {
-                    e.preventDefault();
-                    onPageChange(page + 1);
-                  }}
+                  onClick={handlePageClick(page + 1)}
                 >
                   {page + 1}
                 </PaginationLink>
@@ -177,10 +179,7 @@ export function DataTable<T>({ columns, data, page, totalPages, onPageChange }: 
               <PaginationItem>
                 <PaginationLink
                   href={`?page=${totalPages}`}
-                  onClick={e => {
-                    e.preventDefault();
-                    onPageChange(totalPages);
-                  }}
+                  onClick={handlePageClick(totalPages)}
                 >
                   마지막
                 </PaginationLink>
@@ -191,4 +190,4 @@ export function DataTable<T>({ columns, data, page, totalPages, onPageChange }: 
       </Pagination>
     </div>
   );
-} 
+}); 

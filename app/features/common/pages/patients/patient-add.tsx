@@ -213,7 +213,6 @@ export default function PatientAddPage({ loaderData }: any) {
           }
           // 필수 컬럼 체크 (모든 행의 키 합집합)
           const columns = Array.from(new Set(rows.flatMap(row => Object.keys(row))));
-          console.log(columns);
           const missing = REQUIRED_COLUMNS.filter(col => !columns.includes(col));
           setParsedRows(rows);
           setMissingColumns(missing);
