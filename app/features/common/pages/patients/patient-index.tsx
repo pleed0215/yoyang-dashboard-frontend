@@ -172,18 +172,6 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
     }
   };
 
-  // 환자 데이터
-  const patients = data?.retrievePatientList?.data ?? [];
-  const pageInfo = data?.retrievePatientList?.pageInfo;
-  const totalPages = pageInfo?.totalPages ?? 1;
-
-  if (meLoading || loading) {
-    return <DataTableSkeleton />;
-  }
-  if (error) {
-    return <div className="p-8 text-center text-red-500">오류가 발생했습니다: {error.message}</div>;
-  }
-
   // 룸 맵을 미리 생성해서 성능 최적화
   const roomsMap = useMemo(() => {
     const map = new Map();
@@ -214,6 +202,18 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
     { accessorKey: 'leaveDate', header: '퇴원일', cell: info => <div className="text-center">{info.getValue() ? new Date(info.getValue() as string).toLocaleDateString() : '-'}</div> },
     { id: 'actions', header: '액션', cell: () => <div className="text-center">-</div> },
   ], [wardsMap, roomsMap]);
+
+  // 환자 데이터
+  const patients = data?.retrievePatientList?.data ?? [];
+  const pageInfo = data?.retrievePatientList?.pageInfo;
+  const totalPages = pageInfo?.totalPages ?? 1;
+
+  if (meLoading || loading) {
+    return <DataTableSkeleton />;
+  }
+  if (error) {
+    return <div className="p-8 text-center text-red-500">오류가 발생했습니다: {error.message}</div>;
+  }
 
   return (
     <div className="space-y-4 p-4">

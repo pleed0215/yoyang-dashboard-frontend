@@ -77,31 +77,46 @@ export default function PatientListPage({ loaderData }: Route.ComponentProps) {
     fetchPolicy: 'cache-and-network',
   });
 
-  const patients = (data?.retrievePatientsOnThatDate?.data ?? []) as NonNullable<RetrievePatientsOnThatDateQuery['retrievePatientsOnThatDate']>['data'];
   // 병동/병실 정보
   const wards = (wardRoomData ?? []) as NonNullable<RetrieveMyHospitalWardsAndRoomsQuery['retrieveMyHospitalWards']>['data'] ?? [];
-
-  // 병동별로 환자 분류
-  const wardMap: Record<number, typeof patients> = {};
-  for (const ward of wards ?? []) {
-    wardMap[ward.id] = [];
-  }
-  for (const patient of (patients ?? [])) {
-    if (patient.wardId) {
-      wardMap[patient.wardId] ??= [];
-      (wardMap[patient.wardId]!).push(patient);
-    }
-  }
-
-  // 전체 입원 환자 수
-  const totalPatientCount = (patients ?? []).length;
-
+  
+  // 로딩/에러 체크를 먼저 해야 함
   if (meLoading || loading) {
     return <div className="p-8 text-center">로딩 중...</div>;
   }
   if (error) {
     return <div className="p-8 text-center text-red-500">오류가 발생했습니다: {error.message}</div>;
   }
+
+  const patients = (data?.retrievePatientsOnThatDate?.data ?? []) as NonNullable<RetrievePatientsOnThatDateQuery['retrievePatientsOnThatDate']>['data'];
+
+  // 병동별로 환자 분류
+  const wardMap: Record<number, typeof patients> = {};
+  // 병실별로 환자 분류 - 미리 계산
+  const roomMap: Record<number, typeof patients> = {};
+  
+  for (const ward of wards ?? []) {
+    wardMap[ward.id] = [];
+    if (ward.rooms) {
+      for (const room of ward.rooms) {
+        roomMap[room.id] = [];
+      }
+    }
+  }
+  
+  for (const patient of (patients ?? [])) {
+    if (patient.wardId) {
+      wardMap[patient.wardId] ??= [];
+      (wardMap[patient.wardId]!).push(patient);
+    }
+    if (patient.roomId) {
+      roomMap[patient.roomId] ??= [];
+      (roomMap[patient.roomId]!).push(patient);
+    }
+  }
+
+  // 전체 입원 환자 수
+  const totalPatientCount = (patients ?? []).length;
 
   return (
     <div className="space-y-4 p-4">
@@ -128,7 +143,7 @@ export default function PatientListPage({ loaderData }: Route.ComponentProps) {
             ) : (
               <div className="flex flex-col gap-4">
                 {(ward.rooms ?? []).map((room) => {
-                  const roomPatients = (patients ?? []).filter((p) => p.roomId === room.id);
+                  const roomPatients = roomMap[room.id] ?? [];
                   return (
                     <Card key={room.id} className="border border-gray-100">
                       <CardContent>
@@ -144,8 +159,8 @@ export default function PatientListPage({ loaderData }: Route.ComponentProps) {
                           <div className="flex flex-row flex-wrap gap-1 justify-start">
                             {/* 입원 환자 카드 */}
                             {roomPatients.map((patient) => {
-                              let age = '-';
                               const birthValue = patient.birthDate;
+                              let age = '-';
                               if (birthValue) {
                                 const birth = DateTime.fromISO(birthValue);
                                 const today = DateTime.fromISO(date);
