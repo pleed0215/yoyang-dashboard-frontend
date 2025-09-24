@@ -53,7 +53,7 @@ const SortableHeader = React.memo(function SortableHeader({ column, title }: { c
   );
 });
 
-export const DataTable = React.memo(function DataTable<T>({ columns, data, page, totalPages, onPageChange }: DataTableProps<T>) {
+function DataTableComponent<T>({ columns, data, page, totalPages, onPageChange }: DataTableProps<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const handlePaginationChange = React.useCallback((up: any) => {
@@ -190,4 +190,6 @@ export const DataTable = React.memo(function DataTable<T>({ columns, data, page,
       </Pagination>
     </div>
   );
-}); 
+}
+
+export const DataTable = React.memo(DataTableComponent) as typeof DataTableComponent;

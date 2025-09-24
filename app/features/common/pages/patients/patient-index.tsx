@@ -8,7 +8,11 @@ import { Plus } from 'lucide-react';
 import { serverApolloClient } from '~/lib/apollo-client-server';
 import { RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY } from '~/graphql/queries';
 import { contextWithToken } from '~/lib/apollo';
-import { RetrieveMyHospitalWardsAndRoomsQuery } from '~/graphql/types';
+import type {
+  RetrieveMyHospitalWardsAndRoomsQuery,
+  RetrievePatientListQuery,
+  RetrievePatientListQueryVariables,
+} from '~/graphql/types';
 import { useMeQuery, useRetrievePatientListQuery } from '~/graphql/operations';
 import { toast } from 'sonner';
 import { ColumnDef } from '@tanstack/react-table';
@@ -52,6 +56,12 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     
 }
 
+type Ward = NonNullable<
+  RetrieveMyHospitalWardsAndRoomsQuery['retrieveMyHospitalWards']['data']
+>[number];
+type Room = NonNullable<Ward['rooms']>[number];
+type PatientRow = NonNullable<RetrievePatientListQuery['retrievePatientList']['data']>[number];
+
 export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -73,15 +83,15 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
   const validHospitalId = typeof hospitalId === 'number' && !isNaN(hospitalId) ? hospitalId : undefined;
 
   // 병동/병실 상태 및 searchParams 연동
-  const wards = wardRoomData || [];
-  const wardNames = wards.map((w: any) => w.name);
+  const wards = (wardRoomData ?? []) as Ward[];
+  const wardNames = wards.map(ward => ward.name);
   const wardParam = searchParams.get('ward') || '';
   const roomParam = searchParams.get('room') || '';
   const [selectedWard, setSelectedWard] = useState(wardParam);
   const [selectedRoom, setSelectedRoom] = useState(roomParam);
-  const selectedWardObj = wards.find((w: any) => w.name === selectedWard);
-  const rooms = selectedWardObj?.rooms || [];
-  const roomNames = rooms.map((r: any) => r.name);
+  const selectedWardObj = wards.find(ward => ward.name === selectedWard);
+  const rooms: Room[] = selectedWardObj?.rooms ?? [];
+  const roomNames = rooms.map(room => room.name);
 
   // 병동이 바뀌면 병실도 초기화
   useEffect(() => {
@@ -109,8 +119,8 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
       return;
     }
     // 명칭 → id 변환
-    const wardId = selectedWard ? wards.find((w: any) => w.name === selectedWard)?.id : undefined;
-    const roomId = selectedRoom ? rooms.find((r: any) => r.name === selectedRoom)?.id : undefined;
+    const wardId = selectedWard ? wards.find(ward => ward.name === selectedWard)?.id : undefined;
+    const roomId = selectedRoom ? rooms.find(room => room.name === selectedRoom)?.id : undefined;
     setQueryStartDate(startDate);
     setQueryEndDate(endDate);
     setQueryWardId(typeof wardId === 'number' ? wardId : undefined);
@@ -135,7 +145,7 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
   const [queryRoomId, setQueryRoomId] = useState<number | undefined>(undefined);
 
   // 환자 목록 쿼리
-  const patientQueryVars: any = {
+  const patientQueryVars: RetrievePatientListQueryVariables = {
     hospitalId: validHospitalId!,
     page,
     pageSize,
@@ -174,9 +184,9 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
 
   // 룸 맵을 미리 생성해서 성능 최적화
   const roomsMap = useMemo(() => {
-    const map = new Map();
-    wards.forEach((ward: any) => {
-      ward.rooms?.forEach((room: any) => {
+    const map = new Map<number, string>();
+    wards.forEach(ward => {
+      ward.rooms?.forEach(room => {
         map.set(room.id, room.name);
       });
     });
@@ -184,27 +194,76 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
   }, [wards]);
 
   const wardsMap = useMemo(() => {
-    const map = new Map();
-    wards.forEach((ward: any) => {
+    const map = new Map<number, string>();
+    wards.forEach(ward => {
       map.set(ward.id, ward.name);
     });
     return map;
   }, [wards]);
 
   // DataTable columns 정의
-  const columns: ColumnDef<any>[] = useMemo(() => [
-    { accessorKey: 'id', header: 'ID', cell: info => <div className="text-center">{info.getValue() as number}</div> },
-    { accessorKey: 'name', header: '이름', cell: info => <div className="text-center">{info.getValue() as string}</div> },
-    { accessorKey: 'gender', header: '성별', cell: info => <div className="text-center">{info.getValue() as string | undefined ?? '-'}</div> },
-    { accessorKey: 'wardId', header: '병동', cell: info => <div className="text-center">{wardsMap.get(info.row.original.wardId) ?? '-'}</div> },
-    { accessorKey: 'roomId', header: '병실', cell: info => <div className="text-center">{roomsMap.get(info.row.original.roomId) ?? '-'}</div> },
-    { accessorKey: 'enterDate', header: '입원일', cell: info => <div className="text-center">{info.getValue() ? new Date(info.getValue() as string).toLocaleDateString() : '-'}</div> },
-    { accessorKey: 'leaveDate', header: '퇴원일', cell: info => <div className="text-center">{info.getValue() ? new Date(info.getValue() as string).toLocaleDateString() : '-'}</div> },
-    { id: 'actions', header: '액션', cell: () => <div className="text-center">-</div> },
-  ], [wardsMap, roomsMap]);
+  const columns = useMemo<ColumnDef<PatientRow>[]>(
+    () => [
+      {
+        accessorKey: 'id',
+        header: 'ID',
+        cell: info => <div className="text-center">{info.getValue<number>()}</div>,
+      },
+      {
+        accessorKey: 'name',
+        header: '이름',
+        cell: info => <div className="text-center">{info.getValue<string>()}</div>,
+      },
+      {
+        accessorKey: 'gender',
+        header: '성별',
+        cell: info => <div className="text-center">{info.getValue<string | undefined>() ?? '-'}</div>,
+      },
+      {
+        accessorKey: 'wardId',
+        header: '병동',
+        cell: info => (
+          <div className="text-center">{wardsMap.get(info.row.original.wardId) ?? '-'}</div>
+        ),
+      },
+      {
+        accessorKey: 'roomId',
+        header: '병실',
+        cell: info => (
+          <div className="text-center">{roomsMap.get(info.row.original.roomId) ?? '-'}</div>
+        ),
+      },
+      {
+        accessorKey: 'enterDate',
+        header: '입원일',
+        cell: info => {
+          const value = info.getValue<string | null | undefined>();
+          return (
+            <div className="text-center">
+              {value ? new Date(value).toLocaleDateString() : '-'}
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: 'leaveDate',
+        header: '퇴원일',
+        cell: info => {
+          const value = info.getValue<string | null | undefined>();
+          return (
+            <div className="text-center">
+              {value ? new Date(value).toLocaleDateString() : '-'}
+            </div>
+          );
+        },
+      },
+      { id: 'actions', header: '액션', cell: () => <div className="text-center">-</div> },
+    ],
+    [wardsMap, roomsMap],
+  );
 
   // 환자 데이터
-  const patients = data?.retrievePatientList?.data ?? [];
+  const patients = (data?.retrievePatientList?.data ?? []) as PatientRow[];
   const pageInfo = data?.retrievePatientList?.pageInfo;
   const totalPages = pageInfo?.totalPages ?? 1;
 
@@ -276,10 +335,16 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
           <CardTitle>환자 목록</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={patients} page={page} totalPages={totalPages} onPageChange={p => {
+          <DataTable
+            columns={columns}
+            data={patients}
+            page={page}
+            totalPages={totalPages}
+            onPageChange={p => {
             searchParams.set('page', p.toString());
             setSearchParams(searchParams, { preventScrollReset: true });
-          }} />
+            }}
+          />
         </CardContent>
       </Card>
     </div>
