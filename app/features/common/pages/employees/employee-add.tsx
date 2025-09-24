@@ -7,14 +7,11 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '~/components/ui/dialog';
-import { ArrowLeft, Calendar, Check } from 'lucide-react';
+import { ArrowLeft, Check } from 'lucide-react';
 import { useMeQuery } from '~/graphql/operations';
 import { useMutation } from '@apollo/client';
 import { EmployeeState, CreateEmployeeMutation, CreateEmployeeMutationVariables } from '~/graphql/types';
 import { useState } from 'react';
-import { format } from 'date-fns';
-import { Calendar as CalendarComponent } from '~/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover';
 import { serverApolloClient } from "~/lib/apollo-client-server";
 import { RetrieveMyHospitalDutiesQuery, RetrieveMyHospitalPositionsQuery } from "~/graphql/types";
 import { contextWithToken } from "~/lib/apollo";
@@ -24,6 +21,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { DateTime } from 'luxon';
+import DateInput from '~/components/common/date-input';
 
 const CREATE_EMPLOYEE_MUTATION = gql`
   mutation CreateEmployee($input: EmployeeCreateInput!) {
@@ -128,11 +126,6 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
   const [createEmployee, { loading }] = useMutation(CREATE_EMPLOYEE_MUTATION);
   
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [selectedDates, setSelectedDates] = useState<{
-    enterDate?: Date;
-    leaveDate?: Date;
-    birthDate?: Date;
-  }>({});
 
   const {
     register,
@@ -153,42 +146,6 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
       birthDate: '',
     },
   });
-
-  const handleDateSelect = (field: 'enterDate' | 'leaveDate' | 'birthDate', date: Date | undefined) => {
-    setSelectedDates(prev => ({
-      ...prev,
-      [field]: date
-    }));
-    
-    if (date) {
-      const formattedDate = format(date, 'yyyy-MM-dd');
-      setValue(field, formattedDate);
-    } else {
-      setValue(field, '');
-    }
-  };
-
-  const formatDateInput = (value: string) => {
-    // 숫자만 입력받고 yyyy-mm-dd 형식으로 포맷팅
-    const numbers = value.replace(/\D/g, '');
-    if (numbers.length <= 4) {
-      return numbers;
-    } else if (numbers.length <= 6) {
-      return `${numbers.slice(0, 4)}-${numbers.slice(4)}`;
-    } else {
-      const year = numbers.slice(0, 4);
-      const month = numbers.slice(4, 6);
-      const day = numbers.slice(6, 8);
-      
-      // 기본 포맷팅은 항상 수행하고, 유효성 검사는 별도로
-      return `${year}-${month}-${day}`;
-    }
-  };
-
-  const handleDateInputChange = (field: 'enterDate' | 'leaveDate' | 'birthDate', value: string) => {
-    const formattedValue = formatDateInput(value);
-    setValue(field, formattedValue);
-  };
 
   const onSubmit = async (data: EmployeeFormData) => {
     if (!userData?.me?.data?.hospitalId) {
@@ -332,30 +289,11 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
               {/* 입사일 */}
               <div className="space-y-2">
                 <Label htmlFor="enterDate">입사일</Label>
-                <div className="flex space-x-2">
-                  <Input
-                    id="enterDate"
-                    value={watch('enterDate')}
-                    onChange={(e) => handleDateInputChange('enterDate', e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                    maxLength={10}
-                  />
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="cursor-pointer">
-                        <Calendar className="h-4 w-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <CalendarComponent
-                        mode="single"
-                        selected={selectedDates.enterDate}
-                        onSelect={(date) => handleDateSelect('enterDate', date)}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
+                <DateInput
+                  id="enterDate"
+                  value={watch('enterDate') ?? ''}
+                  onChange={(value) => setValue('enterDate', value, { shouldValidate: true })}
+                />
                 {errors.enterDate && (
                   <p className="text-sm text-red-500">{errors.enterDate.message}</p>
                 )}
@@ -364,30 +302,11 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
               {/* 퇴사일 */}
               <div className="space-y-2">
                 <Label htmlFor="leaveDate">퇴사일</Label>
-                <div className="flex space-x-2">
-                  <Input
-                    id="leaveDate"
-                    value={watch('leaveDate')}
-                    onChange={(e) => handleDateInputChange('leaveDate', e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                    maxLength={10}
-                  />
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="cursor-pointer">
-                        <Calendar className="h-4 w-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <CalendarComponent
-                        mode="single"
-                        selected={selectedDates.leaveDate}
-                        onSelect={(date) => handleDateSelect('leaveDate', date)}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
+                <DateInput
+                  id="leaveDate"
+                  value={watch('leaveDate') ?? ''}
+                  onChange={(value) => setValue('leaveDate', value, { shouldValidate: true })}
+                />
                 {errors.leaveDate && (
                   <p className="text-sm text-red-500">{errors.leaveDate.message}</p>
                 )}
@@ -409,30 +328,11 @@ export default function EmployeeAddPage({ loaderData }: Route.ComponentProps) {
               {/* 생년월일 */}
               <div className="space-y-2">
                 <Label htmlFor="birthDate">생년월일</Label>
-                <div className="flex space-x-2">
-                  <Input
-                    id="birthDate"
-                    value={watch('birthDate')}
-                    onChange={(e) => handleDateInputChange('birthDate', e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                    maxLength={10}
-                  />
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="cursor-pointer">
-                        <Calendar className="h-4 w-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <CalendarComponent
-                        mode="single"
-                        selected={selectedDates.birthDate}
-                        onSelect={(date) => handleDateSelect('birthDate', date)}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
+                <DateInput
+                  id="birthDate"
+                  value={watch('birthDate') ?? ''}
+                  onChange={(value) => setValue('birthDate', value, { shouldValidate: true })}
+                />
                 {errors.birthDate && (
                   <p className="text-sm text-red-500">{errors.birthDate.message}</p>
                 )}

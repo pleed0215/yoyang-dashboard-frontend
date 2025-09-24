@@ -1,4 +1,4 @@
-import { ChevronDown, LogOut, Settings, User } from 'lucide-react';
+import { ChevronDown, LogOut, Settings, User, type LucideIcon } from 'lucide-react';
 import { Avatar, AvatarFallback } from '~/components/ui/avatar';
 import {
   DropdownMenu,
@@ -10,57 +10,114 @@ import {
 import { useNavigate, useLocation } from 'react-router';
 import { useMeQuery } from '~/graphql/operations';
 import { UserRole } from '~/graphql/types';
-import { Sidebar, SidebarContent, SidebarHeader } from '~/components/ui/sidebar';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from '~/components/ui/sidebar';
 import { roleBasedMenus } from './sidebar-map';
-import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-interface NavItemProps {
+interface MenuItem {
   title: string;
   path?: string;
-  icon?: any;
-  children?: Array<any>;
-  isActive?: boolean;
-  onClick?: () => void;
+  icon?: LucideIcon;
+  children?: Array<MenuItem>;
 }
 
-function NavItem({ title, path, icon: Icon, children, isActive, onClick }: NavItemProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+const normalizePath = (value: string | undefined) => {
+  if (!value) return undefined;
+  if (value === '/') return '/';
+  return value.replace(/\/{2,}/g, '/').replace(/\/$/, '');
+};
+
+const isExactPathMatch = (target: string | undefined, currentPath: string) => {
+  if (!target) return false;
+  return normalizePath(target) === normalizePath(currentPath);
+};
+
+const isMenuItemActive = (item: MenuItem, currentPath: string): boolean => {
+  if (item.path && isExactPathMatch(item.path, currentPath)) {
+    return true;
+  }
+
+  return item.children?.some(child => isMenuItemActive(child, currentPath)) ?? false;
+};
+
+function NavItem({ item, currentPath }: { item: MenuItem; currentPath: string }) {
   const navigate = useNavigate();
+  const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+  const isActive = useMemo(() => isMenuItemActive(item, currentPath), [item, currentPath]);
+  const [isExpanded, setIsExpanded] = useState(() => hasChildren && isActive);
+
+  useEffect(() => {
+    if (hasChildren && isActive) {
+      setIsExpanded(true);
+    }
+  }, [hasChildren, isActive]);
 
   const handleClick = () => {
-    if (children) {
-      setIsExpanded(!isExpanded);
-    } else if (path) {
-      navigate(path);
+    if (hasChildren) {
+      setIsExpanded(previous => !previous);
+      return;
     }
-    onClick?.();
+
+    if (item.path) {
+      navigate(item.path);
+    }
   };
 
   return (
-    <div>
-      <Button
-        variant="ghost"
-        className={cn('w-full justify-between', isActive && 'bg-muted')}
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        type="button"
+        isActive={!hasChildren && isActive}
         onClick={handleClick}
+        aria-expanded={hasChildren ? isExpanded : undefined}
+        className={cn('justify-between', hasChildren && 'font-medium')}
       >
-        <span className="flex items-center">
-          {Icon && <Icon className="mr-2 h-4 w-4" />}
-          {title}
+        <span className="flex items-center gap-2 truncate">
+          {item.icon && <item.icon className="h-4 w-4" />}
+          <span className="truncate">{item.title}</span>
         </span>
-        {children && (
-          <ChevronDown className={cn('h-4 w-4 transition-transform', isExpanded && 'rotate-180')} />
+        {hasChildren && (
+          <ChevronDown
+            className={cn('h-4 w-4 transition-transform', isExpanded && 'rotate-180')}
+          />
         )}
-      </Button>
-      {children && isExpanded && (
-        <div className="ml-4 mt-1 space-y-1">
-          {children.map((child, index) => (
-            <NavItem key={index} {...child} isActive={path === child.path} />
-          ))}
-        </div>
+      </SidebarMenuButton>
+      {hasChildren && isExpanded && (
+        <SidebarMenuSub>
+          {item.children?.map(child => {
+            const childKey = child.path ?? child.title;
+            const childIsActive = isExactPathMatch(child.path, currentPath);
+
+            return (
+              <SidebarMenuSubItem key={childKey}>
+                <SidebarMenuSubButton
+                  isActive={childIsActive}
+                  onClick={() => {
+                    if (child.path) {
+                      navigate(child.path);
+                    }
+                  }}
+                >
+                  {child.icon && <child.icon className="mr-2 h-4 w-4" />}
+                  <span className="truncate">{child.title}</span>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
+            );
+          })}
+        </SidebarMenuSub>
       )}
-    </div>
+    </SidebarMenuItem>
   );
 }
 
@@ -149,10 +206,16 @@ export function AppSidebar() {
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarHeader>
-        <SidebarContent className="flex-1 space-y-1 p-2">
-          {getMenuItems().map((item, index) => (
-            <NavItem key={index} {...item} isActive={location.pathname === item.path} />
-          ))}
+        <SidebarContent className="flex-1 p-2">
+          <SidebarMenu>
+            {getMenuItems().map((item, index) => (
+              <NavItem
+                key={item.path ?? `${item.title}-${index}`}
+                item={item}
+                currentPath={location.pathname}
+              />
+            ))}
+          </SidebarMenu>
         </SidebarContent>
       </Sidebar>
     </>

@@ -17,7 +17,7 @@ export default function HospitalWardsPage() {
   const wards = data?.retrieveMyHospitalWards?.data ?? [];
 
   const [newWardName, setNewWardName] = useState("");
-  const [editWardId, setEditWardId] = useState<string | null>(null);
+  const [editWardId, setEditWardId] = useState<number | null>(null);
   const [editWardName, setEditWardName] = useState("");
   const [mutationLoading, setMutationLoading] = useState(false);
 
@@ -45,12 +45,12 @@ export default function HospitalWardsPage() {
     }
   };
 
-  const handleEditWard = async (id: string) => {
+  const handleEditWard = async (id: number) => {
     if (!editWardName.trim()) return;
     setMutationLoading(true);
     try {
       const { data } = await updateWard({
-        variables: { wardId: Number(id), name: editWardName.trim() },
+        variables: { wardId: id, name: editWardName.trim() },
       });
       if (data?.updateHospitalWard?.success) {
         toast.success("병동 정보가 수정되었습니다.");
@@ -65,12 +65,12 @@ export default function HospitalWardsPage() {
     }
   };
 
-  const handleDeleteWard = async (id: string) => {
+  const handleDeleteWard = async (id: number) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     setMutationLoading(true);
     try {
       const { data } = await deleteWard({
-        variables: { wardId: Number(id) },
+        variables: { wardId: id },
       });
       if (data?.deleteHospitalWard?.success) {
         toast.success("병동이 삭제되었습니다.");
@@ -114,36 +114,76 @@ export default function HospitalWardsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {wards.map((item: { id: string, name: string }, idx: number) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="text-center">{idx + 1}</TableCell>
-                    <TableCell>
-                      {editWardId === item.id ? (
-                        <Input
-                          value={editWardName}
-                          onChange={e => setEditWardName(e.target.value)}
-                          className="w-32"
-                          autoFocus
-                        />
-                      ) : (
-                        <Badge variant="secondary" className="text-base px-3 py-1">{item.name}</Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {editWardId === item.id ? (
-                        <>
-                          <Button size="sm" type="button" className="cursor-pointer" onClick={() => handleEditWard(item.id)} disabled={mutationLoading}>저장</Button>
-                          <Button size="sm" type="button" variant="secondary" className="cursor-pointer" onClick={() => { setEditWardId(null); setEditWardName(""); }}>취소</Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button size="sm" variant="outline" className="mr-2 cursor-pointer" onClick={() => { setEditWardId(item.id); setEditWardName(item.name); }}>수정</Button>
-                          <Button size="sm" variant="destructive" className="cursor-pointer" onClick={() => handleDeleteWard(item.id)} disabled={mutationLoading}>삭제</Button>
-                        </>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {wards.map((item, idx) => {
+                  if (!item) return null;
+                  return (
+                    <TableRow key={item.id}>
+                      <TableCell className="text-center">{idx + 1}</TableCell>
+                      <TableCell>
+                        {editWardId === item.id ? (
+                          <Input
+                            value={editWardName}
+                            onChange={e => setEditWardName(e.target.value)}
+                            className="w-32"
+                            autoFocus
+                          />
+                        ) : (
+                          <Badge variant="secondary" className="text-base px-3 py-1">{item.name}</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {editWardId === item.id ? (
+                          <>
+                            <Button
+                              size="sm"
+                              type="button"
+                              className="cursor-pointer"
+                              onClick={() => handleEditWard(item.id)}
+                              disabled={mutationLoading}
+                            >
+                              저장
+                            </Button>
+                            <Button
+                              size="sm"
+                              type="button"
+                              variant="secondary"
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setEditWardId(null);
+                                setEditWardName('');
+                              }}
+                            >
+                              취소
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="mr-2 cursor-pointer"
+                              onClick={() => {
+                                setEditWardId(item.id);
+                                setEditWardName(item.name);
+                              }}
+                            >
+                              수정
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              className="cursor-pointer"
+                              onClick={() => handleDeleteWard(item.id)}
+                              disabled={mutationLoading}
+                            >
+                              삭제
+                            </Button>
+                          </>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           )}
