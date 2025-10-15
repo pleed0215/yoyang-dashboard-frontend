@@ -71,10 +71,38 @@ export type BaseHospitalType = {
   ykiho: Scalars['String']['output'];
 };
 
+export type BulkCreatePatientDetail = {
+  __typename?: 'BulkCreatePatientDetail';
+  chartId: Scalars['Float']['output'];
+  patient?: Maybe<Patient>;
+  reason?: Maybe<Scalars['String']['output']>;
+  status: Scalars['String']['output'];
+};
+
 export type BulkCreatePatientsFromFileInput = {
+  duplicateStrategy?: DuplicateHandlingStrategy;
   file: Scalars['Upload']['input'];
   fileType: PatientFileType;
   hospitalId: Scalars['Int']['input'];
+};
+
+export type BulkCreatePatientsInput = {
+  duplicateStrategy?: DuplicateHandlingStrategy;
+  patients: Array<CreatePatientInput>;
+};
+
+export type BulkCreatePatientsResponse = {
+  __typename?: 'BulkCreatePatientsResponse';
+  createdCount: Scalars['Int']['output'];
+  createdPatients: Array<Patient>;
+  details: Array<BulkCreatePatientDetail>;
+  failedCount: Scalars['Int']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  overriddenCount: Scalars['Int']['output'];
+  skippedCount: Scalars['Int']['output'];
+  strategy: DuplicateHandlingStrategy;
+  success: Scalars['Boolean']['output'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type CommonResponse = {
@@ -191,6 +219,13 @@ export type DeleteHospitalWardOutput = {
   message?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
 };
+
+/** 중복 환자 처리 방식 */
+export enum DuplicateHandlingStrategy {
+  Cancel = 'CANCEL',
+  Override = 'OVERRIDE',
+  Skip = 'SKIP'
+}
 
 export type EmployeeCreateInput = {
   birthDate?: InputMaybe<Scalars['DateTime']['input']>;
@@ -475,8 +510,8 @@ export type Mutation = {
   addEmployeeCommittee: EmployeeOutput;
   addEmployeePart: EmployeeOutput;
   addEmployeeRoom: EmployeeOutput;
-  bulkCreatePatients: PaginatedPatientResponse;
-  bulkCreatePatientsFromFile: PaginatedPatientResponse;
+  bulkCreatePatients: BulkCreatePatientsResponse;
+  bulkCreatePatientsFromFile: BulkCreatePatientsResponse;
   createAdmitFee: AdmitFeeResponse;
   createEmployee: EmployeeOutput;
   /** 병원 위원회를 생성합니다. */
@@ -598,7 +633,7 @@ export type MutationAddEmployeeRoomArgs = {
 
 
 export type MutationBulkCreatePatientsArgs = {
-  inputs: Array<CreatePatientInput>;
+  input: BulkCreatePatientsInput;
 };
 
 
@@ -1886,14 +1921,14 @@ export type BulkCreatePatientsFromFileMutationVariables = Exact<{
 }>;
 
 
-export type BulkCreatePatientsFromFileMutation = { __typename?: 'Mutation', bulkCreatePatientsFromFile: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null } };
+export type BulkCreatePatientsFromFileMutation = { __typename?: 'Mutation', bulkCreatePatientsFromFile: { __typename?: 'BulkCreatePatientsResponse', success: boolean, message?: string | null, strategy: DuplicateHandlingStrategy, totalCount: number, createdCount: number, skippedCount: number, overriddenCount: number, failedCount: number } };
 
 export type BulkCreatePatientsMutationVariables = Exact<{
-  inputs: Array<CreatePatientInput> | CreatePatientInput;
+  input: BulkCreatePatientsInput;
 }>;
 
 
-export type BulkCreatePatientsMutation = { __typename?: 'Mutation', bulkCreatePatients: { __typename?: 'PaginatedPatientResponse', success: boolean, message?: string | null } };
+export type BulkCreatePatientsMutation = { __typename?: 'Mutation', bulkCreatePatients: { __typename?: 'BulkCreatePatientsResponse', success: boolean, message?: string | null, strategy: DuplicateHandlingStrategy, totalCount: number, createdCount: number, skippedCount: number, overriddenCount: number, failedCount: number } };
 
 export type UpdatePatientMutationVariables = Exact<{
   patientId: Scalars['Int']['input'];

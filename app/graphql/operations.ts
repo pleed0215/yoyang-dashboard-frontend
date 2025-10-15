@@ -2347,6 +2347,12 @@ export const BulkCreatePatientsFromFileDocument = gql`
   bulkCreatePatientsFromFile(input: $input) {
     success
     message
+    strategy
+    totalCount
+    createdCount
+    skippedCount
+    overriddenCount
+    failedCount
   }
 }
     `;
@@ -2377,10 +2383,16 @@ export type BulkCreatePatientsFromFileMutationHookResult = ReturnType<typeof use
 export type BulkCreatePatientsFromFileMutationResult = Apollo.MutationResult<Types.BulkCreatePatientsFromFileMutation>;
 export type BulkCreatePatientsFromFileMutationOptions = Apollo.BaseMutationOptions<Types.BulkCreatePatientsFromFileMutation, Types.BulkCreatePatientsFromFileMutationVariables>;
 export const BulkCreatePatientsDocument = gql`
-    mutation BulkCreatePatients($inputs: [CreatePatientInput!]!) {
-  bulkCreatePatients(inputs: $inputs) {
+    mutation BulkCreatePatients($input: BulkCreatePatientsInput!) {
+  bulkCreatePatients(input: $input) {
     success
     message
+    strategy
+    totalCount
+    createdCount
+    skippedCount
+    overriddenCount
+    failedCount
   }
 }
     `;
@@ -2399,7 +2411,7 @@ export type BulkCreatePatientsMutationFn = Apollo.MutationFunction<Types.BulkCre
  * @example
  * const [bulkCreatePatientsMutation, { data, loading, error }] = useBulkCreatePatientsMutation({
  *   variables: {
- *      inputs: // value for 'inputs'
+ *      input: // value for 'input'
  *   },
  * });
  */

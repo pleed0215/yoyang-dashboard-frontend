@@ -73,10 +73,22 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
             query: RETRIEVE_MY_HOSPITAL_COMMITTEES_QUERY,context: contextWithToken(request)   });
         
         return {
-            positions: positionsData.retrieveMyHospitalPositions.data,
-            duties: dutiesData.retrieveMyHospitalDuties.data,
-            wards: wardsData.retrieveMyHospitalWards.data,
-            committees: committeesData.retrieveMyHospitalCommittees.data,
+            positions: positionsData.retrieveMyHospitalPositions.data?.filter(
+              (position): position is { __typename?: 'HospitalPositionType'; id: number; name: string } =>
+                !!position && typeof position.id === 'number' && typeof position.name === 'string',
+            ) ?? [],
+            duties: dutiesData.retrieveMyHospitalDuties.data?.filter(
+              (duty): duty is { __typename?: 'HospitalDutyType'; id: number; name: string } =>
+                !!duty && typeof duty.id === 'number' && typeof duty.name === 'string',
+            ) ?? [],
+            wards: wardsData.retrieveMyHospitalWards.data?.filter(
+              (ward): ward is { __typename?: 'HospitalWardType'; id: number; name: string } =>
+                !!ward && typeof ward.id === 'number' && typeof ward.name === 'string',
+            ) ?? [],
+            committees: committeesData.retrieveMyHospitalCommittees.data?.filter(
+              (committee): committee is { __typename?: 'HospitalCommitteeType'; id: number; name: string } =>
+                !!committee && typeof committee.id === 'number' && typeof committee.name === 'string',
+            ) ?? [],
             apolloState: serverApolloClient.cache.extract(),
         };
     }catch(e) {
@@ -140,19 +152,31 @@ export default function EmployeeDetailPage({ params, loaderData }: Route.Compone
   React.useEffect(() => {
     if (employeeData?.getEmployee?.data) {
       const employee = employeeData.getEmployee.data;
-      const initialData = {
-        name: employee.name || '',
-        positionId: employee.position?.id || '',
-        dutyId: employee.duty?.id || '',
-        wardId: employee.ward?.id || '',
-        state: employee.state || EmployeeState.Active,
-        enterDate: employee.enterDate || '',
-        leaveDate: employee.leaveDate || '',
-        cellPhone: employee.cellPhone || '',
-        birthDate: employee.birthDate || '',
-        committeeIds: employee.committees?.map(c => c.id) || [],
-        roomIds: employee.rooms?.map(r => r.id) || [],
-        partIds: employee.parts?.map(p => p.id) || [],
+      const initialData: EmployeeFormData = {
+        name: employee.name ?? '',
+        positionId: employee.position?.id != null ? String(employee.position.id) : '',
+        dutyId: employee.duty?.id != null ? String(employee.duty.id) : '',
+        wardId: employee.ward?.id != null ? String(employee.ward.id) : '',
+        state: employee.state ?? EmployeeState.Active,
+        enterDate: employee.enterDate ?? '',
+        leaveDate: employee.leaveDate ?? '',
+        cellPhone: employee.cellPhone ?? '',
+        birthDate: employee.birthDate ?? '',
+        committeeIds:
+          employee.committees?.filter(
+            (committee): committee is { id: number; name: string } =>
+              !!committee && typeof committee.id === 'number' && typeof committee.name === 'string',
+          ).map(committee => committee.id.toString()) ?? [],
+        roomIds:
+          employee.rooms?.filter(
+            (room): room is { id: number; name: string } =>
+              !!room && typeof room.id === 'number' && typeof room.name === 'string',
+          ).map(room => room.id.toString()) ?? [],
+        partIds:
+          employee.parts?.filter(
+            (part): part is { id: number; name: string } =>
+              !!part && typeof part.id === 'number' && typeof part.name === 'string',
+          ).map(part => part.id.toString()) ?? [],
       };
       setFormData(initialData);
       setOriginalData(initialData);

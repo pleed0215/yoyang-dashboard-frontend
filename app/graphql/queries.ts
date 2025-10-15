@@ -305,15 +305,15 @@ export const GET_JOIN_REQUEST_BY_CURRENT_USER_QUERY = gql`
 `;
 
 export const DELETE_JOIN_REQUEST_FOR_CURRENT_USER_MUTATION = gql`
-    mutation DeleteJoinRequestForCurrentUser {
-      deleteJoinRequestForCurrentUser {
-        success
-        message
-      }
+  mutation DeleteJoinRequestForCurrentUser {
+    deleteJoinRequestForCurrentUser {
+      success
+      message
     }
+  }
 `;
 
-export const RETRIEVE_HOSPITAL_USER_QUERY=gql`
+export const RETRIEVE_HOSPITAL_USER_QUERY = gql`
   query RetrieveHospitalUsers($page: Int = 1, $pageSize: Int = 10, $role: UserRole) {
     retrieveHospitalUsersForAdmin(page: $page, pageSize: $pageSize, role: $role) {
       success
@@ -336,7 +336,7 @@ export const RETRIEVE_HOSPITAL_USER_QUERY=gql`
   }
 `;
 
-export const UPDATE_MANY_USER_STATUS_FOR_ADMIN_MUTATION=gql`
+export const UPDATE_MANY_USER_STATUS_FOR_ADMIN_MUTATION = gql`
   mutation UpdateManyUserStatusForAdmin($input: UpdateManyUserStatusInput!) {
     updateManyUserStatusForAdmin(input: $input) {
       success
@@ -345,7 +345,7 @@ export const UPDATE_MANY_USER_STATUS_FOR_ADMIN_MUTATION=gql`
   }
 `;
 
-export const UNLINK_MANY_USER_FROM_HOSPITAL_FOR_ADMIN_MUTATION=gql`
+export const UNLINK_MANY_USER_FROM_HOSPITAL_FOR_ADMIN_MUTATION = gql`
   mutation UnlinkManyUserFromHospitalForAdmin($input: ManyUserIdInput!) {
     unlinkManyUserForAdmin(input: $input) {
       success
@@ -354,7 +354,7 @@ export const UNLINK_MANY_USER_FROM_HOSPITAL_FOR_ADMIN_MUTATION=gql`
   }
 `;
 
-export const UNLINK_USER_FROM_HOSPITAL_FOR_ADMIN_MUTATION=gql`
+export const UNLINK_USER_FROM_HOSPITAL_FOR_ADMIN_MUTATION = gql`
   mutation UnlinkUserFromHospitalForAdmin($input: UserIdInput!) {
     unlinkUserForAdmin(input: $input) {
       success
@@ -396,7 +396,7 @@ export const CREATE_MY_HOSPITAL_POSITION_MUTATION = gql`
       message
     }
   }
-`
+`;
 
 export const UPDATE_HOSPITAL_POSITION_MUTATION = gql`
   mutation UpdateHospitalPosition($positionId: Int!, $name: String!) {
@@ -545,8 +545,24 @@ export const DELETE_HOSPITAL_COMMITTEE_MUTATION = gql`
 `;
 
 export const RETRIEVE_PATIENT_LIST_QUERY = gql`
-  query RetrievePatientList($page: Int = 1, $pageSize: Int = 50, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime, $wardId: Int, $roomId: Int) {
-    retrievePatientList(page: $page, pageSize: $pageSize, hospitalId: $hospitalId, startDate: $startDate, endDate: $endDate, wardId: $wardId, roomId: $roomId) {
+  query RetrievePatientList(
+    $page: Int = 1
+    $pageSize: Int = 50
+    $hospitalId: Int!
+    $startDate: DateTime
+    $endDate: DateTime
+    $wardId: Int
+    $roomId: Int
+  ) {
+    retrievePatientList(
+      page: $page
+      pageSize: $pageSize
+      hospitalId: $hospitalId
+      startDate: $startDate
+      endDate: $endDate
+      wardId: $wardId
+      roomId: $roomId
+    ) {
       success
       message
       pageInfo {
@@ -571,11 +587,25 @@ export const RETRIEVE_PATIENT_LIST_QUERY = gql`
 `;
 
 export const RETRIEVE_PATIENT_ON_THAT_DATE_QUERY = gql`
-  query RetrievePatientsOnThatDate($date: DateTime!, $hospitalId: Int!, $wardId: Int, $roomId: Int, $page: Int, $pageSize: Int) {
-    retrievePatientsOnThatDate(date: $date, hospitalId: $hospitalId, wardId: $wardId, roomId: $roomId, page: $page, pageSize: $pageSize) {
+  query RetrievePatientsOnThatDate(
+    $date: DateTime!
+    $hospitalId: Int!
+    $wardId: Int
+    $roomId: Int
+    $page: Int
+    $pageSize: Int
+  ) {
+    retrievePatientsOnThatDate(
+      date: $date
+      hospitalId: $hospitalId
+      wardId: $wardId
+      roomId: $roomId
+      page: $page
+      pageSize: $pageSize
+    ) {
       success
       message
-      
+
       data {
         id
         name
@@ -592,7 +622,7 @@ export const RETRIEVE_PATIENT_ON_THAT_DATE_QUERY = gql`
 `;
 
 export const PATIENT_COUNT_ON_DATE_QUERY = gql`
-  query GetHospitalPatientCountOnDate($date: DateTime!, $hospitalId: Int! ) {
+  query GetHospitalPatientCountOnDate($date: DateTime!, $hospitalId: Int!) {
     getHospitalPatientCountOnDate(date: $date, hospitalId: $hospitalId) {
       success
       message
@@ -617,11 +647,25 @@ export const PATIENT_COUNT_ON_DATE_QUERY = gql`
       }
     }
   }
-  `;
+`;
 
 export const RETRIEVE_WARD_PATIENT_LIST_QUERY = gql`
-  query RetrieveWardPatientList($wardId: Int!, $page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {
-    retrievePatientList(wardId: $wardId, page: $page, pageSize: $pageSize, hospitalId: $hospitalId, startDate: $startDate, endDate: $endDate) {
+  query RetrieveWardPatientList(
+    $wardId: Int!
+    $page: Int = 1
+    $pageSize: Int = 10
+    $hospitalId: Int!
+    $startDate: DateTime
+    $endDate: DateTime
+  ) {
+    retrievePatientList(
+      wardId: $wardId
+      page: $page
+      pageSize: $pageSize
+      hospitalId: $hospitalId
+      startDate: $startDate
+      endDate: $endDate
+    ) {
       success
       message
       pageInfo {
@@ -645,10 +689,23 @@ export const RETRIEVE_WARD_PATIENT_LIST_QUERY = gql`
   }
 `;
 
-
 export const RETRIEVE_ROOM_PATIENT_LIST_QUERY = gql`
-  query RetrieveRoomPatientList($roomId: Int!, $page: Int = 1, $pageSize: Int = 10, $hospitalId: Int!, $startDate: DateTime, $endDate: DateTime) {
-    retrievePatientList(roomId: $roomId, page: $page, pageSize: $pageSize, hospitalId: $hospitalId, startDate: $startDate, endDate: $endDate) {
+  query RetrieveRoomPatientList(
+    $roomId: Int!
+    $page: Int = 1
+    $pageSize: Int = 10
+    $hospitalId: Int!
+    $startDate: DateTime
+    $endDate: DateTime
+  ) {
+    retrievePatientList(
+      roomId: $roomId
+      page: $page
+      pageSize: $pageSize
+      hospitalId: $hospitalId
+      startDate: $startDate
+      endDate: $endDate
+    ) {
       success
       message
       pageInfo {
@@ -686,21 +743,33 @@ export const BULK_CREATE_PATIENTS_FROM_FILE_MUTATION = gql`
     bulkCreatePatientsFromFile(input: $input) {
       success
       message
+      strategy
+      totalCount
+      createdCount
+      skippedCount
+      overriddenCount
+      failedCount
     }
   }
 `;
 
 export const BULK_CREATE_PATIENTS = gql`
-  mutation BulkCreatePatients($inputs: [CreatePatientInput!]!) {
-    bulkCreatePatients(inputs: $inputs) {
+  mutation BulkCreatePatients($input: BulkCreatePatientsInput!) {
+    bulkCreatePatients(input: $input) {
       success
       message
+      strategy
+      totalCount
+      createdCount
+      skippedCount
+      overriddenCount
+      failedCount
     }
   }
 `;
 
 export const UPDATE_PATIENT_MUTATION = gql`
-  mutation UpdatePatient($patientId: Int!, $input: UpdatePatientInput!) { 
+  mutation UpdatePatient($patientId: Int!, $input: UpdatePatientInput!) {
     updatePatient(patientId: $patientId, input: $input) {
       success
       message
@@ -791,8 +860,16 @@ export const DELETE_HOSPITAL_ROOM_MUTATION = gql`
 `;
 
 export const GET_HOSPITAL_ADMISSION_REPORT_ON_DATE_RANGE_QUERY = gql`
-  query GetHospitalAdmissionReportOnDateRange($startDate: DateTime!, $endDate: DateTime!, $hospitalId: Int!) {
-    getHospitalAdmissionReportOnDateRange(startDate: $startDate, endDate: $endDate, hospitalId: $hospitalId) {
+  query GetHospitalAdmissionReportOnDateRange(
+    $startDate: DateTime!
+    $endDate: DateTime!
+    $hospitalId: Int!
+  ) {
+    getHospitalAdmissionReportOnDateRange(
+      startDate: $startDate
+      endDate: $endDate
+      hospitalId: $hospitalId
+    ) {
       date
       totalCount
       currentCount

@@ -12,6 +12,7 @@ import { useMeQuery, useRetrievePatientsOnThatDateQuery } from '~/graphql/operat
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Separator } from '~/components/ui/separator';
 import { DateTime } from 'luxon';
+import { useQuery } from '@apollo/client';
 
 function getToday() {
   return DateTime.now().toFormat('yyyy-MM-dd');
@@ -42,8 +43,18 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 export default function PatientListPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { wardRoomData } = loaderData;
   const [date, setDate] = useState(() => searchParams.get('date') || getToday());
+  
+  // Use query hook for real-time ward/room data
+  const { data: wardRoomQueryData } = useQuery<RetrieveMyHospitalWardsAndRoomsQuery>(
+    RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY,
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
+  
+  // Use query data if available, otherwise fallback to loader data
+  const wardRoomData = wardRoomQueryData?.retrieveMyHospitalWards?.data || loaderData?.wardRoomData;
 
   // 날짜 searchParam 연동
   useEffect(() => {
@@ -81,7 +92,7 @@ export default function PatientListPage({ loaderData }: Route.ComponentProps) {
   const wards = (wardRoomData ?? []) as NonNullable<RetrieveMyHospitalWardsAndRoomsQuery['retrieveMyHospitalWards']>['data'] ?? [];
   
   // 로딩/에러 체크를 먼저 해야 함
-  if (meLoading || loading) {
+  if (meLoading || loading || !wardRoomData) {
     return <div className="p-8 text-center">로딩 중...</div>;
   }
   if (error) {

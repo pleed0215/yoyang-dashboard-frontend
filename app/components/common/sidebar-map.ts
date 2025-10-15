@@ -1,5 +1,5 @@
 import { UserRole } from '~/graphql/types';
-import { Users, Building2, UserPlus, List, Search, Clock, Building, Info, UserCheck, Bed, DoorOpen, Briefcase, Calendar1 } from 'lucide-react';
+import { Users, Building2, UserPlus, List, Search, Clock, Building, Info, UserCheck, Bed, DoorOpen, Briefcase, Calendar1, Upload } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 
 interface MenuItem {
@@ -56,6 +56,7 @@ export const commonMenus = {
       { title: '월별 현황', path: '/patients/status', icon: Calendar1 },
       { title: '환자 목록', path: '/patients', icon: List },
       { title: '환자 추가', path: '/patients/add', icon: UserPlus },
+      { title: '환자 일괄 등록', path: '/patients/bulk-add', icon: Upload },
     ],
   },
 };

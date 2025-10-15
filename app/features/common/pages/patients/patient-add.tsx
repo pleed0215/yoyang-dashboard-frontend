@@ -22,8 +22,6 @@ import { ArrowLeft, Check, Upload } from 'lucide-react';
 import {
   useMeQuery,
   useCreatePatientMutation,
-  useBulkCreatePatientsFromFileMutation,
-  useBulkCreatePatientsMutation,
 } from '~/graphql/operations';
 import { useState } from 'react';
 import { z } from 'zod';
@@ -32,16 +30,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { DateTime } from 'luxon';
 import {
   PatientGender,
-  PatientFileType,
   RetrieveMyHospitalWardsAndRoomsQuery,
 } from '~/graphql/types';
 import { contextWithToken } from '~/lib/apollo';
 import { RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY } from '~/graphql/queries';
 import { serverApolloClient } from '~/lib/apollo-client-server';
 import DateInput from '~/components/common/date-input';
-import Papa from 'papaparse';
-import * as XLSX from 'xlsx';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '~/components/ui/table';
 
 // 단일 환자 등록용 스키마
 const patientSchema = z.object({
@@ -56,17 +50,6 @@ const patientSchema = z.object({
 });
 
 type PatientFormData = z.infer<typeof patientSchema>;
-
-const REQUIRED_COLUMNS = [
-  '이름',
-  '차트ID',
-  '성별',
-  '병동',
-  '병실',
-  '입원일',
-  '퇴원일',
-  '생년월일',
-];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   try {
@@ -87,28 +70,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   }
 };
 
-// 병동 이름으로 id 찾기
-function findWardIdByName(wardName: string, wards: any[]): number | undefined {
-  const ward = wards.find(w => w.name === wardName);
-  return ward ? Number(ward.id) : undefined;
-}
-
-// 병실 이름으로 id 찾기 (병동 id도 필요)
-function findRoomIdByName(roomName: string, wardName: string, wards: any[]): number | undefined {
-  const ward = wards.find(w => w.name === wardName);
-  if (!ward) return undefined;
-  const room = ward.rooms.find((r: any) => r.name === roomName);
-  return room ? Number(room.id) : undefined;
-}
-
-// 파일에서 읽은 성별 값을 PatientGender로 변환
-function getPatientGenderFromString(value: string): PatientGender | undefined {
-  if (!value) return undefined;
-  const v = value.trim();
-  if (v === '남' || v === '남성' || v.toUpperCase() === 'MALE') return PatientGender.Male;
-  if (v === '여' || v === '여성' || v.toUpperCase() === 'FEMALE') return PatientGender.Female;
-  return undefined;
-}
 
 export default function PatientAddPage({ loaderData }: any) {
   const navigate = useNavigate();
@@ -116,17 +77,8 @@ export default function PatientAddPage({ loaderData }: any) {
   const { data: meData } = useMeQuery();
   const hospitalId = meData?.me?.data?.hospitalId;
   const [createPatient, { loading }] = useCreatePatientMutation();
-  const [bulkCreatePatients, { loading: bulkLoading }] = useBulkCreatePatientsMutation();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [fileType, setFileType] = useState<'CSV' | 'EXCEL'>(
-    'EXCEL'
-  );
-  const [filePreviewOpen, setFilePreviewOpen] = useState(false);
-  const [parsedRows, setParsedRows] = useState<any[]>([]);
-  const [missingColumns, setMissingColumns] = useState<string[]>([]);
-  const [fileError, setFileError] = useState<string>('');
 
   const {
     register,
@@ -186,85 +138,6 @@ export default function PatientAddPage({ loaderData }: any) {
     }
   };
 
-  // 엑셀/CSV 업로드
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFileError('');
-    setParsedRows([]);
-    setMissingColumns([]);
-    if (e.target.files && e.target.files[0]) {
-      const f = e.target.files[0];
-      setFile(f);
-      const ext = f.name.split('.').pop()?.toLowerCase();
-      const reader = new FileReader();
-      reader.onload = evt => {
-        try {
-          let rows: any[] = [];
-          if (ext === 'csv') {
-            const parsed = Papa.parse(evt.target?.result as string, { header: true });
-            rows = parsed.data as any[];
-          } else if (ext === 'xlsx') {
-            const data = new Uint8Array(evt.target?.result as ArrayBuffer);
-            const wb = XLSX.read(data, { type: 'array', dateNF: 'yyyy-mm-dd', cellDates: true });
-            const ws = wb.Sheets[wb.SheetNames[0]];
-            rows = XLSX.utils.sheet_to_json(ws, { raw: false, defval: '' });
-          } else {
-            setFileError('지원하지 않는 파일 형식입니다.');
-            return;
-          }
-          // 필수 컬럼 체크 (모든 행의 키 합집합)
-          const columns = Array.from(new Set(rows.flatMap(row => Object.keys(row))));
-          const missing = REQUIRED_COLUMNS.filter(col => !columns.includes(col));
-          setParsedRows(rows);
-          setMissingColumns(missing);
-          setFilePreviewOpen(true);
-        } catch (err) {
-          setFileError('파일 파싱 중 오류가 발생했습니다.');
-        }
-      };
-      if (ext === 'csv') reader.readAsText(f);
-      else if (ext === 'xlsx') reader.readAsArrayBuffer(f);
-      else setFileError('지원하지 않는 파일 형식입니다.');
-    }
-  };
-
-  // Dialog 내에서 업로드
-  const handleDialogUpload = async () => {
-    if (!parsedRows.length || !hospitalId) return;
-    setFileError('');
-    try {
-      const patients = parsedRows
-        .map(row => {
-          const wardId = findWardIdByName(row['병동'], wards);
-          const roomId = findRoomIdByName(row['병실'], row['병동'], wards);
-          const gender = getPatientGenderFromString(row['성별']);
-          if (!wardId || !roomId || !gender) return null;
-          return {
-            name: row['이름'],
-            chartId: Number(row['차트ID']),
-            gender,
-            wardId,
-            roomId,
-            enterDate: row['입원일'] || undefined,
-            leaveDate: row['퇴원일'] || undefined,
-            birthDate: row['생년월일'] || undefined,
-            hospitalId,
-          };
-        })
-        .filter((x): x is typeof patients[0] => x !== null);
-      const result = await bulkCreatePatients({
-        variables: { inputs: patients },
-      });
-      if (result.data?.bulkCreatePatients?.success) {
-        setSuccessMessage('파일 업로드가 성공적으로 완료되었습니다.');
-        setShowSuccessModal(true);
-        setFilePreviewOpen(false);
-      } else {
-        setFileError(result.data?.bulkCreatePatients?.message || '파일 업로드 실패');
-      }
-    } catch (error) {
-      setFileError('업로드 중 오류가 발생했습니다.');
-    }
-  };
 
   const handleSuccessModalClose = () => {
     setShowSuccessModal(false);
@@ -416,81 +289,25 @@ export default function PatientAddPage({ loaderData }: any) {
           </form>
         </CardContent>
       </Card>
-      {/* 엑셀/CSV 업로드 */}
+      {/* 엑셀/CSV 업로드 링크 */}
       <Card>
         <CardHeader>
           <CardTitle>엑셀/CSV로 환자 일괄 등록</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
-            <Input
-              type="file"
-              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-              onChange={handleFileChange}
-            />
-            <Select value={fileType} onValueChange={v => setFileType(v as 'CSV' | 'EXCEL')}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="CSV">CSV</SelectItem>
-                <SelectItem value="EXCEL">Excel</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          {/* 엑셀/CSV 업로드 필수 컬럼 안내 (아래로 이동) */}
-          <div className="mt-4 text-sm text-muted-foreground">
-            업로드 파일에는 반드시 아래의 한글 컬럼명이 포함되어야 합니다:<br />
-            <b>이름</b>, <b>차트ID</b>, <b>성별</b>, <b>병동</b>, <b>병실</b>, <b>입원일</b>, <b>퇴원일</b>, <b>생년월일</b><br />
-            <span className="text-xs">※ 첫 번째 행은 반드시 컬럼명이어야 하며, 성별은 남성/여성, 날짜는 YYYY-MM-DD 형식이어야 합니다.</span>
-          </div>
-          {fileError && <div className="mt-2 text-sm text-red-500">{fileError}</div>}
+          <p className="text-sm text-muted-foreground mb-4">
+            여러 환자를 한 번에 등록하려면 일괄 등록 기능을 사용하세요.
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => navigate('/patients/bulk-add')}
+            className="cursor-pointer"
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            일괄 등록 페이지로 이동
+          </Button>
         </CardContent>
       </Card>
-      {/* 파일 미리보기 Dialog */}
-      <Dialog open={filePreviewOpen} onOpenChange={setFilePreviewOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>파일 미리보기</DialogTitle>
-            <DialogDescription>
-              파일의 첫 5행을 미리 확인하세요. 필수 컬럼이 모두 포함되어야 업로드할 수 있습니다.
-            </DialogDescription>
-          </DialogHeader>
-          {missingColumns.length > 0 ? (
-            <div className="text-red-500 mb-2">필수 컬럼이 누락되었습니다: {missingColumns.join(', ')}</div>
-          ) : null}
-          <div className="overflow-x-auto max-h-64 mb-4">
-            {parsedRows.length > 0 ? (
-              <Table className="text-xs">
-                <TableHeader>
-                  <TableRow>
-                    {Object.keys(parsedRows[0]).map(col => (
-                      <TableHead key={col}>{col}</TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {parsedRows.slice(0, 5).map((row, i) => (
-                    <TableRow key={i}>
-                      {Object.keys(parsedRows[0]).map(col => (
-                        <TableCell key={col}>{row[col]}</TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : <div>파일에 데이터가 없습니다.</div>}
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setFilePreviewOpen(false)} className="cursor-pointer">취소</Button>
-            <Button onClick={handleDialogUpload} disabled={missingColumns.length > 0 || bulkLoading} className="cursor-pointer">
-              <Upload className="mr-2 h-4 w-4" />
-              {bulkLoading ? '업로드 중...' : '업로드'}
-            </Button>
-          </div>
-          {fileError && <div className="mt-2 text-sm text-red-500">{fileError}</div>}
-        </DialogContent>
-      </Dialog>
       {/* 성공 모달 */}
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
         <DialogContent>

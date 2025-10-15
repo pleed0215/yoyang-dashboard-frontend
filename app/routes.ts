@@ -51,6 +51,7 @@ export default [
     ...prefix('/patients', [
       index('features/common/pages/patients/patient-index.tsx'),
       route('/add', 'features/common/pages/patients/patient-add.tsx'),
+      route('/bulk-add', 'features/common/pages/patients/patient-bulk-add.tsx'),
       route('/:patientId', 'features/common/pages/patients/patient-detail.tsx'),
       route('/list', 'features/common/pages/patients/patient-list.tsx'),
       route('/status', 'features/common/pages/patients/patient-status.tsx'),

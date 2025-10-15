@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import { useApolloClient } from "@apollo/client";
 import { Route } from "./+types/hospital-positions";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
@@ -17,10 +17,13 @@ import {
 export default function HospitalPositionsPage() {
   const apolloClient = useApolloClient();
   const { data, loading: queryLoading, refetch } = useRetrieveMyHospitalPositionsQuery({ fetchPolicy: "network-only" });
-  const positions = data?.retrieveMyHospitalPositions?.data ?? [];
+  const positions =
+    data?.retrieveMyHospitalPositions?.data?.filter(
+      (item): item is { __typename?: "HospitalPositionType"; id: number; name: string } => !!item,
+    ) ?? [];
 
   const [newPositionName, setNewPositionName] = useState("");
-  const [editPositionId, setEditPositionId] = useState<string | null>(null);
+  const [editPositionId, setEditPositionId] = useState<number | null>(null);
   const [editPositionName, setEditPositionName] = useState("");
   const [mutationLoading, setMutationLoading] = useState(false);
 
@@ -28,7 +31,7 @@ export default function HospitalPositionsPage() {
   const [updatePosition] = useUpdateHospitalPositionMutation();
   const [deletePosition] = useDeleteHospitalPositionMutation();
 
-  const handleAddPosition = async (e: React.FormEvent) => {
+  const handleAddPosition = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newPositionName.trim()) return;
     setMutationLoading(true);
@@ -48,12 +51,12 @@ export default function HospitalPositionsPage() {
     }
   };
 
-  const handleEditPosition = async (id: string) => {
+  const handleEditPosition = async (id: number) => {
     if (!editPositionName.trim()) return;
     setMutationLoading(true);
     try {
       const { data } = await updatePosition({
-        variables: { positionId: Number(id), name: editPositionName.trim() },
+        variables: { positionId: id, name: editPositionName.trim() },
       });
       if (data?.updateHospitalPosition?.success) {
         toast.success("직책 정보가 수정되었습니다.");
@@ -68,12 +71,12 @@ export default function HospitalPositionsPage() {
     }
   };
 
-  const handleDeletePosition = async (id: string) => {
+  const handleDeletePosition = async (id: number) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     setMutationLoading(true);
     try {
       const { data } = await deletePosition({
-        variables: { positionId: Number(id) },
+        variables: { positionId: id },
       });
       if (data?.deleteHospitalPosition?.success) {
         toast.success("직책이 삭제되었습니다.");
@@ -117,7 +120,7 @@ export default function HospitalPositionsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {positions.map((item: { id: string, name: string }, idx: number) => (
+                {positions.map((item, idx) => (
                   <TableRow key={item.id}>
                     <TableCell className="text-center">{idx + 1}</TableCell>
                     <TableCell>
