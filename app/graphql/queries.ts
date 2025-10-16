@@ -794,7 +794,9 @@ export const GET_PATIENT_DETAIL_QUERY = gql`
       data {
         id
         name
+        chartId
         gender
+        birthDate
         roomId
         wardId
         enterDate

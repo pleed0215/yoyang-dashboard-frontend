@@ -2499,7 +2499,9 @@ export const GetPatientDocument = gql`
     data {
       id
       name
+      chartId
       gender
+      birthDate
       roomId
       wardId
       enterDate

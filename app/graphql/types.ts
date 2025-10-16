@@ -1950,7 +1950,7 @@ export type GetPatientQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientResponse', success: boolean, message?: string | null, data?: { __typename?: 'Patient', id: number, name: string, gender?: PatientGender | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null } | null } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientResponse', success: boolean, message?: string | null, data?: { __typename?: 'Patient', id: number, name: string, chartId: number, gender?: PatientGender | null, birthDate?: any | null, roomId: number, wardId: number, enterDate?: any | null, leaveDate?: any | null } | null } };
 
 export type RetrieveMyHospitalWardsAndRoomsQueryVariables = Exact<{ [key: string]: never; }>;
 

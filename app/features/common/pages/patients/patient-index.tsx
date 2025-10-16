@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '~/components/common/data-table';
 import { DataTableSkeleton } from '~/components/common/lazy-wrapper';
+import PatientDetailDialog from './patient-detail-dialog';
 
 function getToday() {
   const today = new Date();
@@ -37,24 +38,23 @@ function getDateBeforeMonth(month: number) {
 }
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-    try{
-        const { data } = await serverApolloClient.query<RetrieveMyHospitalWardsAndRoomsQuery>({
-            query: RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY,
-            context: contextWithToken(request),
-        })
-        return {
-            success: true,
-            data: data?.retrieveMyHospitalWards.data,
-        }
-    }catch(e){
-        return {
-            success: false,
-            message: e instanceof Error ? e.message : '환자 목록 조회 실패',
-            data: [],
-        }
-    }
-    
-}
+  try {
+    const { data } = await serverApolloClient.query<RetrieveMyHospitalWardsAndRoomsQuery>({
+      query: RETRIEVE_MY_HOSPITAL_WARDS_AND_ROOMS_QUERY,
+      context: contextWithToken(request),
+    });
+    return {
+      success: true,
+      data: data?.retrieveMyHospitalWards.data,
+    };
+  } catch (e) {
+    return {
+      success: false,
+      message: e instanceof Error ? e.message : '환자 목록 조회 실패',
+      data: [],
+    };
+  }
+};
 
 type Ward = NonNullable<
   RetrieveMyHospitalWardsAndRoomsQuery['retrieveMyHospitalWards']['data']
@@ -66,6 +66,10 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: wardRoomData } = loaderData;
+
+  // Dialog 상태
+  const [selectedPatientId, setSelectedPatientId] = useState<number | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // 날짜 상태
   const [startDate, setStartDate] = useState(getDateBefore(7)); // 기본 1주일 전
@@ -80,7 +84,8 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
   // 내 병원 정보
   const { data: meData, loading: meLoading } = useMeQuery();
   const hospitalId = meData?.me?.data?.hospitalId;
-  const validHospitalId = typeof hospitalId === 'number' && !isNaN(hospitalId) ? hospitalId : undefined;
+  const validHospitalId =
+    typeof hospitalId === 'number' && !isNaN(hospitalId) ? hospitalId : undefined;
 
   // 병동/병실 상태 및 searchParams 연동
   const wards = (wardRoomData ?? []) as Ward[];
@@ -201,23 +206,38 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
     return map;
   }, [wards]);
 
+  // 환자 선택 핸들러
+  const handlePatientClick = useCallback((patientId: number) => {
+    setSelectedPatientId(patientId);
+    setIsDialogOpen(true);
+  }, []);
+
   // DataTable columns 정의
   const columns = useMemo<ColumnDef<PatientRow>[]>(
     () => [
       {
-        accessorKey: 'id',
-        header: 'ID',
+        accessorKey: 'chartId',
+        header: '차트번호',
         cell: info => <div className="text-center">{info.getValue<number>()}</div>,
       },
       {
         accessorKey: 'name',
         header: '이름',
-        cell: info => <div className="text-center">{info.getValue<string>()}</div>,
+        cell: info => (
+          <button
+            className="text-center cursor-pointer w-full hover:underline"
+            onClick={() => handlePatientClick(info.row.original.id)}
+          >
+            {info.getValue<string>()}
+          </button>
+        ),
       },
       {
         accessorKey: 'gender',
         header: '성별',
-        cell: info => <div className="text-center">{info.getValue<string | undefined>() ?? '-'}</div>,
+        cell: info => (
+          <div className="text-center">{info.getValue<string | undefined>() ?? '-'}</div>
+        ),
       },
       {
         accessorKey: 'wardId',
@@ -239,9 +259,7 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
         cell: info => {
           const value = info.getValue<string | null | undefined>();
           return (
-            <div className="text-center">
-              {value ? new Date(value).toLocaleDateString() : '-'}
-            </div>
+            <div className="text-center">{value ? new Date(value).toLocaleDateString() : '-'}</div>
           );
         },
       },
@@ -251,15 +269,13 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
         cell: info => {
           const value = info.getValue<string | null | undefined>();
           return (
-            <div className="text-center">
-              {value ? new Date(value).toLocaleDateString() : '-'}
-            </div>
+            <div className="text-center">{value ? new Date(value).toLocaleDateString() : '-'}</div>
           );
         },
       },
       { id: 'actions', header: '액션', cell: () => <div className="text-center">-</div> },
     ],
-    [wardsMap, roomsMap],
+    [wardsMap, roomsMap, handlePatientClick]
   );
 
   // 환자 데이터
@@ -285,23 +301,60 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <DateInput id="start-date" value={startDate} onChange={setStartDate} label="조회 시작일" />
+          <DateInput
+            id="start-date"
+            value={startDate}
+            onChange={setStartDate}
+            label="조회 시작일"
+          />
           <span>~</span>
           <DateInput id="end-date" value={endDate} onChange={setEndDate} label="조회 종료일" />
           <div className="flex ml-2">
-            <Button variant="outline" size="sm" className="rounded-r-none" onClick={() => handleDateGroup('week')}>1주일</Button>
-            <Button variant="outline" size="sm" className="rounded-none border-l-0" onClick={() => handleDateGroup('month')}>1개월</Button>
-            <Button variant="outline" size="sm" className="rounded-none border-l-0" onClick={() => handleDateGroup('6month')}>6개월</Button>
-            <Button variant="outline" size="sm" className="rounded-l-none border-l-0" onClick={() => handleDateGroup('year')}>1년</Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-r-none"
+              onClick={() => handleDateGroup('week')}
+            >
+              1주일
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-none border-l-0"
+              onClick={() => handleDateGroup('month')}
+            >
+              1개월
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-none border-l-0"
+              onClick={() => handleDateGroup('6month')}
+            >
+              6개월
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-l-none border-l-0"
+              onClick={() => handleDateGroup('year')}
+            >
+              1년
+            </Button>
             <div className="w-2" />
-            <Button variant="default" size="sm" onClick={handleSearch}>조회</Button>
+            <Button variant="default" size="sm" onClick={handleSearch}>
+              조회
+            </Button>
           </div>
         </div>
       </div>
       {/* 병동/병실 select UI */}
       <div className="flex items-center gap-4 mt-2">
         <div className="flex items-center gap-2">
-          <label htmlFor="ward-select" className="text-sm font-medium">병동</label>
+          <label htmlFor="ward-select" className="text-sm font-medium">
+            병동
+          </label>
           <select
             id="ward-select"
             className="border rounded px-2 py-1"
@@ -310,12 +363,16 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
           >
             <option value="">전체</option>
             {wardNames.map(name => (
-              <option key={name} value={name}>{name}</option>
+              <option key={name} value={name}>
+                {name}
+              </option>
             ))}
           </select>
         </div>
         <div className="flex items-center gap-2">
-          <label htmlFor="room-select" className="text-sm font-medium">병실</label>
+          <label htmlFor="room-select" className="text-sm font-medium">
+            병실
+          </label>
           <select
             id="room-select"
             className="border rounded px-2 py-1"
@@ -325,7 +382,9 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
           >
             <option value="">전체</option>
             {roomNames.map(name => (
-              <option key={name} value={name}>{name}</option>
+              <option key={name} value={name}>
+                {name}
+              </option>
             ))}
           </select>
         </div>
@@ -341,12 +400,32 @@ export default function PatientIndexPage({ loaderData }: Route.ComponentProps) {
             page={page}
             totalPages={totalPages}
             onPageChange={p => {
-            searchParams.set('page', p.toString());
-            setSearchParams(searchParams, { preventScrollReset: true });
+              searchParams.set('page', p.toString());
+              setSearchParams(searchParams, { preventScrollReset: true });
             }}
           />
         </CardContent>
       </Card>
+
+      {/* 환자 상세 정보 Dialog */}
+      {selectedPatientId && (
+        <PatientDetailDialog
+          patientId={selectedPatientId}
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          wardRoomData={{
+            wards: wards.map(ward => ({
+              id: ward.id,
+              name: ward.name,
+              rooms:
+                ward.rooms?.map(room => ({
+                  id: room.id,
+                  name: room.name,
+                })) || [],
+            })),
+          }}
+        />
+      )}
     </div>
   );
-} 
+}

@@ -13,9 +13,11 @@ interface DateInputProps {
   onChange: (value: string) => void;
   placeholder?: string;
   label?: string;
+  disabled?: boolean;
+  className?: string;
 }
 
-export default function DateInput({ id, value, onChange, placeholder = "YYYY-MM-DD", label }: DateInputProps) {
+export default function DateInput({ id, value, onChange, placeholder = "YYYY-MM-DD", label, disabled, className }: DateInputProps) {
   // 날짜에서 시간 제거하고 luxon으로 파싱
   const formatDateOnly = (dateString: string | null) => {
     if (!dateString) return '';
@@ -67,10 +69,12 @@ export default function DateInput({ id, value, onChange, placeholder = "YYYY-MM-
         onChange={handleInputChange}
         placeholder={placeholder}
         maxLength={10}
+        disabled={disabled}
+        className={className}
       />
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="cursor-pointer">
+          <Button variant="outline" className="cursor-pointer" disabled={disabled}>
             <Calendar className="h-4 w-4" />
           </Button>
         </PopoverTrigger>
